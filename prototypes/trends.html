@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>잡동사니 — 동향</title>
+    <meta name="description" content="해외 주요 기술 커뮤니티의 인기글을 자동 수집·번역하여 카드형 피드로 제공합니다." />
+
+    <!-- ===== 폰트 ===== -->
+    <!-- Geist (영문 UI/제목) -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.css" />
+    <!-- Pretendard (한글 본문/UI) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+    <!-- JetBrains Mono (코드 블록) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/css/jetbrains-mono.css" />
+    <!-- Material Icons (아이콘) -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <style>
+        /* ================================================
+       리셋 & 디자인 토큰
+       ================================================ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* --- 컬러 팔레트 (Palette C — Teal Accent) --- */
+            --color-header-bg: #0f172a;
+            /* 헤더 배경: Dark Navy */
+            --color-page-bg: #f8fafc;
+            /* 페이지 배경: Off White */
+            --color-card-bg: #ffffff;
+            /* 카드 배경: White */
+            --color-accent: #14b8a6;
+            /* 포인트 컬러: Teal */
+            --color-accent-hover: #0d9488;
+            /* 포인트 호버 */
+            --color-accent-light: #f0fdfa;
+            /* accent 밝은 배경 */
+            --color-text-primary: #0f172a;
+            /* 텍스트 Primary: Dark */
+            --color-text-secondary: #475569;
+            /* 텍스트 Secondary: Slate */
+            --color-text-muted: #94a3b8;
+            /* 텍스트 Muted: Light Slate */
+            --color-border: #e2e8f0;
+            /* 보더 */
+
+            /* --- 타이포그래피 --- */
+            --font-sans: 'Geist', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* --- 기타 --- */
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --shadow-card: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .04);
+            --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, .08);
+            --transition-fast: .18s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            /* 모바일에서 가로 스크롤 방지 */
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--color-page-bg);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ================================================
+       공통 헤더 — sticky 없음 (스크롤 시 사라짐)
+       ================================================ */
+        /* 헤더: 배경만 전체폭, 패딩은 inner에서 처리 */
+        .site-header {
+            background: var(--color-header-bg);
+            color: #fff;
+            height: 56px;
+        }
+
+        /* 헤더 내부: max-width + 수평 패딩으로 메인 영역과 정렬 일치 */
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 좌측: 로고 + 탭 네비게이션 */
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        /* 로고: 글자별 포인트 컬러 + 물결 애니메이션 */
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -.3px;
+            color: #fff;
+            text-decoration: none;
+            display: inline-flex;
+        }
+
+        /* 각 로고 글자 기본 스타일 */
+        .logo .char {
+            display: inline-block;
+            transition: transform .3s ease, color .3s ease;
+        }
+
+        /* "사", "니" 글자에 Teal 포인트 컬러 적용 */
+        .logo .char.accent {
+            color: var(--color-accent);
+        }
+
+        /* "니" 글자 살짝 기울임 */
+        .logo .char.tilt {
+            font-style: italic;
+        }
+
+        /* 물결 바운스 애니메이션 키프레임 */
+        @keyframes logoBounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-6px);
+            }
+
+            60% {
+                transform: translateY(-3px);
+            }
+        }
+
+        /* hover 시 각 글자가 순차적으로 바운스 */
+        .logo:hover .char:nth-child(1) {
+            animation: logoBounce .5s ease;
+            animation-delay: 0s;
+        }
+
+        .logo:hover .char:nth-child(2) {
+            animation: logoBounce .5s ease;
+            animation-delay: .06s;
+        }
+
+        .logo:hover .char:nth-child(3) {
+            animation: logoBounce .5s ease;
+            animation-delay: .12s;
+        }
+
+        .logo:hover .char:nth-child(4) {
+            animation: logoBounce .5s ease;
+            animation-delay: .18s;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+            list-style: none;
+        }
+
+        .nav-tabs a {
+            color: rgba(255, 255, 255, .6);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            transition: background var(--transition-fast), color var(--transition-fast);
+        }
+
+        .nav-tabs a:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, .08);
+        }
+
+        .nav-tabs a.active {
+            color: #fff;
+            background: var(--color-accent);
+        }
+
+        /* 우측: 방문자 수 배지 */
+        .visitor-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, .55);
+        }
+
+        .visitor-badge .num {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* ================================================
+       필터 바 — sticky 없음 (스크롤 시 사라짐)
+       ================================================ */
+        /* 필터 바: 배경/보더만 전체폭, 패딩은 inner에서 처리 */
+        .filter-bar {
+            z-index: 100;
+            background: var(--color-page-bg);
+            border-bottom: 1px solid var(--color-border);
+            padding: 12px 0;
+        }
+
+        /* 필터 바 내부: max-width + 수평 패딩으로 메인 영역과 정렬 일치 */
+        .filter-bar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* 필터 한 줄 (라벨 + 버튼 그룹) */
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-right: 2px;
+        }
+
+        .filter-btn {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 5px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--color-border);
+            background: var(--color-card-bg);
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+        }
+
+        .filter-btn.active {
+            background: var(--color-accent);
+            color: #fff;
+            border-color: var(--color-accent);
+        }
+
+        /* 상하 배치 시 구분선은 가로선으로 변경 */
+        .filter-divider {
+            width: 100%;
+            height: 1px;
+            background: var(--color-border);
+        }
+
+        .filter-count {
+            font-size: 13px;
+            color: var(--color-text-muted);
+        }
+
+        .filter-count strong {
+            color: var(--color-accent);
+            font-weight: 700;
+        }
+
+        /* 필터 우측 영역 (결과 수 + 검색 버튼) */
+        .filter-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+
+        /* 검색 토글 버튼 */
+        .search-toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 5px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--color-border);
+            background: var(--color-card-bg);
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .search-toggle-btn:hover {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+        }
+
+        .search-toggle-btn.active {
+            background: var(--color-accent);
+            color: #fff;
+            border-color: var(--color-accent);
+        }
+
+        .search-toggle-btn .material-symbols-outlined {
+            font-size: 16px;
+        }
+
+        /* 검색 패널 — 슬라이드 다운, 패딩은 inner에서 처리 */
+        .search-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .3s ease, padding .3s ease;
+            padding: 0;
+            background: var(--color-page-bg);
+            border-bottom: none;
+        }
+
+        .search-panel.open {
+            max-height: 80px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        /* 검색 패널 내부: max-width + 수평 패딩으로 메인 영역과 정렬 일치 */
+        .search-panel-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* 검색 입력창 */
+        .search-input {
+            flex: 1;
+            font-family: var(--font-sans);
+            font-size: 14px;
+            padding: 10px 16px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-card-bg);
+            color: var(--color-text-primary);
+            outline: none;
+            transition: border-color var(--transition-fast);
+        }
+
+        .search-input:focus {
+            border-color: var(--color-accent);
+        }
+
+        .search-input::placeholder {
+            color: var(--color-text-muted);
+        }
+
+        /* 검색 실행 버튼 */
+        .search-submit-btn {
+            font-family: var(--font-sans);
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius-md);
+            background: var(--color-accent);
+            color: #fff;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .search-submit-btn:hover {
+            background: var(--color-accent-hover);
+        }
+
+        .search-submit-btn .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+        /* ================================================
+       메인 레이아웃: 2단 구조 (피드 + 사이드바)
+       ================================================ */
+        .main-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 24px 80px;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        /* ================================================
+       피드 카드 (Reddit 스타일)
+       ================================================ */
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .card {
+            background: var(--color-card-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .card-body {
+            padding: 20px 22px;
+        }
+
+        /* 상단: 소스 배지 + 원문 작성 시각 */
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .source-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 999px;
+            color: #fff;
+        }
+
+        /* 소스별 배경색 */
+        .source-badge.hn {
+            background: #ff6600;
+        }
+
+        .source-badge.localllama {
+            background: #10b981;
+        }
+
+        .source-badge.ml {
+            background: #e11d48;
+        }
+
+        .source-badge.programming {
+            background: #3b82f6;
+        }
+
+        .source-badge.robotics {
+            background: #f59e0b;
+        }
+
+        .card-time {
+            font-size: 12px;
+            color: var(--color-text-muted);
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 5px;
+            margin-left: auto;
+        }
+
+        .tag {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: var(--color-accent-light);
+            color: var(--color-accent);
+        }
+
+        /* 제목 */
+        .card-title {
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            color: var(--color-text-primary);
+        }
+
+        /* 본문 */
+        .card-content {
+            font-size: 14.5px;
+            line-height: 1.75;
+            color: var(--color-text-secondary);
+            margin-bottom: 14px;
+        }
+
+        /* 썸네일 캐러셀 (본문 아래, 카드 좌우 꽉 채움) */
+        .card-image {
+            margin: 0 -22px 14px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            display: flex;
+            gap: 0;
+        }
+
+        .card-image img {
+            width: 100%;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            object-fit: cover;
+            max-height: 380px;
+        }
+
+        /* 댓글 동향 섹션 */
+        .comment-section {
+            background: var(--color-page-bg);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            margin-bottom: 12px;
+        }
+
+        .comment-section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .comment-section-title .material-symbols-outlined {
+            font-size: 16px;
+            color: var(--color-accent);
+        }
+
+        .comment-summary {
+            font-size: 13.5px;
+            line-height: 1.65;
+            color: var(--color-text-secondary);
+            margin-bottom: 12px;
+            padding-left: 4px;
+            border-left: 3px solid var(--color-accent);
+            padding: 2px 0 2px 12px;
+        }
+
+        .top-comments {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .top-comment {
+            display: flex;
+            gap: 10px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--color-text-secondary);
+        }
+
+        .comment-votes {
+            flex-shrink: 0;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--color-accent);
+            background: var(--color-accent-light);
+            border-radius: var(--radius-sm);
+            padding: 2px 7px;
+            height: fit-content;
+            margin-top: 2px;
+        }
+
+        /* 하단 액션바 */
+        .card-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding-top: 10px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            color: var(--color-text-muted);
+        }
+
+        .action-item .material-symbols-outlined {
+            font-size: 17px;
+        }
+
+        .action-link {
+            margin-left: auto;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color var(--transition-fast);
+        }
+
+        .action-link:hover {
+            color: var(--color-accent-hover);
+        }
+
+        .action-link .material-symbols-outlined {
+            font-size: 15px;
+        }
+
+        /* ================================================
+       사이드바
+       ================================================ */
+        .sidebar {
+            position: sticky;
+            top: 70px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .widget {
+            background: var(--color-card-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .widget-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: var(--color-text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .widget-title .material-symbols-outlined {
+            font-size: 18px;
+            color: var(--color-accent);
+        }
+
+        /* 인기글 TOP 5 */
+        .popular-list {
+            list-style: none;
+        }
+
+        .popular-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .popular-list li:last-child {
+            border-bottom: none;
+        }
+
+        .popular-rank {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            background: var(--color-accent);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popular-rank.rank-1 {
+            background: var(--color-accent);
+        }
+
+        .popular-rank.rank-2 {
+            background: #2dd4bf;
+        }
+
+        .popular-rank.rank-3 {
+            background: #5eead4;
+        }
+
+        .popular-rank.rank-other {
+            background: var(--color-border);
+            color: var(--color-text-secondary);
+        }
+
+        .popular-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .popular-info a {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            text-decoration: none;
+            line-height: 1.4;
+            transition: color var(--transition-fast);
+        }
+
+        .popular-info a:hover {
+            color: var(--color-accent);
+        }
+
+        .popular-info .meta {
+            font-size: 11px;
+            color: var(--color-text-muted);
+        }
+
+        /* 수집 스케줄 */
+        .schedule-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .schedule-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            background: var(--color-page-bg);
+        }
+
+        .schedule-item .label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .schedule-item .time {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+        }
+
+        .schedule-next {
+            text-align: center;
+            padding: 12px 0 4px;
+        }
+
+        .schedule-next .countdown-label {
+            font-size: 12px;
+            color: var(--color-text-muted);
+            margin-bottom: 4px;
+        }
+
+        .countdown {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--color-accent);
+            font-family: var(--font-mono);
+            letter-spacing: 1px;
+        }
+
+        /* ================================================
+       쿠키 동의 배너 (하단 fixed)
+       ================================================ */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--color-header-bg);
+            color: #fff;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            font-size: 13.5px;
+        }
+
+        .cookie-banner p {
+            max-width: 640px;
+            line-height: 1.5;
+        }
+
+        .cookie-banner a {
+            color: var(--color-accent);
+            text-decoration: underline;
+        }
+
+        .cookie-btn {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 22px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+
+        .cookie-btn.accept {
+            background: var(--color-accent);
+            color: #fff;
+        }
+
+        .cookie-btn.accept:hover {
+            background: var(--color-accent-hover);
+        }
+
+        .cookie-btn.decline {
+            background: rgba(255, 255, 255, .12);
+            color: #fff;
+        }
+
+        .cookie-btn.decline:hover {
+            background: rgba(255, 255, 255, .2);
+        }
+
+        /* ================================================
+       스크롤 투 탑 버튼
+       ================================================ */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 16px;
+            z-index: 999;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--color-border);
+            background: var(--color-card-bg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition: opacity .25s ease, visibility .25s ease, transform .25s ease, background .18s ease;
+        }
+
+        .scroll-top-btn.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: #fff;
+        }
+
+        .scroll-top-btn .material-symbols-outlined {
+            font-size: 22px;
+            color: var(--color-text-secondary);
+            transition: color .18s ease;
+        }
+
+        .scroll-top-btn:hover .material-symbols-outlined {
+            color: #fff;
+        }
+
+        /* ================================================
+       반응형 — 모바일: 사이드바 숨김, 단일 컬럼
+       ================================================ */
+        @media (max-width: 860px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            /* 필터 버튼 줄바꿈 허용 */
+            .filter-group {
+                flex-wrap: wrap;
+            }
+
+            .card-image img {
+                max-height: 260px;
+            }
+
+            .cookie-banner {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+                padding: 14px 18px;
+            }
+
+            /* 쿠키 배너 버튼을 좌우(가로) 배치 */
+            .cookie-buttons {
+                display: flex;
+                gap: 8px;
+            }
+
+            .scroll-top-btn {
+                right: 12px;
+                bottom: 20px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            /* 모바일: inner 요소에서 패딩 축소 */
+            .header-inner {
+                padding: 0 14px;
+            }
+
+            .header-left {
+                gap: 10px;
+            }
+
+            .logo {
+                font-size: 17px;
+            }
+
+            .nav-tabs a {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+
+            .visitor-badge {
+                font-size: 10px;
+                gap: 6px;
+                flex-shrink: 0;
+            }
+
+            .filter-bar-inner {
+                padding: 0 14px;
+            }
+
+            .filter-btn {
+                font-size: 12px;
+                padding: 4px 10px;
+            }
+
+            .main-layout {
+                padding: 16px 14px 80px;
+            }
+
+            .card-body {
+                padding: 16px;
+            }
+
+            .card-image {
+                margin: 0 -16px 12px;
+            }
+        }
+
+        /* ================================================
+       마이크로 애니메이션
+       ================================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeInUp .45s ease both;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: .06s;
+        }
+
+        .card:nth-child(3) {
+            animation-delay: .12s;
+        }
+
+        .card:nth-child(4) {
+            animation-delay: .18s;
+        }
+
+        .card:nth-child(5) {
+            animation-delay: .24s;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ============================================================
+     공통 헤더
+     좌측: 로고 + 탭 네비게이션 / 우측: 방문자 수 배지
+     ============================================================ -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="header-left">
+                <!-- 로고 -->
+                <!-- 로고: 글자별 span 분리 (잡/동 = 흰색, 사/니 = Teal 포인트, 니 = 기울임) -->
+                <a href="#" class="logo">
+                    <span class="char">잡</span><span class="char">동</span><span class="char accent">사</span><span
+                        class="char accent tilt">니</span>
+                </a>
+                <!-- 탭 네비게이션 (3개) -->
+                <nav>
+                    <ul class="nav-tabs">
+                        <li><a href="#" class="active">동향</a></li>
+                        <li><a href="#">잡동사니</a></li>
+                        <li><a href="#">블로그</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- 방문자 수 배지 — Today / Total -->
+            <div class="visitor-badge">
+                <span>Today <span class="num">1,247</span></span>
+                <span>Total <span class="num">38,920</span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================
+     필터 바 — sticky (스크롤해도 고정)
+     분야 필터 + 소스 필터 조합 가능
+     ============================================================ -->
+    <div class="filter-bar">
+        <div class="filter-bar-inner">
+            <!-- 분야 필터 행: 글의 주제/내용 기준 -->
+            <div class="filter-row">
+                <span class="filter-label">분야</span>
+                <div class="filter-group" id="field-filters">
+                    <button class="filter-btn active" data-field="all">전체</button>
+                    <button class="filter-btn" data-field="ai">AI</button>
+                    <button class="filter-btn" data-field="dev">개발</button>
+                    <button class="filter-btn" data-field="robotics">로보틱스</button>
+                </div>
+            </div>
+
+            <div class="filter-divider"></div>
+
+            <!-- 소스 필터 행: 수집 출처 기준 -->
+            <div class="filter-row">
+                <span class="filter-label">소스</span>
+                <div class="filter-group" id="source-filters">
+                    <button class="filter-btn active" data-source="all">전체</button>
+                    <button class="filter-btn" data-source="hn">HN</button>
+                    <button class="filter-btn" data-source="localllama">r/LocalLLaMA</button>
+                    <button class="filter-btn" data-source="ml">r/ML</button>
+                    <button class="filter-btn" data-source="programming">r/programming</button>
+                    <button class="filter-btn" data-source="robotics">r/robotics</button>
+                </div>
+                <!-- 우측: 결과 수 + 검색 버튼 -->
+                <div class="filter-right">
+                    <div class="filter-count">검색 결과 <strong>53</strong>건</div>
+                    <button class="search-toggle-btn" id="search-toggle" onclick="toggleSearch()">
+                        <span class="material-symbols-outlined">search</span>
+                        검색
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         검색 패널 — 필터 바 하단에 슬라이드 다운
+         ============================================================ -->
+    <div class="search-panel" id="search-panel">
+        <div class="search-panel-inner">
+            <input type="text" class="search-input" id="search-input" placeholder="동향 검색... (제목, 본문, 댓글 내용)"
+                onkeydown="if(event.key==='Enter') executeSearch()">
+            <button class="search-submit-btn" onclick="executeSearch()">
+                <span class="material-symbols-outlined">search</span>
+                검색
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+     메인 레이아웃: 피드 + 사이드바 2단 구조
+     ============================================================ -->
+    <main class="main-layout">
+
+        <!-- ====== 피드 영역 ====== -->
+        <section class="feed">
+
+            <!-- ── 카드 1: HN, 이미지 있음 ── -->
+            <article class="card" data-field="ai" data-source="hn">
+                <div class="card-body">
+                    <!-- 상단: 소스 배지 + 원문 작성 시각 + 태그 -->
+                    <div class="card-meta">
+                        <span class="source-badge hn">HN</span>
+                        <span class="card-time">2026.02.19 09:42</span>
+                        <div class="card-tags">
+                            <span class="tag">#AI</span>
+                            <span class="tag">#HackerNews</span>
+                        </div>
+                    </div>
+                    <!-- 제목 (한국어 번역, 굵게) -->
+                    <h2 class="card-title">Claude 4가 새로운 벤치마크에서 GPT-5를 앞서다 — 코딩 및 수학적 추론에서 특히 큰 차이</h2>
+                    <!-- 본문 (원문 최대한 유지 번역) -->
+                    <p class="card-content">
+                        Anthropic이 오늘 발표한 Claude 4 모델이 여러 주요 벤치마크에서 OpenAI의 GPT-5를 상회하는 성능을 보여주었습니다.
+                        특히 코딩 과제와 수학적 추론 분야에서 두드러진 차이가 나타났으며, MMLU 점수에서는 두 모델이 비슷한 수준을 기록했습니다.
+                        Anthropic은 이 모델이 "추론 비용 효율성"에서도 상당한 개선을 이루었다고 밝혔습니다.
+                    </p>
+                </div>
+                <!-- 썸네일 이미지: 카드 좌우 꽉 채워 크게 노출 -->
+                <div class="card-image">
+                    <img src="https://placehold.co/800x380/6366f1/ffffff?text=Claude+4+Benchmark"
+                        alt="Claude 4 벤치마크 결과" />
+                </div>
+                <div class="card-body" style="padding-top:0;">
+                    <!-- 댓글 동향 섹션 -->
+                    <div class="comment-section">
+                        <div class="comment-section-title">
+                            <span class="material-symbols-outlined">forum</span>
+                            댓글 동향
+                        </div>
+                        <!-- AI 요약 -->
+                        <div class="comment-summary">
+                            대부분의 댓글은 벤치마크 수치보다 실제 사용 경험에서의 체감 차이가 중요하다는 의견이 지배적입니다.
+                            일부는 Claude의 긴 컨텍스트 처리 능력을 높이 평가하면서도, 가격 정책에 대한 우려를 표명하고 있습니다.
+                        </div>
+                        <!-- 상위 댓글 목록 (바로 노출, 접기/펼치기 없음) -->
+                        <div class="top-comments">
+                            <div class="top-comment">
+                                <span class="comment-votes">▲ 342</span>
+                                <span>벤치마크는 벤치마크일 뿐이다. 실제로 써봤는데 Claude 4는 코드 리팩토링에서 확실히 좋아졌다.</span>
+                            </div>
+                            <div class="top-comment">
+                                <span class="comment-votes">▲ 218</span>
+                                <span>가격이 관건이다. GPT-5가 저렴하다면 많은 스타트업이 그쪽을 선택할 것이다.</span>
+                            </div>
+                            <div class="top-comment">
+                                <span class="comment-votes">▲ 187</span>
+                                <span>둘 다 써봤는데 수학 문제에서는 확실히 Claude가 앞서고, 창작 글쓰기에서는 GPT가 낫다.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 하단 액션바 -->
+                    <div class="card-actions">
+                        <div class="action-item">
+                            <span class="material-symbols-outlined">arrow_upward</span>
+                            <span>1,243</span>
+                        </div>
+                        <div class="action-item">
+                            <span class="material-symbols-outlined">visibility</span>
+                            <span>8,492</span>
+                        </div>
+                        <a class="action-link" href="#" target="_blank">
+                            원문 보기 <span class="material-symbols-outlined">open_in_new</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ── 카드 2: r/LocalLLaMA, 이미지 있음 ── -->
+            <article class="card" data-field="ai" data-source="localllama">
+                <div class="card-body">
+                    <div class="card-meta">
+                        <span class="source-badge localllama">r/LocalLLaMA</span>
+                        <span class="card-time">2026.02.19 08:15</span>
+                        <div class="card-tags">
+                            <span class="tag">#AI</span>
+                            <span class="tag">#LocalLLaMA</span>
+                        </div>
+                    </div>
+                    <h2 class="card-title">Llama 4 8B를 RTX 4060 Ti에서 실행하기 — 양자화 가이드와 벤치마크 결과</h2>
+                    <p class="card-content">
+                        Llama 4 8B 모델을 소비자급 GPU에서 실행하기 위한 상세한 양자화 가이드입니다.
+                        GGUF Q4_K_M 양자화 시 VRAM 6.2GB만으로 초당 28토큰의 생성 속도를 달성할 수 있었습니다.
+                        Flash Attention과 KV Cache 양자화를 결합하면 품질 손실을 최소화하면서도 실용적인 속도를 얻을 수 있습니다.
+                    </p>
+                </div>
+                <div class="card-image">
+                    <img src="https://placehold.co/800x380/10b981/ffffff?text=Llama+4+Quantization"
+                        alt="Llama 4 양자화 벤치마크" />
+                </div>
+                <div class="card-body" style="padding-top:0;">
+                    <div class="comment-section">
+                        <div class="comment-section-title">
+                            <span class="material-symbols-outlined">forum</span>
+                            댓글 동향
+                        </div>
+                        <div class="comment-summary">
+                            커뮤니티는 가성비 측면에서 매우 긍정적인 반응을 보이고 있으며,
+                            특히 Q5_K_M 양자화가 품질과 속도의 최적 균형점이라는 의견이 많습니다.
+                        </div>
+                        <div class="top-comments">
+                            <div class="top-comment">
+                                <span class="comment-votes">▲ 189</span>
+                                <span>Q4_K_M으로도 충분히 쓸 만하다. 코딩 어시스턴트로 로컬에서 쓰고 있는데 만족스럽다.</span>
+                            </div>
+                            <div class="top-comment">
+                                <span class="comment-votes">▲ 134</span>
+                                <span>RTX 3060 12GB에서도 테스트해봤는데 약 22 tok/s 나온다. 의외로 쓸 만함.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <div class="action-item">
+                            <span class="material-symbols-outlined">arrow_upward</span>
+                            <span>876</span>
+                        </div>
+                        <div class="action-item">
+                            <span class="material-symbols-outlined">visibility</span>
+                            <span>5,210</span>
+                        </div>
+                        <a class="action-link" href="#" target="_blank">
+                            원문 보기 <span class="material-symbols-outlined">open_in_new</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ── 카드 3: r/programming, 이미지 없음 ── -->
+            <article class="card" data-field="dev" data-source="programming">
+                <div class="card-body">
+                    <div class="card-meta">
+                        <span class="source-badge programming">r/programming</span>
+                        <span class="card-time">2026.02.19 06:30</span>
+                        <div class="card-tags">
+                            <span class="tag">#개발</span>
+                            <span class="tag">#programming</span>
+                        </div>
+                    </div>
+                    <h2 class="card-title">TypeScript 6.0 정식 출시 — 패턴 매칭, 파이프 연산자, 그리고 더 나은 타입 추론</h2>
+                    <p class="card-content">
+                        Microsoft가 TypeScript 6.0을 정식 출시했습니다. 가장 주목받는 기능은 네이티브 패턴 매칭과 파이프 연산자(|&gt;)입니다.
+                        타입 추론 엔진도 대폭 개선되어, 복잡한 제네릭 체인에서의 타입 해석 속도가 최대 40% 향상되었습니다.
+                        또한 ECMAScript Decorators Stage 3 스펙 완전 지원과 함께, 기존 experimental decorators로부터의 마이그레이션 도구도 제공됩니다.
+                    </p>
+                    <!-- 이미지 없음 — 이미지 영역 자체 미노출 -->
+                    <div class="comment-section">
+                        <div class="comment-section-title">
+                            <span class="material-symbols-outlined">forum</span>
+                            댓글 동향
+                        </div>
+                        <div class="comment-summary">
+                            패턴 매칭에 대한 기대감이 높으며, Rust와 비교하는 댓글이 많습니다.
+                            파이프 연산자 도입에 대해서는 가독성 논쟁이 활발하게 이루어지고 있습니다.
+                        </div>
+                        <div class="top-comments">
+                            <div class="top-comment">
+                                <span class="comment-votes">▲ 521</span>
+                                <span>드디어 패턴 매칭! Rust에서 넘어올 때 가장 아쉬웠던 기능이었는데 이제 해결됐다.</span>
+                            </div>
+                            <div class="top-comment">
+                                <span class="comment-votes">▲ 398</span>
+                                <span>파이프 연산자는 양날의 검이다. 남용하면 코드가 더 읽기 어려워질 수 있음.</span>
+                            </div>
+                            <div class="top-comment">
+                                <span class="comment-votes">▲ 267</span>
+                                <span>타입 추론 속도 40% 향상이 체감상 가장 큰 변화. 대규모 프로젝트에서 IDE가 훨씬 빨라졌다.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <div class="action-item">
+                            <span class="material-symbols-outlined">arrow_upward</span>
+                            <span>2,891</span>
+                        </div>
+                        <div class="action-item">
+                            <span class="material-symbols-outlined">visibility</span>
+                            <span>15,340</span>
+                        </div>
+                        <a class="action-link" href="#" target="_blank">
+                            원문 보기 <span class="material-symbols-outlined">open_in_new</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ── 카드 4: r/robotics, 이미지 있음 ── -->
+            <article class="card" data-field="robotics" data-source="robotics">
+                <div class="card-body">
+                    <div class="card-meta">
+                        <span class="source-badge robotics">r/robotics</span>
+                        <span class="card-time">2026.02.18 22:05</span>
+                        <div class="card-tags">
+                            <span class="tag">#로보틱스</span>
+                            <span class="tag">#robotics</span>
+                        </div>
+                    </div>
+                    <h2 class="card-title">Boston Dynamics의 새로운 전기구동 Atlas — 창고 환경에서의 실제 작업 영상 공개</h2>
+                    <p class="card-content">
+                        Boston Dynamics가 전기구동 Atlas 로봇의 실제 창고 환경 운용 영상을 공개했습니다.
+                        영상에서 Atlas는 불규칙하게 쌓인 박스를 인식하고, 파렛트 위에 정확히 재배치하는 작업을 수행합니다.
+                        인간 작업자 대비 약 80%의 작업 속도를 보이면서도, 24시간 연속 가동이 가능하다는 점이 강조되었습니다.
+                    </p>
+                </div>
+                <div class="card-image">
+                    <img src="https://placehold.co/800x380/f59e0b/ffffff?text=Atlas+Robot+Warehouse"
+                        alt="Atlas 로봇 창고 작업" />
+                </div>
+                <div class="card-body" style="padding-top:0;">
+                    <div class="comment-section">
+                        <div class="comment-section-title">
+                            <span class="material-symbols-outlined">forum</span>
+                            댓글 동향
+                        </div>
+                        <div class="comment-summary">
+                            놀라운 발전이라는 반응이 주를 이루면서도, 물류 업계 일자리에 대한 우려의 목소리도 함께 나오고 있습니다.
+                        </div>
+                        <div class="top-comments">
+                            <div class="top-comment">
+                                <span class="comment-votes">▲ 412</span>
+                                <span>2년 전만 해도 이 수준은 최소 5년 후라고 했는데... 발전 속도가 무섭다.</span>
+                            </div>
+                            <div class="top-comment">
+                                <span class="comment-votes">▲ 287</span>
+                                <span>80% 속도라고 해도 24시간 가동이면 인간 3교대를 대체할 수 있다는 뜻이다.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <div class="action-item">
+                            <span class="material-symbols-outlined">arrow_upward</span>
+                            <span>1,567</span>
+                        </div>
+                        <div class="action-item">
+                            <span class="material-symbols-outlined">visibility</span>
+                            <span>11,283</span>
+                        </div>
+                        <a class="action-link" href="#" target="_blank">
+                            원문 보기 <span class="material-symbols-outlined">open_in_new</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ── 카드 5: r/MachineLearning, 이미지 없음 ── -->
+            <article class="card" data-field="ai" data-source="ml">
+                <div class="card-body">
+                    <div class="card-meta">
+                        <span class="source-badge ml">r/ML</span>
+                        <span class="card-time">2026.02.18 19:47</span>
+                        <div class="card-tags">
+                            <span class="tag">#AI</span>
+                            <span class="tag">#MachineLearning</span>
+                        </div>
+                    </div>
+                    <h2 class="card-title">[논문] Transformer를 넘어서 — State Space Model의 새로운 돌파구, Mamba-3</h2>
+                    <p class="card-content">
+                        새로운 논문이 Mamba 아키텍처의 세 번째 버전을 발표하며, 기존 Transformer 기반 모델들과 동등한 성능을
+                        선형 시간복잡도로 달성할 수 있음을 보여주었습니다. 128K 토큰 이상의 장문 처리에서 Transformer 대비
+                        메모리 사용량이 85% 감소하며, 추론 속도는 3.2배 향상되었습니다.
+                    </p>
+                    <div class="comment-section">
+                        <div class="comment-section-title">
+                            <span class="material-symbols-outlined">forum</span>
+                            댓글 동향
+                        </div>
+                        <div class="comment-summary">
+                            학계에서 큰 주목을 받고 있으며, Attention의 종말이라고까지 표현하는 댓글도 있지만,
+                            아직 대규모 학습 검증이 부족하다는 신중한 의견도 있습니다.
+                        </div>
+                        <div class="top-comments">
+                            <div class="top-comment">
+                                <span class="comment-votes">▲ 567</span>
+                                <span>메모리 85% 감소는 게임 체인저다. 이게 검증만 되면 추론 비용이 극적으로 줄어들 것.</span>
+                            </div>
+                            <div class="top-comment">
+                                <span class="comment-votes">▲ 423</span>
+                                <span>Mamba-2에서 이미 가능성을 봤지만 이번 버전은 진짜 실용적인 레벨에 도달한 것 같다.</span>
+                            </div>
+                            <div class="top-comment">
+                                <span class="comment-votes">▲ 312</span>
+                                <span>아직 100B+ 스케일에서의 결과가 없다. 스케일링이 가능한지가 핵심 질문이다.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <div class="action-item">
+                            <span class="material-symbols-outlined">arrow_upward</span>
+                            <span>2,104</span>
+                        </div>
+                        <div class="action-item">
+                            <span class="material-symbols-outlined">visibility</span>
+                            <span>12,890</span>
+                        </div>
+                        <a class="action-link" href="#" target="_blank">
+                            원문 보기 <span class="material-symbols-outlined">open_in_new</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- ====== 사이드바 ====== -->
+        <aside class="sidebar">
+
+            <!-- 위젯 1: 오늘의 인기글 TOP 5 (업보트 기준) -->
+            <div class="widget">
+                <div class="widget-title">
+                    <span class="material-symbols-outlined">local_fire_department</span>
+                    오늘의 인기글 TOP 5
+                </div>
+                <ul class="popular-list">
+                    <li>
+                        <span class="popular-rank rank-1">1</span>
+                        <div class="popular-info">
+                            <a href="#">TypeScript 6.0 정식 출시 — 패턴 매칭과 파이프 연산자</a>
+                            <span class="meta">r/programming · ▲ 2,891</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="popular-rank rank-2">2</span>
+                        <div class="popular-info">
+                            <a href="#">Mamba-3: Transformer를 넘어선 State Space Model</a>
+                            <span class="meta">r/ML · ▲ 2,104</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="popular-rank rank-3">3</span>
+                        <div class="popular-info">
+                            <a href="#">Boston Dynamics Atlas 창고 환경 실제 작업 영상</a>
+                            <span class="meta">r/robotics · ▲ 1,567</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="popular-rank rank-other">4</span>
+                        <div class="popular-info">
+                            <a href="#">Claude 4가 GPT-5를 벤치마크에서 앞서다</a>
+                            <span class="meta">HN · ▲ 1,243</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="popular-rank rank-other">5</span>
+                        <div class="popular-info">
+                            <a href="#">Llama 4 8B RTX 4060 Ti 양자화 가이드</a>
+                            <span class="meta">r/LocalLLaMA · ▲ 876</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 위젯 2: 수집 스케줄 -->
+            <div class="widget">
+                <div class="widget-title">
+                    <span class="material-symbols-outlined">schedule</span>
+                    수집 스케줄
+                </div>
+                <div class="schedule-list">
+                    <div class="schedule-item">
+                        <span class="label">1차 배치</span>
+                        <span class="time">매일 오전 7:00</span>
+                    </div>
+                    <div class="schedule-item">
+                        <span class="label">2차 배치</span>
+                        <span class="time">매일 오후 7:00</span>
+                    </div>
+                </div>
+                <!-- 다음 배치까지 남은 시간 실시간 표시 -->
+                <div class="schedule-next">
+                    <div class="countdown-label">다음 배치까지</div>
+                    <div class="countdown" id="countdown">--:--:--</div>
+                </div>
+            </div>
+
+        </aside>
+
+    </main>
+
+    <!-- ============================================================
+     쿠키 동의 배너 (화면 하단 fixed)
+     ============================================================ -->
+    <div class="cookie-banner" id="cookie-banner">
+        <p>이 사이트는 더 나은 사용자 경험을 위해 쿠키를 사용합니다. 자세한 내용은 <a href="#">개인정보처리방침</a>을 참고하세요.</p>
+        <!-- 버튼을 래퍼로 감싸 모바일에서도 좌우 배치 유지 -->
+        <div class="cookie-buttons">
+            <button class="cookie-btn accept" onclick="closeCookieBanner()">동의</button>
+            <button class="cookie-btn decline" onclick="closeCookieBanner()">거부</button>
+        </div>
+    </div>
+
+    <!-- 스크롤 투 탑 버튼 -->
+    <button class="scroll-top-btn" id="scroll-top-btn" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        aria-label="상단으로 이동">
+        <span class="material-symbols-outlined">arrow_upward</span>
+    </button>
+
+    <!-- ============================================================
+     JavaScript
+     ============================================================ -->
+    <script>
+        /**
+         * 필터 바 토글 기능
+         * 분야/소스 필터 버튼 클릭 시 active 상태 전환 및
+         * 피드 카드 필터링을 수행한다.
+         */
+
+        // 분야 필터 클릭 이벤트
+        document.querySelectorAll('#field-filters .filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 같은 그룹 내 active 해제 후 현재 버튼 active
+                document.querySelectorAll('#field-filters .filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                applyFilters();
+            });
+        });
+
+        // 소스 필터 클릭 이벤트
+        document.querySelectorAll('#source-filters .filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#source-filters .filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                applyFilters();
+            });
+        });
+
+        /**
+         * 분야/소스 필터 조합에 따라 피드 카드를 표시/숨김 처리한다.
+         * 결과 수도 갱신한다.
+         */
+        function applyFilters() {
+            const activeField = document.querySelector('#field-filters .filter-btn.active').dataset.field;
+            const activeSource = document.querySelector('#source-filters .filter-btn.active').dataset.source;
+            const cards = document.querySelectorAll('.feed .card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const cardField = card.dataset.field;
+                const cardSource = card.dataset.source;
+                // 분야 조건 확인
+                const fieldMatch = activeField === 'all' || cardField === activeField;
+                // 소스 조건 확인
+                const sourceMatch = activeSource === 'all' || cardSource === activeSource;
+
+                if (fieldMatch && sourceMatch) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // 결과 수 갱신
+            document.querySelector('.filter-count strong').textContent = visibleCount;
+        }
+
+        /**
+         * 검색 패널 토글 함수
+         * 검색 버튼 클릭 시 패널을 열고/닫는다. 닫을 때는 입력값도 초기화한다.
+         */
+        function toggleSearch() {
+            const panel = document.getElementById('search-panel');
+            const btn = document.getElementById('search-toggle');
+            const input = document.getElementById('search-input');
+            const isOpen = panel.classList.toggle('open');
+            btn.classList.toggle('active', isOpen);
+
+            if (isOpen) {
+                // 패널 열림 → 입력창에 포커스
+                setTimeout(() => input.focus(), 300);
+            } else {
+                // 패널 닫힘 → 입력값 초기화, 전체 목록 복원
+                input.value = '';
+                applyFilters();
+            }
+        }
+
+        /**
+         * 검색 실행 함수
+         * 입력된 키워드로 GET /api/trends/search 호출 (현재는 데모용 alert)
+         */
+        function executeSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            if (query.length < 2) {
+                alert('검색어를 2자 이상 입력해주세요.');
+                return;
+            }
+            // TODO: GET /api/trends/search?q=${query}&field=...&source=... 호출
+            // 현재 활성 필터와 조합하여 검색
+            const activeField = document.querySelector('#field-filters .filter-btn.active').dataset.field;
+            const activeSource = document.querySelector('#source-filters .filter-btn.active').dataset.source;
+            console.log(`검색 실행: q=${query}, field=${activeField}, source=${activeSource}`);
+            alert(`"${query}" 검색 (필터: ${activeField}, ${activeSource})\n→ API 연동 시 실제 검색 결과가 표시됩니다.`);
+        }
+
+        /**
+         * 쿠키 동의 배너 닫기
+         * 동의/거부 버튼 클릭 시 배너를 숨긴다.
+         */
+        function closeCookieBanner() {
+            document.getElementById('cookie-banner').style.display = 'none';
+        }
+
+        /**
+         * 수집 스케줄 카운트다운
+         * 다음 배치(오전 7시 또는 오후 7시)까지 남은 시간을 실시간으로 표시한다.
+         */
+        function updateCountdown() {
+            const now = new Date();
+            const h = now.getHours();
+            let target = new Date(now);
+
+            // 현재 시각 기준 다음 배치 시간 계산
+            if (h < 7) {
+                target.setHours(7, 0, 0, 0);
+            } else if (h < 19) {
+                target.setHours(19, 0, 0, 0);
+            } else {
+                // 오후 7시 이후 → 다음 날 오전 7시
+                target.setDate(target.getDate() + 1);
+                target.setHours(7, 0, 0, 0);
+            }
+
+            // 남은 시간(초) 계산
+            const diff = Math.max(0, Math.floor((target - now) / 1000));
+            const hours = String(Math.floor(diff / 3600)).padStart(2, '0');
+            const minutes = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+            const seconds = String(diff % 60).padStart(2, '0');
+
+            // 카운트다운 표시 갱신
+            document.getElementById('countdown').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        // 1초마다 카운트다운 갱신
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        /**
+         * 스크롤 투 탑 버튼 표시/숨김
+         * 페이지를 400px 이상 내리면 버튼이 나타나고, 위로 올라가면 사라진다.
+         */
+        const scrollTopBtn = document.getElementById('scroll-top-btn');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+# 의존성
+node_modules/
+
+# Next.js
+frontend/.next/
+frontend/out/
+
+# 환경변수 (보안)
+.env
+
+# 업로드 파일
+backend/uploads/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker 볼륨 데이터
+pgdata/

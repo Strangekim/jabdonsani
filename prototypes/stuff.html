@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>잡동사니 — 잡동사니</title>
+    <meta name="description" content="다양한 미니 도구 및 콘텐츠를 모아둔 런처형 페이지입니다." />
+
+    <!-- ===== 폰트 ===== -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/css/jetbrains-mono.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <style>
+        /* ================================================
+           리셋 & 디자인 토큰
+           ================================================ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* --- 컬러 팔레트 (Palette C — Teal Accent) --- */
+            --color-header-bg: #0f172a;
+            --color-page-bg: #f8fafc;
+            --color-card-bg: #ffffff;
+            --color-accent: #14b8a6;
+            --color-accent-hover: #0d9488;
+            --color-accent-light: #f0fdfa;
+            --color-text-primary: #0f172a;
+            --color-text-secondary: #475569;
+            --color-text-muted: #94a3b8;
+            --color-border: #e2e8f0;
+
+            /* --- 타이포그래피 --- */
+            --font-sans: 'Geist', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* --- 기타 --- */
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --shadow-card: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .04);
+            --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, .12);
+            --transition-fast: .18s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--color-page-bg);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ================================================
+           공통 헤더 — 배경만 전체폭, 패딩은 inner에서 처리
+           ================================================ */
+        .site-header {
+            background: var(--color-header-bg);
+            color: #fff;
+            height: 56px;
+        }
+
+        /* 헤더 내부: max-width + 수평 패딩으로 메인 영역과 정렬 일치 */
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        /* 로고: 글자별 포인트 컬러 + 물결 애니메이션 */
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -.3px;
+            color: #fff;
+            text-decoration: none;
+            display: inline-flex;
+        }
+
+        /* 각 로고 글자 기본 스타일 */
+        .logo .char {
+            display: inline-block;
+            transition: transform .3s ease, color .3s ease;
+        }
+
+        /* "사", "니" 글자에 Teal 포인트 컬러 적용 */
+        .logo .char.accent {
+            color: var(--color-accent);
+        }
+
+        /* "니" 글자 살짝 기울임 */
+        .logo .char.tilt {
+            font-style: italic;
+        }
+
+        /* 물결 바운스 애니메이션 키프레임 */
+        @keyframes logoBounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-6px);
+            }
+
+            60% {
+                transform: translateY(-3px);
+            }
+        }
+
+        /* hover 시 각 글자가 순차적으로 바운스 */
+        .logo:hover .char:nth-child(1) {
+            animation: logoBounce .5s ease;
+            animation-delay: 0s;
+        }
+
+        .logo:hover .char:nth-child(2) {
+            animation: logoBounce .5s ease;
+            animation-delay: .06s;
+        }
+
+        .logo:hover .char:nth-child(3) {
+            animation: logoBounce .5s ease;
+            animation-delay: .12s;
+        }
+
+        .logo:hover .char:nth-child(4) {
+            animation: logoBounce .5s ease;
+            animation-delay: .18s;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+            list-style: none;
+        }
+
+        .nav-tabs a {
+            color: rgba(255, 255, 255, .6);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            transition: background var(--transition-fast), color var(--transition-fast);
+        }
+
+        .nav-tabs a:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, .08);
+        }
+
+        .nav-tabs a.active {
+            color: #fff;
+            background: var(--color-accent);
+        }
+
+        .visitor-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, .55);
+        }
+
+        .visitor-badge .num {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* ================================================
+           메인 레이아웃: 2단 (그리드 + 사이드바)
+           ================================================ */
+        .main-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 28px 24px 80px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        /* ================================================
+           그리드 카드 — neal.fun 스타일
+           ================================================ */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        /* 카드: 16:7 비율, 둥근 모서리, 배경 비주얼 */
+        .tool-card {
+            position: relative;
+            aspect-ratio: 16 / 7;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: var(--shadow-card);
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        /* 배경 그라데이션 오버레이 (어두운 레이어 + 컬러 배경) */
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: inherit;
+            z-index: 0;
+        }
+
+        .tool-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, .25) 0%, rgba(0, 0, 0, .45) 100%);
+            z-index: 1;
+        }
+
+        /* 카드 내부 콘텐츠 */
+        .tool-card-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+            padding: 16px;
+        }
+
+        .tool-card-icon {
+            font-size: 36px;
+            margin-bottom: 8px;
+            opacity: .9;
+        }
+
+        .tool-card-name {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -.2px;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+        }
+
+        .tool-card-desc {
+            font-size: 12px;
+            opacity: .8;
+            margin-top: 4px;
+        }
+
+        /* 카드별 고유 배경 비주얼 */
+        .tool-card.pdf-merge {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .tool-card.image-compress {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .tool-card.web-game {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .tool-card.json-formatter {
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+        }
+
+        .tool-card.color-picker {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+        }
+
+        .tool-card.qr-generator {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        .tool-card.unit-converter {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .tool-card.timer {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+        }
+
+        /* ================================================
+           사이드바
+           ================================================ */
+        .sidebar {
+            position: sticky;
+            top: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .widget {
+            background: var(--color-card-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .widget-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: var(--color-text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .widget-title .material-symbols-outlined {
+            font-size: 18px;
+            color: var(--color-accent);
+        }
+
+        /* 사용량 현황 리스트 */
+        .usage-list {
+            list-style: none;
+        }
+
+        .usage-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 13px;
+        }
+
+        .usage-list li:last-child {
+            border-bottom: none;
+        }
+
+        .usage-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-text-primary);
+            font-weight: 500;
+        }
+
+        .usage-name .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .usage-count {
+            font-weight: 700;
+            color: var(--color-accent);
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+
+        /* 사용량 바 */
+        .usage-bar-wrap {
+            width: 60px;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--color-border);
+            margin-left: 8px;
+            overflow: hidden;
+        }
+
+        .usage-bar {
+            height: 100%;
+            border-radius: 3px;
+            background: var(--color-accent);
+        }
+
+        .usage-right {
+            display: flex;
+            align-items: center;
+        }
+
+        /* ================================================
+           쿠키 동의 배너
+           ================================================ */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--color-header-bg);
+            color: #fff;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            font-size: 13.5px;
+        }
+
+        .cookie-banner p {
+            max-width: 640px;
+            line-height: 1.5;
+        }
+
+        .cookie-banner a {
+            color: var(--color-accent);
+            text-decoration: underline;
+        }
+
+        .cookie-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .cookie-btn {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 22px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+
+        .cookie-btn.accept {
+            background: var(--color-accent);
+            color: #fff;
+        }
+
+        .cookie-btn.accept:hover {
+            background: var(--color-accent-hover);
+        }
+
+        .cookie-btn.decline {
+            background: rgba(255, 255, 255, .12);
+            color: #fff;
+        }
+
+        .cookie-btn.decline:hover {
+            background: rgba(255, 255, 255, .2);
+        }
+
+        /* ================================================
+           스크롤 투 탑 버튼
+           ================================================ */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 16px;
+            z-index: 999;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--color-border);
+            background: var(--color-card-bg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition: opacity .25s ease, visibility .25s ease, transform .25s ease, background .18s ease;
+        }
+
+        .scroll-top-btn.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .scroll-top-btn:hover {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+        }
+
+        .scroll-top-btn .material-symbols-outlined {
+            font-size: 22px;
+            color: var(--color-text-secondary);
+            transition: color .18s ease;
+        }
+
+        .scroll-top-btn:hover .material-symbols-outlined {
+            color: #fff;
+        }
+
+        /* ================================================
+           반응형
+           ================================================ */
+        @media (max-width: 860px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cookie-banner {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+                padding: 14px 18px;
+            }
+
+            .scroll-top-btn {
+                right: 12px;
+                bottom: 20px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 560px) {
+
+            /* 모바일: 1열 그리드, 화면 꽉 채움 */
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* 모바일: inner 요소에서 패딩 축소 */
+            .header-inner {
+                padding: 0 14px;
+            }
+
+            .header-left {
+                gap: 10px;
+            }
+
+            .logo {
+                font-size: 17px;
+            }
+
+            .nav-tabs a {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+
+            .visitor-badge {
+                font-size: 10px;
+                gap: 6px;
+                flex-shrink: 0;
+            }
+
+            .main-layout {
+                padding: 0 14px 80px;
+            }
+
+
+            .tool-card-name {
+                font-size: 16px;
+            }
+
+            .tool-card-icon {
+                font-size: 28px;
+            }
+        }
+
+        /* ================================================
+           마이크로 애니메이션
+           ================================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tool-card {
+            animation: fadeInUp .5s ease both;
+        }
+
+        .tool-card:nth-child(2) {
+            animation-delay: .05s;
+        }
+
+        .tool-card:nth-child(3) {
+            animation-delay: .10s;
+        }
+
+        .tool-card:nth-child(4) {
+            animation-delay: .15s;
+        }
+
+        .tool-card:nth-child(5) {
+            animation-delay: .20s;
+        }
+
+        .tool-card:nth-child(6) {
+            animation-delay: .25s;
+        }
+
+        .tool-card:nth-child(7) {
+            animation-delay: .30s;
+        }
+
+        .tool-card:nth-child(8) {
+            animation-delay: .35s;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ============================================================
+     공통 헤더
+     ============================================================ -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="header-left">
+                <!-- 로고 -->
+                <!-- 로고: 글자별 span 분리 (잡/동 = 흰색, 사/니 = Teal 포인트, 니 = 기울임) -->
+                <a href="#" class="logo">
+                    <span class="char">잡</span><span class="char">동</span><span class="char accent">사</span><span
+                        class="char accent tilt">니</span>
+                </a>
+                <!-- 탭 네비게이션: 동향 - 잡동사니 - 블로그 -->
+                <nav>
+                    <ul class="nav-tabs">
+                        <li><a href="#">동향</a></li>
+                        <li><a href="#" class="active">잡동사니</a></li>
+                        <li><a href="#">블로그</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- 방문자 수 배지 -->
+            <div class="visitor-badge">
+                <span>Today <span class="num">1,247</span></span>
+                <span>Total <span class="num">38,920</span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================
+     메인 레이아웃: 그리드 + 사이드바
+     ============================================================ -->
+    <main class="main-layout">
+
+        <!-- ====== 그리드 영역: neal.fun 스타일 카드 ====== -->
+        <section class="tools-grid">
+
+            <!-- 카드 1: PDF 병합 -->
+            <a href="#" class="tool-card pdf-merge">
+                <div class="tool-card-content">
+                    <div class="tool-card-icon">📄</div>
+                    <div class="tool-card-name">PDF 병합</div>
+                    <div class="tool-card-desc">여러 PDF를 하나로 합치기</div>
+                </div>
+            </a>
+
+            <!-- 카드 2: 이미지 압축 -->
+            <a href="#" class="tool-card image-compress">
+                <div class="tool-card-content">
+                    <div class="tool-card-icon">🖼️</div>
+                    <div class="tool-card-name">이미지 압축</div>
+                    <div class="tool-card-desc">용량을 줄여 가볍게</div>
+                </div>
+            </a>
+
+            <!-- 카드 3: 웹게임 -->
+            <a href="#" class="tool-card web-game">
+                <div class="tool-card-content">
+                    <div class="tool-card-icon">🎮</div>
+                    <div class="tool-card-name">웹게임</div>
+                    <div class="tool-card-desc">심심할 때 가볍게 한 판</div>
+                </div>
+            </a>
+
+            <!-- 카드 4: JSON 포매터 -->
+            <a href="#" class="tool-card json-formatter">
+                <div class="tool-card-content">
+                    <div class="tool-card-icon">{ }</div>
+                    <div class="tool-card-name">JSON 포매터</div>
+                    <div class="tool-card-desc">JSON 정리 & 검증</div>
+                </div>
+            </a>
+
+            <!-- 카드 5: 컬러 피커 -->
+            <a href="#" class="tool-card color-picker">
+                <div class="tool-card-content">
+                    <div class="tool-card-icon">🎨</div>
+                    <div class="tool-card-name">컬러 피커</div>
+                    <div class="tool-card-desc">HEX · RGB · HSL 변환</div>
+                </div>
+            </a>
+
+            <!-- 카드 6: QR 코드 생성 -->
+            <a href="#" class="tool-card qr-generator">
+                <div class="tool-card-content">
+                    <div class="tool-card-icon">📱</div>
+                    <div class="tool-card-name">QR 코드 생성</div>
+                    <div class="tool-card-desc">URL을 QR로 바로 변환</div>
+                </div>
+            </a>
+
+            <!-- 카드 7: 단위 변환기 -->
+            <a href="#" class="tool-card unit-converter">
+                <div class="tool-card-content">
+                    <div class="tool-card-icon">📐</div>
+                    <div class="tool-card-name">단위 변환기</div>
+                    <div class="tool-card-desc">길이 · 무게 · 온도 변환</div>
+                </div>
+            </a>
+
+            <!-- 카드 8: 타이머 -->
+            <a href="#" class="tool-card timer">
+                <div class="tool-card-content">
+                    <div class="tool-card-icon">⏱️</div>
+                    <div class="tool-card-name">타이머</div>
+                    <div class="tool-card-desc">뽀모도로 & 스톱워치</div>
+                </div>
+            </a>
+
+        </section>
+
+        <!-- ====== 사이드바 ====== -->
+        <aside class="sidebar">
+
+            <!-- 위젯: 사용량 현황 -->
+            <div class="widget">
+                <div class="widget-title">
+                    <span class="material-symbols-outlined">bar_chart</span>
+                    사용량 현황
+                </div>
+                <ul class="usage-list">
+                    <li>
+                        <span class="usage-name"><span class="dot" style="background:#ef4444"></span>PDF 병합</span>
+                        <div class="usage-right">
+                            <div class="usage-bar-wrap">
+                                <div class="usage-bar" style="width:85%"></div>
+                            </div>
+                            <span class="usage-count">1,247</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="usage-name"><span class="dot" style="background:#8b5cf6"></span>이미지 압축</span>
+                        <div class="usage-right">
+                            <div class="usage-bar-wrap">
+                                <div class="usage-bar" style="width:72%"></div>
+                            </div>
+                            <span class="usage-count">1,053</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="usage-name"><span class="dot" style="background:#f59e0b"></span>웹게임</span>
+                        <div class="usage-right">
+                            <div class="usage-bar-wrap">
+                                <div class="usage-bar" style="width:60%"></div>
+                            </div>
+                            <span class="usage-count">879</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="usage-name"><span class="dot" style="background:#14b8a6"></span>JSON 포매터</span>
+                        <div class="usage-right">
+                            <div class="usage-bar-wrap">
+                                <div class="usage-bar" style="width:45%"></div>
+                            </div>
+                            <span class="usage-count">658</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="usage-name"><span class="dot" style="background:#ec4899"></span>컬러 피커</span>
+                        <div class="usage-right">
+                            <div class="usage-bar-wrap">
+                                <div class="usage-bar" style="width:35%"></div>
+                            </div>
+                            <span class="usage-count">512</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="usage-name"><span class="dot" style="background:#3b82f6"></span>QR 코드 생성</span>
+                        <div class="usage-right">
+                            <div class="usage-bar-wrap">
+                                <div class="usage-bar" style="width:28%"></div>
+                            </div>
+                            <span class="usage-count">410</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="usage-name"><span class="dot" style="background:#10b981"></span>단위 변환기</span>
+                        <div class="usage-right">
+                            <div class="usage-bar-wrap">
+                                <div class="usage-bar" style="width:18%"></div>
+                            </div>
+                            <span class="usage-count">263</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="usage-name"><span class="dot" style="background:#6366f1"></span>타이머</span>
+                        <div class="usage-right">
+                            <div class="usage-bar-wrap">
+                                <div class="usage-bar" style="width:12%"></div>
+                            </div>
+                            <span class="usage-count">176</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </aside>
+
+    </main>
+
+    <!-- ============================================================
+     쿠키 동의 배너
+     ============================================================ -->
+    <div class="cookie-banner" id="cookie-banner">
+        <p>이 사이트는 더 나은 사용자 경험을 위해 쿠키를 사용합니다. 자세한 내용은 <a href="#">개인정보처리방침</a>을 참고하세요.</p>
+        <div class="cookie-buttons">
+            <button class="cookie-btn accept" onclick="closeCookieBanner()">동의</button>
+            <button class="cookie-btn decline" onclick="closeCookieBanner()">거부</button>
+        </div>
+    </div>
+
+    <!-- 스크롤 투 탑 버튼 -->
+    <button class="scroll-top-btn" id="scroll-top-btn" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        aria-label="상단으로 이동">
+        <span class="material-symbols-outlined">arrow_upward</span>
+    </button>
+
+    <!-- ============================================================
+     JavaScript
+     ============================================================ -->
+    <script>
+        /**
+         * 쿠키 동의 배너 닫기
+         * 동의/거부 버튼 클릭 시 배너를 숨긴다.
+         */
+        function closeCookieBanner() {
+            document.getElementById('cookie-banner').style.display = 'none';
+        }
+
+        /**
+         * 스크롤 투 탑 버튼 표시/숨김
+         * 400px 이상 스크롤 시 버튼이 나타나고, 위로 올라가면 사라진다.
+         */
+        const scrollTopBtn = document.getElementById('scroll-top-btn');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

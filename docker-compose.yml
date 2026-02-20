@@ -1,0 +1,57 @@
+# ============================================================
+# Docker Compose — 잡동사니 프로젝트
+# 서비스: db (PostgreSQL) + backend (Express) + frontend (Next.js)
+# ============================================================
+
+services:
+
+  # --- PostgreSQL ---
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      # init.sql을 컨테이너 초기화 시 자동 실행
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      # 데이터 영속화
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # --- Express 백엔드 ---
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    volumes:
+      # 업로드 파일 영속화
+      - uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # --- Next.js 프론트엔드 ---
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  uploads:
