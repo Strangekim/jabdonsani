@@ -7,5 +7,8 @@ import { getPopularPostsService } from "../service/getPopularPostsService";
  */
 export const getPopularPostsController = tryCatchWrapper(async (req: Request, res: Response) => {
     const result = await getPopularPostsService();
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

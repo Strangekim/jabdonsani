@@ -3,5 +3,8 @@
  */
 export const getMeService = async () => {
     // TODO: 로그인 상태 확인 로직 구현
-    return { authenticated: false, message: "TODO: 로그인 상태 확인 로직" };
+    return {
+        authenticated: false,
+        message: "TODO: 로그인 상태 확인 로직"
+    };
 };

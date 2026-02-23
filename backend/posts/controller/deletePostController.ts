@@ -8,5 +8,8 @@ import { deletePostService } from "../service/deletePostService";
 export const deletePostController = tryCatchWrapper(async (req: Request, res: Response) => {
     const id = req.params.id as string;
     const result = await deletePostService(id);
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

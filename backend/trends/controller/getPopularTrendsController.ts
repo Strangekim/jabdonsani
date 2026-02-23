@@ -7,5 +7,8 @@ import { getPopularTrendsService } from "../service/getPopularTrendsService";
  */
 export const getPopularTrendsController = tryCatchWrapper(async (req: Request, res: Response) => {
     const result = await getPopularTrendsService();
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

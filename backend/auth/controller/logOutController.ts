@@ -7,5 +7,8 @@ import { logOutService } from "../service/logOutService";
  */
 export const logOutController = tryCatchWrapper(async (req: Request, res: Response) => {
     const result = await logOutService();
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

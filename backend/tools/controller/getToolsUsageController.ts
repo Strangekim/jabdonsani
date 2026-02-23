@@ -7,5 +7,8 @@ import { getToolsUsageService } from "../service/getToolsUsageService";
  */
 export const getToolsUsageController = tryCatchWrapper(async (req: Request, res: Response) => {
     const result = await getToolsUsageService();
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

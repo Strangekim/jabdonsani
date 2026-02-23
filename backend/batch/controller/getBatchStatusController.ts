@@ -7,5 +7,8 @@ import { getBatchStatusService } from "../service/getBatchStatusService";
  */
 export const getBatchStatusController = tryCatchWrapper(async (req: Request, res: Response) => {
     const result = await getBatchStatusService();
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

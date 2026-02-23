@@ -7,5 +7,8 @@ import { logInService } from "../service/logInService";
  */
 export const logInController = tryCatchWrapper(async (req: Request, res: Response) => {
     const result = await logInService();
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

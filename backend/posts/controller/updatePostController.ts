@@ -8,5 +8,8 @@ import { updatePostService } from "../service/updatePostService";
 export const updatePostController = tryCatchWrapper(async (req: Request, res: Response) => {
     const id = req.params.id as string;
     const result = await updatePostService(id, req.body);
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

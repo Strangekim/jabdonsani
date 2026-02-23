@@ -7,5 +7,8 @@ import { createPostService } from "../service/createPostService";
  */
 export const createPostController = tryCatchWrapper(async (req: Request, res: Response) => {
     const result = await createPostService(req.body);
-    res.status(201).json({ success: true, data: result });
+    res.status(201).json({
+        success: true,
+        data: result
+    });
 });

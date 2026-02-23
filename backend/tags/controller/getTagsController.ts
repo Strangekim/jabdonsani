@@ -7,5 +7,8 @@ import { getTagsService } from "../service/getTagsService";
  */
 export const getTagsController = tryCatchWrapper(async (req: Request, res: Response) => {
     const result = await getTagsService();
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

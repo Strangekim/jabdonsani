@@ -8,5 +8,8 @@ import { getPostByIdService } from "../service/getPostByIdService";
 export const getPostByIdController = tryCatchWrapper(async (req: Request, res: Response) => {
     const id = req.params.id as string;
     const result = await getPostByIdService(id);
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

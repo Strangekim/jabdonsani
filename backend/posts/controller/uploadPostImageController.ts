@@ -7,5 +7,8 @@ import { uploadPostImageService } from "../service/uploadPostImageService";
  */
 export const uploadPostImageController = tryCatchWrapper(async (req: Request, res: Response) => {
     const result = await uploadPostImageService(req.body);
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

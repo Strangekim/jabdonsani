@@ -7,5 +7,8 @@ import { getTrendsService } from "../service/getTrendsService";
  */
 export const getTrendsController = tryCatchWrapper(async (req: Request, res: Response) => {
     const result = await getTrendsService();
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

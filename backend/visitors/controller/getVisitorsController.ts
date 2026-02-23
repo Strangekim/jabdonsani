@@ -7,5 +7,8 @@ import { getVisitorsService } from "../service/getVisitorsService";
  */
 export const getVisitorsController = tryCatchWrapper(async (req: Request, res: Response) => {
     const result = await getVisitorsService();
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

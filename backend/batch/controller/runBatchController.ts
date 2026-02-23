@@ -7,5 +7,8 @@ import { runBatchService } from "../service/runBatchService";
  */
 export const runBatchController = tryCatchWrapper(async (req: Request, res: Response) => {
     const result = await runBatchService();
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

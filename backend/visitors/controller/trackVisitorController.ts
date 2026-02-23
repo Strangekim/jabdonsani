@@ -7,5 +7,8 @@ import { trackVisitorService } from "../service/trackVisitorService";
  */
 export const trackVisitorController = tryCatchWrapper(async (req: Request, res: Response) => {
     const result = await trackVisitorService();
-    res.json({ success: true, data: result });
+    res.json({
+        success: true,
+        data: result
+    });
 });

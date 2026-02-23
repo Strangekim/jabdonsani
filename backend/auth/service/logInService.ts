@@ -3,5 +3,7 @@
  */
 export const logInService = async () => {
     // TODO: 로그인 로직 구현
-    return { message: "TODO: 로그인 성공 로직" };
+    return {
+        message: "TODO: 로그인 성공 로직"
+    };
 };
