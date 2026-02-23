@@ -1,6 +1,20 @@
 import { RequestHandler } from 'express';
-import { ZodSchema } from 'zod';
+import { z, ZodSchema } from 'zod';
 import { badRequestError } from './customError';
+
+/**
+ * 공통 id 검증 스키마 (숫자형 ID)
+ */
+export const numericIdSchema = z.object({
+    id: z.string().regex(/^\d+$/, "ID는 숫자여야 합니다.")
+});
+
+/**
+ * 공통 id 검증 스키마 (문자열 ID)
+ */
+export const stringIdSchema = z.object({
+    id: z.string().min(1, "ID는 필수입니다.")
+});
 
 /**
  * body 검증 미들웨어
