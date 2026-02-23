@@ -4,8 +4,13 @@ import dotenv from 'dotenv';
 import { corsConfig } from './config/cors';
 import { sessionConfig } from './config/session';
 import { ping } from './config/db';
-import usersRouter from './users/router';
-import messageRouter from './message/router';
+import authRouter from './auth/router';
+import trendsRouter from './trends/router';
+import postsRouter from './posts/router';
+import tagsRouter from './tags/router';
+import toolsRouter from './tools/router';
+import visitorsRouter from './visitors/router';
+import batchRouter from './batch/router';
 
 dotenv.config();
 
@@ -39,8 +44,13 @@ app.get("/ping", async (_req, res) => {
 
 // ============ 라우터 설정 ====================
 
-app.use("/api/users", usersRouter);
-app.use("/api/messages", messageRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/trends", trendsRouter);
+app.use("/api/posts", postsRouter);
+app.use("/api/tags", tagsRouter);
+app.use("/api/tools", toolsRouter);
+app.use("/api/visitors", visitorsRouter);
+app.use("/api/batch", batchRouter);
 
 
 // ============= 에러 핸들러 =============
