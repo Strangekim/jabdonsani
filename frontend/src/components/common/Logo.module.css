@@ -1,0 +1,74 @@
+/* ================================================================
+   Logo 컴포넌트 스타일
+   글자별 포인트 컬러 + 호버 시 물결 바운스 애니메이션
+   ================================================================ */
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #fff;
+    text-decoration: none;
+    display: inline-flex;
+}
+
+/* 각 로고 글자 기본 스타일 */
+.char {
+    display: inline-block;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+/* "사", "니" 글자에 Teal 포인트 컬러 적용 */
+.accent {
+    color: var(--color-accent);
+}
+
+/* "니" 글자 살짝 기울임 */
+.tilt {
+    font-style: italic;
+}
+
+/* 물결 바운스 애니메이션 키프레임 */
+@keyframes logoBounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-6px);
+    }
+
+    60% {
+        transform: translateY(-3px);
+    }
+}
+
+/* hover 시 각 글자가 순차적으로 바운스 */
+.logo:hover .char:nth-child(1) {
+    animation: logoBounce 0.5s ease;
+    animation-delay: 0s;
+}
+
+.logo:hover .char:nth-child(2) {
+    animation: logoBounce 0.5s ease;
+    animation-delay: 0.06s;
+}
+
+.logo:hover .char:nth-child(3) {
+    animation: logoBounce 0.5s ease;
+    animation-delay: 0.12s;
+}
+
+.logo:hover .char:nth-child(4) {
+    animation: logoBounce 0.5s ease;
+    animation-delay: 0.18s;
+}
+
+/* ── 반응형: 모바일 ── */
+@media (max-width: 480px) {
+    .logo {
+        font-size: 17px;
+    }
+}

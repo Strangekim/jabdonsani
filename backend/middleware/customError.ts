@@ -22,17 +22,28 @@ export const createCustomError = (message: string, statusCode: number, code: str
     return error;
 };
 
+// ============ 공통 에러 ============
+
 // 인증 실패 에러 (401)
-export const unAuthError = () => createCustomError("인증이 필요합니다.", 401, "UNAUTHORIZED");
-
-// 중복 사용자 에러 (409)
-export const conflictError = () => createCustomError("중복된 사용자명입니다.", 409, "CONFLICT");
-
-// 이미 로그인 에러 (400)
-export const alreadyLoggedInError = () => createCustomError("이미 로그인 되어 있습니다.", 400, "ALREADY_LOGGED_IN");
-
-// 로그아웃 실패 에러 (500)
-export const logoutFailedError = () => createCustomError("로그아웃에 실패했습니다.", 500, "LOGOUT_FAILED");
+export const unAuthError = (message = "인증이 필요합니다.") =>
+    createCustomError(message, 401, "UNAUTHORIZED");
 
 // 잘못된 요청 에러 (400)
-export const badRequestError = (message = "잘못된 요청입니다.", code = "BAD_REQUEST") => createCustomError(message, 400, code);
+export const badRequestError = (message = "잘못된 요청입니다.", code = "BAD_REQUEST") =>
+    createCustomError(message, 400, code);
+
+// 리소스 미발견 에러 (404)
+export const notFoundError = (message = "요청한 리소스가 존재하지 않습니다.", code = "NOT_FOUND") =>
+    createCustomError(message, 404, code);
+
+// 이미 로그인 에러 (400)
+export const alreadyLoggedInError = () =>
+    createCustomError("이미 로그인 되어 있습니다.", 400, "ALREADY_LOGGED_IN");
+
+// 로그아웃 실패 에러 (500)
+export const logoutFailedError = () =>
+    createCustomError("로그아웃에 실패했습니다.", 500, "LOGOUT_FAILED");
+
+// 중복 사용자 에러 (409)
+export const conflictError = () =>
+    createCustomError("중복된 사용자명입니다.", 409, "CONFLICT");

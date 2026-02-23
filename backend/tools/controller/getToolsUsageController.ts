@@ -7,6 +7,7 @@ import { sendSuccess } from "../../utils/response";
  * GET /api/tools/usage - 도구별 누적 사용 횟수 조회
  */
 export const getToolsUsageController = tryCatchWrapper(async (req: Request, res: Response) => {
+    // [getToolsUsageService]: 각 도구별 누적 사용 횟수를 반환합니다.
     const result = await getToolsUsageService();
     sendSuccess(res, result);
 });

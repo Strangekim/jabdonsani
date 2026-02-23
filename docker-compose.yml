@@ -14,7 +14,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     volumes:
       # init.sql을 컨테이너 초기화 시 자동 실행
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -31,6 +31,9 @@ services:
     build: ./backend
     restart: unless-stopped
     env_file: .env
+    environment:
+      # 컨테이너 네트워크에서는 DB 호스트가 서비스명 'db'
+      DB_HOST: db
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     volumes:

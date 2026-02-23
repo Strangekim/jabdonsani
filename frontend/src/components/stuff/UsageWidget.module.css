@@ -1,0 +1,31 @@
+/* ================================================================
+   UsageWidget 스타일 — 사용량 현황 위젯
+   ================================================================ */
+
+.usageList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.usageItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--color-page-bg);
+}
+
+.usageName {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.usageCount {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+}

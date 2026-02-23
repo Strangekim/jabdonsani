@@ -7,6 +7,7 @@ import { sendSuccess } from "../../utils/response";
  * GET /api/visitors - Today / Total 방문자 수 조회
  */
 export const getVisitorsController = tryCatchWrapper(async (req: Request, res: Response) => {
+    // [getVisitorsService]: 오늘, 일간, 주간 방문자 통계를 집계하여 반환합니다.
     const result = await getVisitorsService();
     sendSuccess(res, result);
 });

@@ -8,6 +8,7 @@ import { sendSuccess } from "../../utils/response";
  */
 export const deletePostController = tryCatchWrapper(async (req: Request, res: Response) => {
     const id = req.params.id as string;
+    // [deletePostService]: 특정 ID의 블로그 글을 삭제합니다.
     const result = await deletePostService(id);
     sendSuccess(res, result);
 });

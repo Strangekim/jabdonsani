@@ -8,6 +8,7 @@ import { sendSuccess } from "../../utils/response";
  */
 export const updatePostController = tryCatchWrapper(async (req: Request, res: Response) => {
     const id = req.params.id as string;
+    // [updatePostService]: 특정 ID의 블로그 글 내용을 수정합니다.
     const result = await updatePostService(id, req.body);
     sendSuccess(res, result);
 });

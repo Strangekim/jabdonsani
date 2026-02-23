@@ -17,28 +17,30 @@ export const stringIdSchema = z.object({
 });
 
 /**
- * ZodError를 파싱하여 CustomError 로 변환
+ * ZodError를 파싱하여 CustomError로 변환
  */
-const handleZodError = (e: any, next: any) => {
+const handleZodError = (e: unknown, next: Function) => {
     if (e instanceof z.ZodError) {
-        const zodError = e as z.ZodError;
-        const firstError = zodError.errors[0];
-        const msg = firstError.message;
-        if (msg.includes(':')) {
-            const [code, ...rest] = msg.split(':');
-            return next(badRequestError(rest.join(':').trim(), code.trim()));
+        const issues = e.issues;
+        if (issues && issues.length > 0) {
+            const firstError = issues[0];
+            const msg = firstError.message;
+            if (msg.includes(':')) {
+                const [code, ...rest] = msg.split(':');
+                return next(badRequestError(rest.join(':').trim(), code.trim()));
+            }
+            return next(badRequestError(msg, "BAD_REQUEST"));
         }
-        return next(badRequestError(msg, "BAD_REQUEST"));
     }
-    return next(badRequestError());
+    return next(badRequestError("잘못된 요청 파라미터입니다.", "BAD_REQUEST"));
 };
 
 /**
- * body 검증 미들웨어
+ * body 검증 미들웨어 — 검증 통과 시 파싱 결과로 req.body 덮어쓰기
  */
 export const validate = (schema: ZodSchema): RequestHandler => (req, res, next) => {
     try {
-        schema.parse(req.body);
+        req.body = schema.parse(req.body);
         next();
     } catch (e) {
         handleZodError(e, next);
@@ -46,7 +48,7 @@ export const validate = (schema: ZodSchema): RequestHandler => (req, res, next) 
 };
 
 /**
- * query 검증 미들웨어
+ * query 검증 미들웨어 — 검증 통과 시 validatedQuery에 파싱 결과 저장
  */
 export const validateQuery = (schema: ZodSchema): RequestHandler => (req, res, next) => {
     try {
@@ -58,7 +60,7 @@ export const validateQuery = (schema: ZodSchema): RequestHandler => (req, res, n
 };
 
 /**
- * params 검증 미들웨어
+ * params 검증 미들웨어 — 검증 통과 시 validatedParams에 파싱 결과 저장
  */
 export const validateParams = (schema: ZodSchema): RequestHandler => (req, res, next) => {
     try {

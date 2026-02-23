@@ -1,0 +1,148 @@
+/* ================================================================
+   ToolCard 스타일 — neal.fun 스타일 도구 카드
+   ================================================================ */
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    aspect-ratio: 16 / 7;
+    padding: 20px;
+    color: #fff;
+    box-shadow: var(--shadow-card);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-6px) scale(1.035);
+    box-shadow: var(--shadow-card-hover);
+}
+
+/* 반투명 오버레이 (hover 용 광택) */
+.card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.15) 0%,
+            transparent 50%);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.card:hover::after {
+    opacity: 1;
+}
+
+/* ── 도구별 배경 그라데이션 ── */
+.pdfMerge {
+    background: linear-gradient(135deg, #e11d48, #f43f5e);
+}
+
+.imageCompress {
+    background: linear-gradient(135deg, #0891b2, #22d3ee);
+}
+
+.webGame {
+    background: linear-gradient(135deg, #7c3aed, #a78bfa);
+}
+
+.jsonFormatter {
+    background: linear-gradient(135deg, #059669, #34d399);
+}
+
+.colorPicker {
+    background: linear-gradient(135deg, #d946ef, #f0abfc);
+}
+
+.qrGenerator {
+    background: linear-gradient(135deg, #ea580c, #fb923c);
+}
+
+.unitConverter {
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+}
+
+.timer {
+    background: linear-gradient(135deg, #ca8a04, #facc15);
+}
+
+/* 아이콘 */
+.cardIcon {
+    font-size: 34px;
+    line-height: 1;
+}
+
+/* 이름 */
+.cardName {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+}
+
+/* 설명 */
+.cardDesc {
+    font-size: 12.5px;
+    opacity: 0.85;
+    text-align: center;
+}
+
+/* ── 이미지 썸네일 관련 스타일 ── */
+.hasImage {
+    padding: 0;
+    background: #000;
+}
+
+.cardImage {
+    z-index: 0;
+    transition: transform var(--transition-fast);
+}
+
+.imageOverlay {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.45);
+    /* 가독성을 위한 어두운 오버레이 */
+    transition: background var(--transition-fast);
+}
+
+.card:hover .imageOverlay {
+    background: rgba(0, 0, 0, 0.55);
+}
+
+/* ── 반응형: 모바일 ── */
+@media (max-width: 560px) {
+    .card {
+        aspect-ratio: auto;
+        padding: 18px;
+        gap: 8px;
+    }
+
+    .hasImage {
+        padding: 0;
+        aspect-ratio: 16 / 7;
+        /* 높이 유지를 위해 명시적 비율 설정 */
+    }
+
+    .cardIcon {
+        font-size: 28px;
+    }
+
+    .cardName {
+        font-size: 14px;
+    }
+}

@@ -7,8 +7,8 @@ import { deletePostController } from "./controller/deletePostController";
 import { getPopularPostsController } from "./controller/getPopularPostsController";
 import { uploadPostImageController } from "./controller/uploadPostImageController";
 import { isAuthenticated } from "../middleware/auth";
-import { validate, validateParams, numericIdSchema } from "../middleware/validate";
-import { postBodySchema } from "./model";
+import { validate, validateParams, validateQuery, numericIdSchema } from "../middleware/validate";
+import { postBodySchema, postsQuerySchema } from "./model";
 
 const router = Router();
 
@@ -25,6 +25,7 @@ router.post("/upload",
 
 // GET /api/posts 글 목록 조회
 router.get("/",
+    validateQuery(postsQuerySchema),
     getPostsController
 );
 

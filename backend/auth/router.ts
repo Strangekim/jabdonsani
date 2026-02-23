@@ -21,9 +21,8 @@ router.post("/logout",
     logOutController
 );
 
-// GET /api/auth/me 현재 로그인 상태 확인
+// GET /api/auth/me 현재 로그인 상태 확인 (비인증도 허용)
 router.get("/me",
-    isAuthenticated,
     getMeController
 );
 

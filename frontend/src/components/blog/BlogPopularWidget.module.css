@@ -1,0 +1,43 @@
+/* ================================================================
+   BlogPopularWidget 스타일 — 블로그 인기글 위젯
+   ================================================================ */
+
+.popularList {
+    list-style: none;
+}
+
+.popularItem {
+    padding: 9px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.popularItem:last-child {
+    border-bottom: none;
+}
+
+.popularLink {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    display: block;
+    line-height: 1.4;
+    transition: color var(--transition-fast);
+}
+
+.popularLink:hover {
+    color: var(--color-accent);
+}
+
+.popularMeta {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.popularIcon {
+    font-size: 13px;
+}

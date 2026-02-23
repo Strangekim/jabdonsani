@@ -1,13 +1,13 @@
 # ============================================================
-# 백엔드 Dockerfile (Express)
+# 백엔드 Dockerfile (Express + TypeScript)
 # ============================================================
 
 FROM node:20-alpine
 WORKDIR /app
 
-# 의존성 설치
+# 의존성 설치 (devDependencies 포함 — ts-node, typescript 필요)
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production
+RUN npm ci
 
 # 소스코드 복사
 COPY . .
@@ -15,5 +15,5 @@ COPY . .
 # 업로드 디렉토리 생성
 RUN mkdir -p uploads
 
-EXPOSE 4000
-CMD ["node", "src/index.js"]
+EXPOSE 3001
+CMD ["npx", "ts-node", "index.ts"]

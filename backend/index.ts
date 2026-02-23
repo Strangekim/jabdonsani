@@ -11,6 +11,7 @@ import tagsRouter from './tags/router';
 import toolsRouter from './tools/router';
 import visitorsRouter from './visitors/router';
 import batchRouter from './batch/router';
+import { initScheduler } from './batch/scheduler';
 
 dotenv.config();
 
@@ -88,4 +89,5 @@ const server = createServer(app);
 
 server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
+    initScheduler();
 });

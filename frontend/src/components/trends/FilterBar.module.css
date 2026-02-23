@@ -1,0 +1,143 @@
+/* ================================================================
+   FilterBar 컴포넌트 스타일 — 동향 탭 필터 바
+   분야/소스 필터 + 결과 수 + 검색 토글 버튼
+   ================================================================ */
+
+.filterBar {
+    z-index: 100;
+    background: var(--color-page-bg);
+    border-bottom: 1px solid var(--color-border);
+    padding: 12px 0;
+}
+
+/* 필터 바 내부 정렬 */
+.filterBarInner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--content-padding);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 필터 한 줄 (라벨 + 버튼 그룹) */
+.filterRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filterGroup {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 필터 라벨 */
+.filterLabel {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 2px;
+}
+
+/* 필터 버튼 */
+.filterBtn {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-card-bg);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filterBtn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+/* 활성 필터 버튼 */
+.filterBtnActive {
+    background: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent);
+}
+
+/* 구분선 */
+.filterDivider {
+    width: 100%;
+    height: 1px;
+    background: var(--color-border);
+}
+
+/* 우측 영역 (결과 수 + 검색 토글) */
+.filterRight {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+}
+
+/* 결과 수 */
+.filterCount {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+.filterCountStrong {
+    color: var(--color-accent);
+    font-weight: 700;
+}
+
+/* 검색 토글 버튼 */
+.searchToggleBtn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-card-bg);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.searchToggleBtn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+.searchToggleBtnActive {
+    background: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent);
+}
+
+.searchToggleIcon {
+    font-size: 16px;
+}
+
+/* ── 반응형: 모바일 ── */
+@media (max-width: 480px) {
+    .filterBarInner {
+        padding: 0 14px;
+    }
+
+    .filterBtn {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+
+    .filterGroup {
+        flex-wrap: wrap;
+    }
+}

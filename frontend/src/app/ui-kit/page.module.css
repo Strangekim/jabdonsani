@@ -1,0 +1,113 @@
+/* ================================================================
+   UI Kit 페이지 스타일 — 모든 컴포넌트를 한눈에 볼 수 있는 쇼케이스
+   ================================================================ */
+
+.uiKit {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 32px var(--content-padding) 80px;
+}
+
+.uiKitTitle {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: var(--color-text-primary);
+}
+
+.uiKitDesc {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin-bottom: 40px;
+}
+
+/* 섹션 구분 */
+.section {
+    margin-bottom: 48px;
+}
+
+.sectionTitle {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--color-accent);
+    display: inline-block;
+}
+
+.sectionDesc {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-bottom: 20px;
+}
+
+/* 컴포넌트 카드 */
+.componentCard {
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.componentLabel {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+/* 2단 그리드 (사이드바 위젯 미리보기) */
+.widgetGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* 도구 그리드 축소 미리보기 */
+.toolPreview {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    max-width: 600px;
+}
+
+/* 컬러 팔레트 */
+.colorGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+}
+
+.colorSwatch {
+    border-radius: var(--radius-md);
+    padding: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.colorSwatchLabel {
+    opacity: 0.8;
+    font-size: 11px;
+}
+
+/* 타이포그래피 */
+.typeRow {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.typeRow:last-child {
+    border-bottom: none;
+}
+
+.typeLabel {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+}

@@ -1,0 +1,76 @@
+/* ================================================================
+   CookieBanner 컴포넌트 스타일
+   하단 fixed 쿠키 동의 배너 (AdSense 요구사항)
+   ================================================================ */
+
+.cookieBanner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--color-header-bg);
+    color: #fff;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    font-size: 13.5px;
+}
+
+.cookieText {
+    max-width: 640px;
+    line-height: 1.5;
+}
+
+.cookieLink {
+    color: var(--color-accent);
+    text-decoration: underline;
+}
+
+/* 버튼 그룹 */
+.cookieButtons {
+    display: flex;
+    gap: 8px;
+}
+
+.cookieBtn {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 22px;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+/* 수락 버튼 */
+.accept {
+    background: var(--color-accent);
+    color: #fff;
+}
+
+.accept:hover {
+    background: var(--color-accent-hover);
+}
+
+/* 거절 버튼 */
+.decline {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+.decline:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── 반응형: 모바일 ── */
+@media (max-width: 860px) {
+    .cookieBanner {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+        padding: 14px 18px;
+    }
+}

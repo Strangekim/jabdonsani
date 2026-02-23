@@ -1,10 +1,2 @@
-/**
- * 현재 로그인 상태 확인 서비스
- */
-export const getMeService = async () => {
-    // TODO: 로그인 상태 확인 로직 구현
-    return {
-        authenticated: false,
-        message: "TODO: 로그인 상태 확인 로직"
-    };
-};
+// getMe 로직은 컨트롤러에서 세션 조회로 처리
+// 이 파일은 구조 유지를 위해 남겨둠 (사용하지 않음)

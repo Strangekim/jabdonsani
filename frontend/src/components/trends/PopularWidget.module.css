@@ -1,0 +1,75 @@
+/* ================================================================
+   PopularWidget 스타일 — 오늘의 인기글 TOP 5
+   ================================================================ */
+
+.popularList {
+    list-style: none;
+}
+
+.popularItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.popularItem:last-child {
+    border-bottom: none;
+}
+
+/* 순위 배지 */
+.popularRank {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rank1 {
+    background: var(--color-accent);
+}
+
+.rank2 {
+    background: #2dd4bf;
+}
+
+.rank3 {
+    background: #5eead4;
+}
+
+.rankOther {
+    background: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+/* 글 정보 */
+.popularInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.popularLink {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    line-height: 1.4;
+    transition: color var(--transition-fast);
+}
+
+.popularLink:hover {
+    color: var(--color-accent);
+}
+
+.popularMeta {
+    font-size: 11px;
+    color: var(--color-text-muted);
+}

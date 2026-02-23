@@ -1,0 +1,92 @@
+/* ================================================================
+   Header 컴포넌트 스타일
+   헤더 배경 전체폭, 내부 콘텐츠는 max-width 제한
+   sticky 없음 (기획서 요구: 스크롤 시 사라짐)
+   ================================================================ */
+
+.siteHeader {
+    background: var(--color-header-bg);
+    color: #fff;
+    height: var(--header-height);
+}
+
+/* 헤더 내부: max-width + 수평 패딩으로 메인 영역과 정렬 일치 */
+.headerInner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--content-padding);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* 좌측: 로고 + 탭 네비게이션 */
+.headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+/* 탭 네비게이션 */
+.navTabs {
+    display: flex;
+    gap: 4px;
+}
+
+.navLink {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.navLink:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* 현재 활성 탭 */
+.navLinkActive {
+    color: #fff;
+    background: var(--color-accent);
+}
+
+/* 우측: 방문자 수 배지 */
+.visitorBadge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.visitorNum {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* ── 반응형: 모바일 ── */
+@media (max-width: 480px) {
+    .headerInner {
+        padding: 0 14px;
+    }
+
+    .headerLeft {
+        gap: 10px;
+    }
+
+    .navLink {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    .visitorBadge {
+        font-size: 10px;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+}

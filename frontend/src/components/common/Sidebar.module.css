@@ -1,0 +1,45 @@
+/* ================================================================
+   Sidebar 컴포넌트 스타일
+   공통 사이드바 래퍼 (sticky 포지션, 반응형 숨김)
+   ================================================================ */
+
+.sidebar {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 공통 위젯 카드 스타일 */
+.widget {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 18px 20px;
+    box-shadow: var(--shadow-card);
+}
+
+/* 위젯 제목 */
+.widgetTitle {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.widgetTitleIcon {
+    font-size: 18px;
+    color: var(--color-accent);
+}
+
+/* ── 반응형: 태블릿 이하 사이드바 처리 ── */
+@media (max-width: 860px) {
+    .sidebar {
+        /* 숨기지 않고, 하단으로 내려오도록 sticky 속성 해제 */
+        position: static;
+    }
+}
