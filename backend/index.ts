@@ -57,9 +57,12 @@ app.use("/api/batch", batchRouter);
 
 // 404 핸들러 (라우트 미매칭 시)
 app.use((req: any, res: any, next: any) => {
-    res.status(404).send({
+    res.status(404).json({
         success: false,
-        message: 'Not Found'
+        error: {
+            code: "NOT_FOUND",
+            message: "요청한 리소스가 존재하지 않습니다."
+        }
     });
 });
 
@@ -67,9 +70,16 @@ app.use((req: any, res: any, next: any) => {
 app.use((err: any, req: any, res: any, next: any) => {
     console.error(err);
 
-    res.status(err.statusCode || err.status || 500).send({
+    const statusCode = err.statusCode || err.status || 500;
+    const code = err.code || "INTERNAL_ERROR";
+    const message = err.message || "서버 내부 오류";
+
+    res.status(statusCode).json({
         success: false,
-        message: err.message || 'Internal server error'
+        error: {
+            code,
+            message
+        }
     });
 });
 
