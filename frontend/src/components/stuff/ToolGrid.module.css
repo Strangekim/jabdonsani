@@ -6,6 +6,8 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 18px;
+    /* 외부 그리드에 의해 섹션이 늘어나도 행 간격이 벌어지지 않도록 */
+    align-content: start;
 }
 
 /* ── 반응형: 모바일 ── */

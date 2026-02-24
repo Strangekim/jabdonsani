@@ -3,6 +3,7 @@ import './globals.css';
 import Header from '@/components/common/Header';
 import CookieBanner from '@/components/common/CookieBanner';
 import ScrollToTop from '@/components/common/ScrollToTop';
+import QueryProvider from '@/components/common/QueryProvider';
 
 /**
  * 루트 메타데이터 — 사이트 전역 SEO 설정
@@ -59,15 +60,18 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {/* 공통 헤더 */}
-        <Header />
+        {/* React Query 전역 Provider */}
+        <QueryProvider>
+          {/* 공통 헤더 */}
+          <Header />
 
-        {/* 페이지 콘텐츠 */}
-        {children}
+          {/* 페이지 콘텐츠 */}
+          {children}
 
-        {/* 공통 하단 UI */}
-        <CookieBanner />
-        <ScrollToTop />
+          {/* 공통 하단 UI */}
+          <CookieBanner />
+          <ScrollToTop />
+        </QueryProvider>
       </body>
     </html>
   );

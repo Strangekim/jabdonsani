@@ -2,6 +2,21 @@ import { query } from "../../config/db";
 import { ProcessedItem } from "../crawlers/types";
 
 /**
+ * 특정 소스에서 이미 DB에 존재하는 original_id Set을 반환한다.
+ */
+export const getExistingOriginalIds = async (
+    source: string,
+    originalIds: string[]
+): Promise<Set<string>> => {
+    if (originalIds.length === 0) return new Set();
+    const result = await query(
+        `SELECT original_id FROM trends WHERE source = $1 AND original_id = ANY($2)`,
+        [source, originalIds]
+    );
+    return new Set(result.rows.map((r) => r.original_id));
+};
+
+/**
  * ProcessedItem을 trends + trend_comments 테이블에 upsert한다.
  * ON CONFLICT (source, original_id) DO UPDATE로 중복 방지.
  */

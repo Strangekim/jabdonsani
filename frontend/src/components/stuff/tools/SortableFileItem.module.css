@@ -1,0 +1,124 @@
+.item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+    position: relative;
+}
+
+.item:hover {
+    box-shadow: var(--shadow-card);
+    border-color: #d1d5db;
+}
+
+/* 드래그 중 스타일 */
+.dragging {
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--color-accent);
+}
+
+/* 드래그 핸들 */
+.dragHandle {
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    cursor: grab;
+    flex-shrink: 0;
+    border-radius: 4px;
+    transition: color var(--transition-fast);
+    /* 키보드 접근성 */
+    outline: none;
+}
+
+.dragHandle:focus-visible {
+    outline: 2px solid var(--color-accent);
+}
+
+.dragHandle:active {
+    cursor: grabbing;
+}
+
+.dragHandle:hover {
+    color: var(--color-text-secondary);
+}
+
+.dragHandle span {
+    font-size: 22px;
+}
+
+/* 순서 번호 배지 */
+.indexBadge {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--color-text-muted);
+    background: var(--color-page-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* 파일 아이콘 */
+.fileIcon {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+/* 파일 정보 영역 */
+.info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.filename {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    /* 긴 파일명 말줄임 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filesize {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+}
+
+/* 삭제 버튼 */
+.removeBtn {
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+    border-radius: 4px;
+    transition: color var(--transition-fast);
+    outline: none;
+}
+
+.removeBtn:hover {
+    color: #e11d48;
+}
+
+.removeBtn:focus-visible {
+    outline: 2px solid #e11d48;
+}
+
+.removeBtn span {
+    font-size: 18px;
+}

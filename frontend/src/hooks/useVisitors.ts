@@ -1,47 +1,35 @@
+'use client';
+
 /* ================================================================
-   useVisitors 훅 — 방문자 수(Today/Total) 조회
+   useVisitors 훅 — 방문자 수(Today/Total) 조회 (React Query 기반)
    헤더의 방문자 배지에서 사용합니다.
    ================================================================ */
 
-'use client';
-
-import { useState, useEffect } from 'react';
-import { apiGet } from '@/lib/api';
-
-/** 방문자 수 데이터 타입 */
-interface VisitorData {
-    today: number;
-    total: number;
-}
+import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/queryKeys';
+import { getVisitors } from '@/services/visitors.service';
 
 /**
- * 방문자 수를 API에서 조회하는 커스텀 훅
+ * 방문자 수를 API에서 조회하는 훅
  *
- * @returns 방문자 수 데이터, 로딩 상태, 에러 상태
+ * @returns data - 방문자 수 (today, total)
+ * @returns isLoading - 로딩 중 여부
+ * @returns error - 에러 여부
  */
 export function useVisitors() {
-    const [data, setData] = useState<VisitorData | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { data, isLoading, isError } = useQuery({
+        queryKey: queryKeys.visitors.count(),
+        queryFn: getVisitors,
+        /* 방문자 수는 5분간 캐시 유지 */
+        staleTime: 5 * 60 * 1000,
+    });
 
-    useEffect(() => {
-        async function fetchVisitors() {
-            try {
-                const response = await apiGet<VisitorData>('/visitors');
-                if (response.success) {
-                    setData(response.data);
-                } else {
-                    setError(response.error.message);
-                }
-            } catch {
-                setError('방문자 수를 불러오는데 실패했습니다.');
-            } finally {
-                setIsLoading(false);
-            }
-        }
+    const visitors =
+        data?.success === true ? data.data : null;
 
-        fetchVisitors();
-    }, []);
-
-    return { data, isLoading, error };
+    return {
+        data: visitors,
+        isLoading,
+        error: isError ? '방문자 수를 불러오는데 실패했습니다.' : null,
+    };
 }

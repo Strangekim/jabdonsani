@@ -1,0 +1,66 @@
+.zone {
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-card-bg);
+    padding: 52px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition:
+        border-color var(--transition-fast),
+        background var(--transition-fast);
+    outline: none;
+    user-select: none;
+}
+
+.zone:hover,
+.zone:focus-visible {
+    border-color: var(--color-accent);
+    background: var(--color-accent-light);
+}
+
+/* 파일 드래그 오버 상태 */
+.dragOver {
+    border-color: var(--color-accent);
+    background: var(--color-accent-light);
+    border-style: solid;
+}
+
+/* 비활성화 상태 */
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hiddenInput {
+    display: none;
+}
+
+.uploadIcon {
+    font-size: 52px;
+    color: var(--color-accent);
+    transition: transform var(--transition-fast);
+}
+
+.zone:hover .uploadIcon,
+.dragOver .uploadIcon {
+    transform: translateY(-4px);
+}
+
+.primaryText {
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    text-align: center;
+}
+
+.clickText {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+.hint {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}

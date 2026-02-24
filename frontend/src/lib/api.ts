@@ -1,6 +1,7 @@
 /* ================================================================
    API 클라이언트 — 백엔드 API 호출을 위한 fetch 래퍼
    api.md의 공통 사항(Base URL, 응답 형식)을 반영합니다.
+   - credentials: 'include' 기본 적용 → 세션 쿠키 자동 전송
    ================================================================ */
 
 import type { ApiResponse } from '@/types/api';
@@ -23,6 +24,8 @@ export async function apiFetch<T>(
     const url = `${BASE_URL}${endpoint}`;
 
     const response = await fetch(url, {
+        /* 세션 쿠키 자동 포함 — 로그인 인증 방식 */
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
             ...options?.headers,
@@ -76,4 +79,31 @@ export async function apiPost<T>(
         method: 'POST',
         body: body ? JSON.stringify(body) : undefined,
     });
+}
+
+/**
+ * PUT 요청 간편 헬퍼
+ *
+ * @template T - 응답 data 필드의 타입
+ * @param endpoint - API 경로
+ * @param body - 요청 본문 객체
+ */
+export async function apiPut<T>(
+    endpoint: string,
+    body?: unknown
+): Promise<ApiResponse<T>> {
+    return apiFetch<T>(endpoint, {
+        method: 'PUT',
+        body: body ? JSON.stringify(body) : undefined,
+    });
+}
+
+/**
+ * DELETE 요청 간편 헬퍼
+ *
+ * @template T - 응답 data 필드의 타입
+ * @param endpoint - API 경로
+ */
+export async function apiDelete<T>(endpoint: string): Promise<ApiResponse<T>> {
+    return apiFetch<T>(endpoint, { method: 'DELETE' });
 }

@@ -3,7 +3,7 @@ import { CrawlerConfig } from "../crawlers/types";
 import { crawlHN } from "../crawlers/hnCrawler";
 import { crawlReddit } from "../crawlers/redditCrawler";
 import { processItems } from "../ai/processItems";
-import { upsertTrend } from "../db/trendDb";
+import { upsertTrend, getExistingOriginalIds } from "../db/trendDb";
 import {
     generateJobId,
     isAnyBatchRunning,
@@ -43,9 +43,19 @@ const executeBatch = async (jobId: string): Promise<void> => {
                     continue;
                 }
 
-                // 2. AI 처리
-                console.log(`[Batch ${jobId}] Processing ${rawItems.length} items from ${config.source}...`);
-                const { processed, errors } = await processItems(rawItems, config.field);
+                // 2. 이미 DB에 존재하는 글 skip
+                const existingIds = await getExistingOriginalIds(
+                    config.source,
+                    rawItems.map((i) => i.originalId)
+                );
+                const newItems = rawItems.filter((i) => !existingIds.has(i.originalId));
+                console.log(`[Batch ${jobId}] ${config.source}: ${rawItems.length} crawled, ${existingIds.size} already exist, ${newItems.length} new`);
+
+                if (newItems.length === 0) continue;
+
+                // 3. AI 처리
+                console.log(`[Batch ${jobId}] Processing ${newItems.length} items from ${config.source}...`);
+                const { processed, errors } = await processItems(newItems, config.field);
                 totalErrors += errors;
 
                 // 3. DB 저장

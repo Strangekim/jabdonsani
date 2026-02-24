@@ -31,4 +31,12 @@ export const TOOL_LIST: ToolCardInfo[] = [
         colorClass: 'qrGenerator',
         imageUrl: '/tools/qr-generator.png',
     },
+    {
+        id: 'dice-roller',
+        name: '주사위 굴리기',
+        description: 'D4~D20 다면체 주사위를 3D로 굴려보세요.',
+        icon: 'casino',
+        colorClass: 'diceRoller',
+        imageUrl: '/tools/dice-roller.png',
+    },
 ];

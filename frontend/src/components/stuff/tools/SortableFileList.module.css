@@ -1,0 +1,9 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* ul 기본 스타일 제거 */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}

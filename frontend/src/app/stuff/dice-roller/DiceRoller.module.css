@@ -1,0 +1,274 @@
+/* ── 주사위 종류 선택 버튼 그룹 ── */
+.diceSelector {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.diceBtn {
+    flex: 1;
+    min-width: 50px;
+    padding: 10px 6px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-page-bg);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+}
+
+.diceBtn:hover:not(:disabled) {
+    border-color: var(--color-text-secondary);
+    color: var(--color-text-secondary);
+}
+
+.diceBtnActive {
+    border-color: var(--active-color);
+    /* 선택된 색 10% 배경 — 지원되면 color-mix, 아니면 accent-light */
+    background: color-mix(in srgb, var(--active-color) 12%, var(--color-page-bg));
+    color: var(--active-color);
+}
+
+.diceBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ── Three.js 캔버스 ── */
+.canvasWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.canvas {
+    display: block;
+    width: 300px;
+    height: 300px;
+    border-radius: var(--radius-lg);
+    background: radial-gradient(
+        circle at 40% 35%,
+        color-mix(in srgb, var(--color-card-bg) 95%, var(--color-accent)),
+        var(--color-card-bg) 70%
+    );
+    border: 1px solid var(--color-border);
+    /* cursor는 JS에서 동적으로 grab / grabbing 전환 */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* 인터랙션 힌트 텍스트 */
+.canvasHint {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin: 0;
+    text-align: center;
+}
+
+.canvasHint span {
+    font-size: 15px;
+}
+
+/* ── 결과 영역 ── */
+.resultArea {
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rollingText,
+.promptText {
+    font-size: 15px;
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+/* 결과 박스: popIn 애니메이션 */
+.resultBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+
+/* 최고 결과 — 빛나는 효과 */
+.resultMax .resultNum {
+    text-shadow: 0 0 24px currentColor, 0 0 48px currentColor;
+    animation: glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { filter: brightness(1); }
+    to   { filter: brightness(1.3); }
+}
+
+/* 결과 숫자 */
+.resultNum {
+    font-size: 80px;
+    font-weight: 900;
+    font-family: var(--font-mono);
+    color: var(--dice-color);
+    line-height: 1;
+}
+
+/* 최고/최저 배지 */
+.resultBadge {
+    font-size: 13px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: var(--dice-color);
+    color: #fff;
+    animation: popIn 0.3s 0.2s both cubic-bezier(0.34, 1.56, 0.64, 1);
+    letter-spacing: 0.04em;
+}
+
+.resultBadgeLow {
+    background: var(--color-text-muted);
+}
+
+/* ── 굴리기 버튼 ── */
+.rollBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 16px;
+    background: var(--dice-color);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    /* 버튼 누를 때 살짝 수축 */
+    active-scale: 0.98;
+}
+
+.rollBtn:hover:not(:disabled) {
+    opacity: 0.88;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--dice-color) 35%, transparent);
+}
+
+.rollBtn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.rollBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.rollBtn span {
+    font-size: 22px;
+}
+
+/* 버튼 내부 스핀 아이콘 */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.spinIcon {
+    animation: spin 0.8s linear infinite;
+}
+
+/* ── 최근 기록 섹션 ── */
+.history {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.historyHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.historyTitle {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin: 0;
+}
+
+.clearBtn {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    background: none;
+    border: none;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.clearBtn:hover {
+    color: var(--color-text-secondary);
+}
+
+/* 기록 아이템 그리드 */
+.historyList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.historyItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 16px;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--dice-color);
+    border-radius: var(--radius-md);
+    min-width: 60px;
+    /* 첫 번째 아이템 (최신) 강조 */
+}
+
+.historyItem:first-child {
+    border-color: var(--dice-color);
+    background: color-mix(in srgb, var(--dice-color) 8%, var(--color-card-bg));
+}
+
+.historyLabel {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--dice-color);
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.historyValue {
+    font-size: 22px;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: var(--color-text-primary);
+    line-height: 1.1;
+}

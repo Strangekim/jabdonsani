@@ -1,4 +1,5 @@
 import { RawCrawledItem, RawComment, CrawlerConfig } from "./types";
+import { fetchThumbnail } from "./thumbnailParser";
 
 const REDDIT_USER_AGENT = "JabdonSaniBot/1.0 (batch crawler)";
 
@@ -21,6 +22,8 @@ interface RedditComment {
     body: string;
     score: number;
 }
+
+const MIN_SCORE = 10;
 
 const SUBREDDIT_MAP: Record<string, string> = {
     localllama: "LocalLLaMA",
@@ -86,7 +89,7 @@ export const crawlReddit = async (config: CrawlerConfig): Promise<RawCrawledItem
 
         const data = await res.json();
         const posts: RedditPost[] = (data?.data?.children || [])
-            .filter((c: any) => c.kind === "t3" && !c.data.stickied)
+            .filter((c: any) => c.kind === "t3" && !c.data.stickied && c.data.score >= MIN_SCORE)
             .map((c: any) => c.data)
             .slice(0, config.limit);
 
@@ -98,10 +101,9 @@ export const crawlReddit = async (config: CrawlerConfig): Promise<RawCrawledItem
 
             const comments = await fetchComments(subreddit, post.id);
 
-            const thumbnailUrl =
-                post.thumbnail && post.thumbnail.startsWith("http")
-                    ? post.thumbnail
-                    : null;
+            const thumbnailUrl = !post.is_self && post.url
+                ? await fetchThumbnail(post.url)
+                : null;
 
             items.push({
                 source: config.source,

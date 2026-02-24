@@ -25,6 +25,7 @@ import PostNav from '@/components/blog/PostNav';
 import ProfileWidget from '@/components/blog/ProfileWidget';
 import TagCloud from '@/components/blog/TagCloud';
 import BlogPopularWidget from '@/components/blog/BlogPopularWidget';
+import WriteButton from '@/components/blog/WriteButton';
 
 /* ── 잡동사니 탭 컴포넌트 ── */
 import ToolCard from '@/components/stuff/ToolCard';
@@ -291,6 +292,15 @@ export default function UIKitPage() {
                 <p className={styles.sectionDesc}>
                     PostCard, PostNav, ProfileWidget, TagCloud, BlogPopularWidget
                 </p>
+
+                {/* WriteButton */}
+                <div className={styles.componentCard}>
+                    <div className={styles.componentLabel}>WriteButton (로그인 시 노출)</div>
+                    <WriteButton />
+                    <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '8px' }}>
+                        * 로그인 상태일 때만 렌더링됩니다.
+                    </p>
+                </div>
 
                 {/* PostCard */}
                 <div className={styles.componentCard}>

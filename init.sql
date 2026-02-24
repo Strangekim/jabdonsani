@@ -139,18 +139,9 @@ CREATE TABLE tools (
 
 -- 초기 도구 데이터
 INSERT INTO tools (id, name, description) VALUES
-    ('base64',           'Base64 변환',       'Base64 인코딩/디코딩 변환 도구'),
-    ('color-converter',  '색상 변환',         'HEX ↔ RGB ↔ HSL 색상 코드 변환'),
     ('image-compress',   '이미지 압축',       '브라우저에서 직접 이미지 용량 줄이기'),
-    ('json-formatter',   'JSON 정리',        'JSON 포맷팅 및 유효성 검사'),
-    ('lorem-generator',  '더미 텍스트',       'Lorem Ipsum 더미 텍스트 생성'),
-    ('markdown-preview', 'Markdown 미리보기', 'Markdown 실시간 렌더링'),
     ('pdf-merge',        'PDF 병합',         '여러 PDF를 하나로 합치기'),
-    ('qr-generator',     'QR 코드 생성',     '텍스트/URL → QR 코드 이미지 생성'),
-    ('regex-tester',     '정규식 테스터',     '정규표현식 실시간 테스트'),
-    ('timestamp',        '타임스탬프 변환',   'Unix ↔ 날짜 시간 변환'),
-    ('unit-converter',   '단위 변환',        '길이, 무게, 온도 등 단위 변환'),
-    ('url-encoder',      'URL 인코딩',       'URL 인코딩/디코딩 변환');
+    ('qr-generator',     'QR 코드 생성',     '텍스트/URL → QR 코드 이미지 생성');
 
 COMMENT ON TABLE tools IS '잡동사니 도구 목록 및 사용 통계';
 
