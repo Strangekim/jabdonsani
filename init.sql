@@ -23,7 +23,7 @@ CREATE TABLE admins (
 -- 기본 관리자 계정 (비밀번호는 배포 전 반드시 변경)
 -- 아래는 'admin1234'의 bcrypt 해시 예시
 INSERT INTO admins (login_id, password)
-VALUES ('admin', '$2b$10$placeholder_hash_change_me');
+VALUES ('roger345', '$2b$10$03gM1er8RppHIfllR/z58u/H7HTqnMija4phmizfNMA/k0vjTHwi6');
 
 COMMENT ON TABLE admins IS '관리자 계정 테이블 — 단일 관리자 구조';
 
@@ -184,14 +184,16 @@ COMMENT ON TABLE batch_jobs IS '크롤링 배치 작업 실행 이력';
 -- 9. 업로드 파일 관리
 -- ============================================================
 CREATE TABLE uploads (
-    id          SERIAL PRIMARY KEY,
-    filename    VARCHAR(255) NOT NULL,               -- 저장된 파일명
+    id            SERIAL PRIMARY KEY,
+    filename      VARCHAR(255) NOT NULL,             -- UPLOAD_DIR 기준 상대 경로: blog/YYYY/MM/uuid.ext
     original_name VARCHAR(255),                      -- 원본 파일명
-    mime_type   VARCHAR(50)  NOT NULL,               -- MIME 타입
-    size_bytes  INT          NOT NULL,               -- 파일 크기 (bytes)
-    url         TEXT         NOT NULL,               -- 접근 URL
-    post_id     INT          REFERENCES posts(id) ON DELETE SET NULL, -- 연결된 블로그 글
-    created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+    mime_type     VARCHAR(50)  NOT NULL,             -- MIME 타입 (image/jpeg 등)
+    size_bytes    INT          NOT NULL,             -- 파일 크기 (bytes)
+    url           TEXT         NOT NULL,             -- 공개 접근 URL
+    created_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
-COMMENT ON TABLE uploads IS '블로그 이미지 업로드 파일 관리';
+-- 글 삭제 시 filename 기준으로 파일 조회 → 빠른 매칭
+CREATE INDEX idx_uploads_filename ON uploads (filename);
+
+COMMENT ON TABLE uploads IS '블로그 이미지 업로드 파일 관리 (VM 로컬 저장)';

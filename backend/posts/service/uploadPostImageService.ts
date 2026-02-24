@@ -1,13 +1,29 @@
-import { query } from "../../config/db";
+import path from 'path';
+import { query } from '../../config/db';
+
+const UPLOAD_DIR      = process.env.UPLOAD_DIR      || '/app/uploads';
+const UPLOAD_BASE_URL = process.env.UPLOAD_BASE_URL || '';
 
 /**
- * 게시글 이미지 업로드 처리 서비스
- * @param fileData 이미지 파일 데이터 (보통 multer 등의 객체)
+ * 게시글 이미지 업로드 서비스
+ *  - 파일은 multer가 디스크에 저장 완료한 상태로 전달됨
+ *  - uploads 테이블에 메타데이터 기록 후 공개 URL 반환
+ *
+ * @param file Express.Multer.File (multer diskStorage 결과)
+ * @returns { url } — 브라우저에서 직접 접근 가능한 이미지 URL
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const uploadPostImageService = async (fileData: any): Promise<{ url: string }> => {
-    // TODO: (추후 구현) AWS S3 연동 업로드 또는 로컬 업로드 처리
-    // 현재는 더미 URL을 리턴하도록 처리
-    console.log("Mock Image Upload:", fileData?.originalname);
-    return { url: "https://via.placeholder.com/800x400.png?text=Mock+Image" };
+export const uploadPostImageService = async (
+    file: Express.Multer.File,
+): Promise<{ url: string }> => {
+    /* relative path from UPLOAD_DIR: blog/2026/02/uuid.webp */
+    const relativePath = path.relative(UPLOAD_DIR, file.path).replace(/\\/g, '/');
+    const url          = `${UPLOAD_BASE_URL}/uploads/${relativePath}`;
+
+    await query(
+        `INSERT INTO uploads (filename, original_name, mime_type, size_bytes, url)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [relativePath, file.originalname, file.mimetype, file.size, url],
+    );
+
+    return { url };
 };

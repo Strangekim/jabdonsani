@@ -9,6 +9,7 @@ import { uploadPostImageController } from "./controller/uploadPostImageControlle
 import { isAuthenticated } from "../middleware/auth";
 import { validate, validateParams, validateQuery, numericIdSchema } from "../middleware/validate";
 import { postBodySchema, postsQuerySchema } from "./model";
+import { uploadMiddleware } from "../config/multer";
 
 const router = Router();
 
@@ -20,6 +21,7 @@ router.get("/popular",
 // POST /api/posts/upload 이미지 업로드 (인증 필요)
 router.post("/upload",
     isAuthenticated,
+    uploadMiddleware,
     uploadPostImageController
 );
 
