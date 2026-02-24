@@ -141,7 +141,8 @@ CREATE TABLE tools (
 INSERT INTO tools (id, name, description) VALUES
     ('image-compress',   '이미지 압축',       '브라우저에서 직접 이미지 용량 줄이기'),
     ('pdf-merge',        'PDF 병합',         '여러 PDF를 하나로 합치기'),
-    ('qr-generator',     'QR 코드 생성',     '텍스트/URL → QR 코드 이미지 생성');
+    ('qr-generator',     'QR 코드 생성',     '텍스트/URL → QR 코드 이미지 생성'),
+    ('dice-roller',      '주사위 굴리기',     'D4~D20 다면체 주사위를 3D로 굴려보기');
 
 COMMENT ON TABLE tools IS '잡동사니 도구 목록 및 사용 통계';
 
