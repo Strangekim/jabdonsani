@@ -20,12 +20,11 @@ const FIELD_FILTERS = [
 
 /** 소스 필터 옵션 */
 const SOURCE_FILTERS = [
-    { value: '', label: '전체' },
-    { value: 'hn', label: 'HN' },
-    { value: 'localllama', label: 'r/LocalLLaMA' },
-    { value: 'ml', label: 'r/ML' },
-    { value: 'programming', label: 'r/programming' },
-    { value: 'robotics', label: 'r/robotics' },
+    { value: '',         label: '전체' },
+    { value: 'hn',       label: 'HN' },
+    { value: 'hfpapers', label: 'HF Papers' },
+    { value: 'devto',    label: 'Dev.to' },
+    { value: 'lobsters', label: 'Lobste.rs' },
 ] as const;
 
 interface FilterBarProps {

@@ -5,7 +5,7 @@
 /** 동향 카드 데이터 */
 export interface TrendItem {
     id: number;
-    /** 수집 소스: hn | localllama | ml | programming | robotics */
+    /** 수집 소스: hn | hfpapers | devto | lobsters */
     source: TrendSource;
     /** 분야 태그: ai | dev | robotics */
     fieldTag: TrendField;
@@ -42,10 +42,9 @@ export interface TrendComment {
 /** 수집 소스 타입 */
 export type TrendSource =
     | 'hn'
-    | 'localllama'
-    | 'ml'
-    | 'programming'
-    | 'robotics';
+    | 'hfpapers'
+    | 'devto'
+    | 'lobsters';
 
 /** 분야 필터 타입 */
 export type TrendField = 'ai' | 'dev' | 'robotics';

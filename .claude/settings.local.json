@@ -3,7 +3,9 @@
     "allow": [
       "Bash(tail:*)",
       "Bash(node:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(cd /c/Users/SSAFY/Desktop/pjt/jabdonsani/backend && npx tsc --noEmit 2>&1)",
+      "Bash(head:*)"
     ]
   }
 }

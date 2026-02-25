@@ -47,20 +47,16 @@
     background: var(--color-source-hn);
 }
 
-.sourceLocalllama {
-    background: var(--color-source-localllama);
+.sourceHfpapers {
+    background: var(--color-source-hfpapers);
 }
 
-.sourceMl {
-    background: var(--color-source-ml);
+.sourceDevto {
+    background: var(--color-source-devto);
 }
 
-.sourceProgramming {
-    background: var(--color-source-programming);
-}
-
-.sourceRobotics {
-    background: var(--color-source-robotics);
+.sourceLobsters {
+    background: var(--color-source-lobsters);
 }
 
 .cardTime {

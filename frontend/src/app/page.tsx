@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 import TrendsClient from './TrendsClient';
 
 export const metadata: Metadata = {
-  title: '동향',
+  title: '잡동사니',
   description: '해외 기술 커뮤니티의 인기 게시물을 번역·요약하여 제공합니다.',
 };
 

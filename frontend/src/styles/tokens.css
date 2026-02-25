@@ -29,14 +29,12 @@
     /* ── 소스별 배지 컬러 (동향 탭) ── */
     --color-source-hn: #ff6600;
     /* Hacker News: 오렌지 */
-    --color-source-localllama: #10b981;
-    /* r/LocalLLaMA: 에메랄드 */
-    --color-source-ml: #e11d48;
-    /* r/MachineLearning: 로즈 */
-    --color-source-programming: #3b82f6;
-    /* r/programming: 블루 */
-    --color-source-robotics: #f59e0b;
-    /* r/robotics: 앰버 */
+    --color-source-hfpapers: #f59e0b;
+    /* HF Papers: 앰버 (HuggingFace 브랜드 컬러) */
+    --color-source-devto: #3b82f6;
+    /* Dev.to: 블루 */
+    --color-source-lobsters: #e11d48;
+    /* Lobste.rs: 로즈 (랍스터 배지 색) */
 
     /* ── 타이포그래피 ── */
     --font-sans: 'Geist', 'Pretendard', -apple-system, BlinkMacSystemFont,

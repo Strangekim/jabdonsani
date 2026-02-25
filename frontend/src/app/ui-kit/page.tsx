@@ -275,8 +275,8 @@ export default function UIKitPage() {
                         <PopularWidget
                             items={[
                                 { id: 1, title: '인기글 1위 제목 예시', source: 'hn', upvotes: 500, createdAt: new Date().toISOString() },
-                                { id: 2, title: '인기글 2위 제목 예시', source: 'localllama', upvotes: 320, createdAt: new Date().toISOString() },
-                                { id: 3, title: '인기글 3위 제목 예시', source: 'ml', upvotes: 180, createdAt: new Date().toISOString() },
+                                { id: 2, title: '인기글 2위 제목 예시', source: 'hfpapers', upvotes: 320, createdAt: new Date().toISOString() },
+                                { id: 3, title: '인기글 3위 제목 예시', source: 'devto', upvotes: 180, createdAt: new Date().toISOString() },
                             ]}
                         />
                         <ScheduleWidget />

@@ -2,15 +2,14 @@ import { z } from "zod";
 
 // 허용 필터 값
 export const VALID_FIELDS = ["ai", "dev", "robotics"] as const;
-export const VALID_SOURCES = ["hn", "localllama", "ml", "programming", "robotics"] as const;
+export const VALID_SOURCES = ["hn", "hfpapers", "devto", "lobsters"] as const;
 
 // 소스 → 표시 태그 매핑
 export const SOURCE_TAG_MAP: Record<string, string> = {
-    hn: "#HackerNews",
-    localllama: "#LocalLLaMA",
-    ml: "#MachineLearning",
-    programming: "#programming",
-    robotics: "#robotics",
+    hn:       "#HackerNews",
+    hfpapers: "#HFPapers",
+    devto:    "#DevTo",
+    lobsters: "#Lobsters",
 };
 
 // 분야 → 표시 태그 매핑

@@ -1,7 +1,6 @@
 /**
- * TrendCard 컴포넌트 — 동향 피드 카드 (Reddit 스타일)
+ * TrendCard 컴포넌트 — 동향 피드 카드
  *
- * 프로토타입 trends.html의 카드 디자인을 React 컴포넌트로 구현.
  * 소스 배지, 제목, 본문, 썸네일 캐러셀, 댓글 요약, 상위 댓글, 액션바를 포함합니다.
  */
 
@@ -19,20 +18,18 @@ interface TrendCardProps {
  * source 값에 따라 배경색이 달라집니다.
  */
 const SOURCE_CLASS_MAP: Record<TrendSource, string> = {
-    hn: styles.sourceHn,
-    localllama: styles.sourceLocalllama,
-    ml: styles.sourceMl,
-    programming: styles.sourceProgramming,
-    robotics: styles.sourceRobotics,
+    hn:       styles.sourceHn,
+    hfpapers: styles.sourceHfpapers,
+    devto:    styles.sourceDevto,
+    lobsters: styles.sourceLobsters,
 };
 
 /** 소스별 표시 라벨 */
 const SOURCE_LABEL_MAP: Record<TrendSource, string> = {
-    hn: 'Hacker News',
-    localllama: 'r/LocalLLaMA',
-    ml: 'r/MachineLearning',
-    programming: 'r/programming',
-    robotics: 'r/robotics',
+    hn:       'Hacker News',
+    hfpapers: 'HF Papers',
+    devto:    'Dev.to',
+    lobsters: 'Lobste.rs',
 };
 
 export default function TrendCard({ item }: TrendCardProps) {
