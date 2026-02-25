@@ -5,9 +5,12 @@
    헤더의 방문자 배지에서 사용합니다.
    ================================================================ */
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { queryKeys } from '@/lib/queryKeys';
-import { getVisitors } from '@/services/visitors.service';
+import { getVisitors, trackVisitor } from '@/services/visitors.service';
+
+const SESSION_KEY = 'jabdonsani_visited';
 
 /**
  * 방문자 수를 API에서 조회하는 훅
@@ -32,4 +35,26 @@ export function useVisitors() {
         isLoading,
         error: isError ? '방문자 수를 불러오는데 실패했습니다.' : null,
     };
+}
+
+/**
+ * 방문 기록 훅 — 세션 당 1회만 POST /api/visitors/track 호출
+ * sessionStorage에 방문 여부를 기록해 탭 새로고침 시 중복 카운트를 방지합니다.
+ */
+export function useTrackVisitor() {
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        if (sessionStorage.getItem(SESSION_KEY)) return;
+
+        trackVisitor()
+            .then(() => {
+                sessionStorage.setItem(SESSION_KEY, '1');
+                /* 카운트 표시를 즉시 갱신 */
+                queryClient.invalidateQueries({ queryKey: queryKeys.visitors.count() });
+            })
+            .catch(() => {
+                /* 추적 실패는 무시 — 사용자 경험에 영향 없음 */
+            });
+    }, [queryClient]);
 }

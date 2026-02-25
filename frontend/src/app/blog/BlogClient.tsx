@@ -17,6 +17,7 @@ import BlogPopularWidget from '@/components/blog/BlogPopularWidget';
 import { usePosts, usePopularPosts } from '@/hooks/usePosts';
 import { useTags } from '@/hooks/useTags';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { MOCK_POSTS, MOCK_POPULAR_POSTS, MOCK_TAGS } from '@/lib/mockData';
 
 export default function BlogClient() {
     /* 태그 필터 상태 */
@@ -24,16 +25,22 @@ export default function BlogClient() {
 
     /* 블로그 목록 무한 스크롤 */
     const {
-        items,
+        items: itemsRaw,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
         isLoading,
+        isError,
     } = usePosts(selectedTag);
 
     /* 사이드바 데이터 */
-    const { tags } = useTags();
-    const { items: popularItems } = usePopularPosts();
+    const { tags: tagsRaw } = useTags();
+    const { items: popularItemsRaw } = usePopularPosts();
+
+    /* 백엔드 미연결 시 더미 데이터 fallback */
+    const items = (!isLoading && (isError || itemsRaw.length === 0)) ? MOCK_POSTS : itemsRaw;
+    const tags = tagsRaw.length === 0 ? MOCK_TAGS : tagsRaw;
+    const popularItems = popularItemsRaw.length === 0 ? MOCK_POPULAR_POSTS : popularItemsRaw;
 
     /* 무한 스크롤 sentinel ref */
     const { sentinelRef } = useInfiniteScroll({

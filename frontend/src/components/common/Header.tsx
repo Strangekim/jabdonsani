@@ -14,12 +14,13 @@ import Link from 'next/link';
 import Logo from './Logo';
 import { NAV_ITEMS } from '@/constants/navigation';
 import { formatNumber } from '@/lib/utils';
-import { useVisitors } from '@/hooks/useVisitors';
+import { useVisitors, useTrackVisitor } from '@/hooks/useVisitors';
 import styles from './Header.module.css';
 
 export default function Header() {
     const pathname = usePathname();
     const { data: visitors } = useVisitors();
+    useTrackVisitor();
 
     /**
      * 현재 경로와 네비게이션 항목을 비교하여 활성 탭을 판별

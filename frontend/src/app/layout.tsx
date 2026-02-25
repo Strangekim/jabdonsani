@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 /**
  * 루트 레이아웃 — 모든 페이지에 공통 적용
- * - 폰트: CDN으로 Geist, Pretendard, JetBrains Mono 로드
+ * - 폰트: CDN으로 Pretendard, JetBrains Mono 로드
  * - 공통 UI: Header, CookieBanner, ScrollToTop
  */
 export default function RootLayout({
@@ -38,12 +38,7 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net"
           crossOrigin="anonymous"
         />
-        {/* Geist (영문 UI/제목) */}
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.css"
-        />
-        {/* Pretendard (한글 본문/UI) */}
+        {/* Pretendard (한글/영문 UI·본문) */}
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"

@@ -16,6 +16,7 @@ import PopularWidget from '@/components/trends/PopularWidget';
 import ScheduleWidget from '@/components/trends/ScheduleWidget';
 import { useTrends, useSearchTrends, usePopularTrends } from '@/hooks/useTrends';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { MOCK_TRENDS, MOCK_POPULAR_TRENDS } from '@/lib/mockData';
 
 export default function TrendsClient() {
     /* 필터 상태 — FilterBar에 제어 방식으로 전달 */
@@ -31,12 +32,13 @@ export default function TrendsClient() {
 
     /* 동향 무한 스크롤 데이터 (일반 모드) */
     const {
-        items: trendItems,
-        totalCount,
+        items: trendItemsRaw,
+        totalCount: totalCountRaw,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
         isLoading: isTrendsLoading,
+        isError: isTrendsError,
     } = useTrends({ field, source });
 
     /* 검색 결과 데이터 (검색 모드) */
@@ -46,7 +48,14 @@ export default function TrendsClient() {
     } = useSearchTrends(searchQuery);
 
     /* 인기글 사이드바 데이터 */
-    const { items: popularItems } = usePopularTrends();
+    const { items: popularItemsRaw } = usePopularTrends();
+
+    /* 백엔드 미연결 시 더미 데이터 fallback */
+    const trendItems = (!isTrendsLoading && (isTrendsError || trendItemsRaw.length === 0))
+        ? MOCK_TRENDS
+        : trendItemsRaw;
+    const totalCount = isTrendsError ? MOCK_TRENDS.length : totalCountRaw;
+    const popularItems = popularItemsRaw.length === 0 ? MOCK_POPULAR_TRENDS : popularItemsRaw;
 
     /* 무한 스크롤 sentinel ref */
     const { sentinelRef } = useInfiniteScroll({
