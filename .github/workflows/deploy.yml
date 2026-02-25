@@ -1,0 +1,56 @@
+# ============================================================
+# 잡동사니 프로젝트 — CI/CD 자동 배포
+# main 브랜치에 push 시 OCI 서버에 SSH 접속하여 자동 배포
+# ============================================================
+
+name: Deploy to OCI Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) 배포 시작 알림 (로그용)
+      - name: Print deployment info
+        run: |
+          echo "🚀 Deploying jabdonsani..."
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Author: ${{ github.actor }}"
+          echo "Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+
+      # 2) SSH로 OCI 서버 접속 → git pull → Docker 재빌드
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.OCI_HOST }}
+          username: ${{ secrets.OCI_USERNAME }}
+          key: ${{ secrets.OCI_SSH_KEY }}
+          script_stop: true
+          script: |
+            echo "========== 배포 시작 =========="
+
+            # 프로젝트 디렉토리로 이동
+            cd ~/jabdonsani
+
+            # 최신 코드 가져오기
+            echo "📥 Pulling latest code..."
+            git fetch origin main
+            git reset --hard origin/main
+
+            # Docker Compose로 재빌드 및 재시작
+            echo "🐳 Rebuilding and restarting containers..."
+            docker compose down
+            docker compose up -d --build
+
+            # 사용하지 않는 이미지 정리
+            echo "🧹 Cleaning up unused images..."
+            docker image prune -f
+
+            echo "========== 배포 완료 =========="
