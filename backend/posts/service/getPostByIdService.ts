@@ -52,16 +52,16 @@ export const getPostByIdService = async (id: string): Promise<PostDetail> => {
 
     const post = result.rows[0];
 
-    // 이전 글 (현재 글보다 created_at이 작은 것 중 가장 최근)
+    // 이전 글 (현재 글보다 id가 작은 것 중 가장 큰 id)
     const prevResult = await query(
-        `SELECT id, title FROM posts WHERE created_at < $1 ORDER BY created_at DESC LIMIT 1`,
-        [post.createdAt]
+        `SELECT id, title FROM posts WHERE id < $1 ORDER BY id DESC LIMIT 1`,
+        [id]
     );
 
-    // 다음 글 (현재 글보다 created_at이 큰 것 중 가장 오래된)
+    // 다음 글 (현재 글보다 id가 큰 것 중 가장 작은 id)
     const nextResult = await query(
-        `SELECT id, title FROM posts WHERE created_at > $1 ORDER BY created_at ASC LIMIT 1`,
-        [post.createdAt]
+        `SELECT id, title FROM posts WHERE id > $1 ORDER BY id ASC LIMIT 1`,
+        [id]
     );
 
     return {

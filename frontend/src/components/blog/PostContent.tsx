@@ -1,13 +1,12 @@
 /**
  * PostContent 컴포넌트 — 블로그 글 상세 본문
  *
- * 프로토타입 blog-detail.html의 글 상세 디자인을 React 컴포넌트로 구현.
- * 제목, 메타데이터, 태그, Markdown 본문(HTML 렌더링 필요)을 표시합니다.
- *
- * NOTE: Markdown→HTML 변환은 추후 서버 사이드에서 수행하거나
- * react-markdown 등의 라이브러리를 추가하여 처리합니다.
+ * 제목, 메타데이터, 태그, Markdown 본문을 표시합니다.
+ * react-markdown + remark-gfm으로 Markdown을 렌더링합니다.
  */
 
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type { PostDetail } from '@/types/post';
 import { formatDate, formatNumber } from '@/lib/utils';
 import styles from './PostContent.module.css';
@@ -52,11 +51,12 @@ export default function PostContent({ post }: PostContentProps) {
                 )}
             </header>
 
-            {/* 본문 — Markdown HTML을 dangerouslySetInnerHTML로 렌더링 */}
-            <div
-                className={styles.postBody}
-                dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+            {/* 본문 — Markdown 렌더링 (react-markdown + remark-gfm) */}
+            <div className={styles.postBody}>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {post.content}
+                </ReactMarkdown>
+            </div>
         </article>
     );
 }
