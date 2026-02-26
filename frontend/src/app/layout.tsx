@@ -60,8 +60,10 @@ export default function RootLayout({
           {/* 공통 헤더 */}
           <Header />
 
-          {/* 페이지 콘텐츠 */}
-          {children}
+          {/* 페이지 콘텐츠 — 고정 헤더 높이만큼 상단 여백 */}
+          <div style={{ paddingTop: 'var(--header-height)' }}>
+            {children}
+          </div>
 
           {/* 공통 하단 UI */}
           <CookieBanner />

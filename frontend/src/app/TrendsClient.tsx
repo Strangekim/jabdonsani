@@ -7,7 +7,7 @@
    - useInfiniteScroll로 스크롤 기반 무한 로딩을 구현합니다.
    ================================================================ */
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import FilterBar from '@/components/trends/FilterBar';
 import SearchPanel from '@/components/trends/SearchPanel';
 import TrendFeed from '@/components/trends/TrendFeed';
@@ -17,6 +17,10 @@ import ScheduleWidget from '@/components/trends/ScheduleWidget';
 import { useTrends, useSearchTrends, usePopularTrends } from '@/hooks/useTrends';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { MOCK_TRENDS, MOCK_POPULAR_TRENDS } from '@/lib/mockData';
+import { useScrollDirection } from '@/hooks/useScrollDirection';
+
+/* tokens.css --header-height 와 동기화 */
+const HEADER_HEIGHT = 56;
 
 export default function TrendsClient() {
     /* 필터 상태 — FilterBar에 제어 방식으로 전달 */
@@ -57,6 +61,24 @@ export default function TrendsClient() {
     const totalCount = isTrendsError ? MOCK_TRENDS.length : totalCountRaw;
     const popularItems = popularItemsRaw.length === 0 ? MOCK_POPULAR_TRENDS : popularItemsRaw;
 
+    /* 스크롤 방향 + 필터바 고정 */
+    const scrollDir = useScrollDirection();
+    const filterWrapRef = useRef<HTMLDivElement>(null);
+    const [filterHeight, setFilterHeight] = useState(88); /* 초기 추정값 */
+
+    useEffect(() => {
+        const el = filterWrapRef.current;
+        if (!el) return;
+        /* SearchPanel 열림/닫힘 등 높이 변화를 자동 추적 */
+        const observer = new ResizeObserver(([entry]) => {
+            setFilterHeight(entry.contentRect.height);
+        });
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
+
+    const isNavHidden = scrollDir === 'down';
+
     /* 무한 스크롤 sentinel ref */
     const { sentinelRef } = useInfiniteScroll({
         onLoadMore: fetchNextPage,
@@ -83,26 +105,43 @@ export default function TrendsClient() {
 
     return (
         <>
-            {/* 필터 바 */}
-            <FilterBar
-                totalCount={displayCount}
-                isSearchOpen={isSearchOpen}
-                onSearchToggle={toggleSearch}
-                field={field}
-                onFieldChange={(val) => {
-                    setField(val);
-                    /* 필터 변경 시 검색 초기화 */
-                    setSearchQuery('');
+            {/* ── 고정 필터 래퍼 ──
+                스크롤 다운 시 헤더와 함께 위로 슬라이드 아웃,
+                스크롤 업 시 헤더 바로 아래로 슬라이드 인 */}
+            <div
+                ref={filterWrapRef}
+                style={{
+                    position: 'fixed',
+                    top: HEADER_HEIGHT,
+                    left: 0,
+                    right: 0,
+                    zIndex: 150,
+                    transform: isNavHidden
+                        ? `translateY(${-(HEADER_HEIGHT + filterHeight)}px)`
+                        : 'translateY(0)',
+                    transition: 'transform 0.25s ease',
                 }}
-                source={source}
-                onSourceChange={(val) => {
-                    setSource(val);
-                    setSearchQuery('');
-                }}
-            />
+            >
+                <FilterBar
+                    totalCount={displayCount}
+                    isSearchOpen={isSearchOpen}
+                    onSearchToggle={toggleSearch}
+                    field={field}
+                    onFieldChange={(val) => {
+                        setField(val);
+                        setSearchQuery('');
+                    }}
+                    source={source}
+                    onSourceChange={(val) => {
+                        setSource(val);
+                        setSearchQuery('');
+                    }}
+                />
+                <SearchPanel isOpen={isSearchOpen} onSearch={handleSearch} />
+            </div>
 
-            {/* 검색 패널 */}
-            <SearchPanel isOpen={isSearchOpen} onSearch={handleSearch} />
+            {/* 고정 필터바 높이만큼 spacer — fixed 요소는 flow에서 제외되므로 */}
+            <div style={{ height: filterHeight }} />
 
             {/* 메인 2단 레이아웃 */}
             <main className="page-layout page-layout-trends">

@@ -5,9 +5,10 @@ import { query } from "../../config/db";
  * UPSERT로 오늘 날짜의 count 증가
  */
 export const trackVisitorService = async (): Promise<{ tracked: true }> => {
+    /* CURRENT_DATE는 UTC 기준 → KST(UTC+9) 날짜로 변환 */
     const sql = `
         INSERT INTO visitors (visit_date, count)
-        VALUES (CURRENT_DATE, 1)
+        VALUES ((NOW() AT TIME ZONE 'Asia/Seoul')::date, 1)
         ON CONFLICT (visit_date)
         DO UPDATE SET count = visitors.count + 1
     `;

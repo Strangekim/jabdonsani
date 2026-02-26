@@ -5,9 +5,21 @@
    ================================================================ */
 
 .siteHeader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
     background: var(--color-header-bg);
     color: #fff;
     height: var(--header-height);
+    transform: translateY(0);
+    transition: transform 0.25s ease;
+}
+
+/* 아래로 스크롤 시 헤더 숨김 */
+.siteHeaderHidden {
+    transform: translateY(-100%);
 }
 
 /* 헤더 내부: max-width + 수평 패딩으로 메인 영역과 정렬 일치 */
@@ -53,6 +65,12 @@
 .navLinkActive {
     color: #fff;
     background: var(--color-accent);
+}
+
+/* 활성 탭 hover — .navLink:hover(0-2-0)가 .navLinkActive(0-1-0)를 덮는 문제 방지 */
+.navLinkActive:hover {
+    color: #fff;
+    background: var(--color-accent-hover);
 }
 
 /* 우측: 방문자 수 배지 */

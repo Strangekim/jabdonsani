@@ -32,16 +32,20 @@
     justify-content: center;
 }
 
+/* 1~3위: 같은 blue 계열, 진하기로 차등 */
 .rank1 {
-    background: var(--color-accent);
+    background: #1e40af; /* blue-800 */
+    color: #fff;
 }
 
 .rank2 {
-    background: #2dd4bf;
+    background: var(--color-accent); /* blue-600 */
+    color: #fff;
 }
 
 .rank3 {
-    background: #5eead4;
+    background: #60a5fa; /* blue-400 */
+    color: #fff;
 }
 
 .rankOther {

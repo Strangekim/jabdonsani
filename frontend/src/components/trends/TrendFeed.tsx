@@ -15,7 +15,7 @@ interface TrendFeedProps {
 
 export default function TrendFeed({ items }: TrendFeedProps) {
     return (
-        <section style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+        <section>
             {items.map((item) => (
                 <TrendCard key={item.id} item={item} />
             ))}

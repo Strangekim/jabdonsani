@@ -15,7 +15,7 @@ interface PopularWidgetProps {
     items: TrendPopularItem[];
 }
 
-/** 순위별 CSS 클래스 매핑 */
+/** 순위별 CSS 클래스 — 같은 blue 계열로 통일 */
 const RANK_CLASS = [styles.rank1, styles.rank2, styles.rank3];
 
 export default function PopularWidget({ items }: PopularWidgetProps) {
@@ -24,10 +24,7 @@ export default function PopularWidget({ items }: PopularWidgetProps) {
             <ul className={styles.popularList}>
                 {items.map((item, idx) => (
                     <li key={item.id} className={styles.popularItem}>
-                        <span
-                            className={`${styles.popularRank} ${RANK_CLASS[idx] || styles.rankOther
-                                }`}
-                        >
+                        <span className={`${styles.popularRank} ${RANK_CLASS[idx] ?? styles.rankOther}`}>
                             {idx + 1}
                         </span>
                         <div className={styles.popularInfo}>

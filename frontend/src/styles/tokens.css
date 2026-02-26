@@ -1,24 +1,24 @@
 /* ================================================================
    디자인 토큰 — 프로젝트 전역에서 사용되는 CSS 커스텀 속성
-   기획서 "Palette C — Teal Accent" 컬러 팔레트를 기반으로 함
+   쿨톤 팔레트 — GitHub/Linear 계열 Blue 기반
    ================================================================ */
 
 :root {
     /* ── 컬러 팔레트 ── */
     --color-header-bg: #0f172a;
-    /* 헤더 배경: Dark Navy */
+    /* 헤더 배경: Cool Dark Slate */
     --color-page-bg: #f8fafc;
-    /* 페이지 배경: Off White */
+    /* 페이지 배경: Cool Off-White */
     --color-card-bg: #ffffff;
     /* 카드 배경: White */
-    --color-accent: #c2410c;
-    /* 포인트 컬러: Warm Orange */
-    --color-accent-hover: #9a3412;
-    /* 포인트 호버: 짙은 Orange */
-    --color-accent-light: #fff7ed;
-    /* accent 밝은 배경 */
+    --color-accent: #2563eb;
+    /* 포인트 컬러: Blue-600 (GitHub/Linear 계열) */
+    --color-accent-hover: #1d4ed8;
+    /* 포인트 호버: Blue-700 */
+    --color-accent-light: #eff6ff;
+    /* accent 밝은 배경: Blue-50 */
     --color-text-primary: #0f172a;
-    /* 텍스트 Primary: Dark */
+    /* 텍스트 Primary: Cool Dark */
     --color-text-secondary: #475569;
     /* 텍스트 Secondary: Slate */
     --color-text-muted: #64748b;
@@ -27,14 +27,14 @@
     /* 보더 */
 
     /* ── 소스별 배지 컬러 (동향 탭) ── */
-    --color-source-hn: #ff6600;
-    /* Hacker News: 오렌지 */
-    --color-source-hfpapers: #f59e0b;
-    /* HF Papers: 앰버 (HuggingFace 브랜드 컬러) */
-    --color-source-devto: #3b82f6;
-    /* Dev.to: 블루 */
-    --color-source-lobsters: #e11d48;
-    /* Lobste.rs: 로즈 (랍스터 배지 색) */
+    --color-source-hn: #ea580c;
+    /* Hacker News: Orange-600 */
+    --color-source-hfpapers: #7c3aed;
+    /* HF Papers: Violet-700 */
+    --color-source-devto: #0891b2;
+    /* Dev.to: Cyan-600 (accent blue와 구분) */
+    --color-source-lobsters: #dc2626;
+    /* Lobste.rs: Red-600 */
 
     /* ── 타이포그래피 ── */
     --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont,

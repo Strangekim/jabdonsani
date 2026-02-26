@@ -2,24 +2,19 @@
    TrendCard 컴포넌트 스타일 — Reddit 스타일 동향 피드 카드
    ================================================================ */
 
-/* 카드 컨테이너 */
+/* 카드 컨테이너 — X(트위터) 스타일: 카드 박스 없이 구분선으로만 분리 */
 .card {
     background: var(--color-card-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-card);
-    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
-    animation: fadeInUp 0.5s ease both;
+    border-bottom: 1px solid var(--color-border);
+    transition: background var(--transition-fast);
 }
 
 .card:hover {
-    box-shadow: var(--shadow-card-hover);
-    transform: translateY(-2px);
+    background: var(--color-page-bg);
 }
 
 .cardBody {
-    padding: 20px 22px;
+    padding: 18px 20px;
 }
 
 /* 상단: 소스 배지 + 시각 + 태그 */
@@ -98,7 +93,7 @@
 
 /* 썸네일 캐러셀 */
 .cardImage {
-    margin: 0 -22px 14px;
+    margin: 0 -20px 14px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     display: flex;
@@ -216,7 +211,7 @@
 /* ── 반응형: 모바일 ── */
 @media (max-width: 480px) {
     .cardBody {
-        padding: 16px;
+        padding: 14px 16px;
     }
 
     .cardImage {

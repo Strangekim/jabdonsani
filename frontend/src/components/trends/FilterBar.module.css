@@ -69,6 +69,14 @@
     border-color: var(--color-accent);
 }
 
+/* 활성 버튼 hover — :hover 명시도(0-2-0)가 .filterBtnActive(0-1-0)보다 높아
+   덮어쓰는 문제를 막기 위해 명시적으로 재선언 */
+.filterBtnActive:hover {
+    background: var(--color-accent-hover);
+    color: #fff;
+    border-color: var(--color-accent-hover);
+}
+
 /* 구분선 */
 .filterDivider {
     width: 100%;
@@ -120,6 +128,12 @@
     background: var(--color-accent);
     color: #fff;
     border-color: var(--color-accent);
+}
+
+.searchToggleBtnActive:hover {
+    background: var(--color-accent-hover);
+    color: #fff;
+    border-color: var(--color-accent-hover);
 }
 
 .searchToggleIcon {

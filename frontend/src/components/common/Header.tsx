@@ -15,12 +15,14 @@ import Logo from './Logo';
 import { NAV_ITEMS } from '@/constants/navigation';
 import { formatNumber } from '@/lib/utils';
 import { useVisitors, useTrackVisitor } from '@/hooks/useVisitors';
+import { useScrollDirection } from '@/hooks/useScrollDirection';
 import styles from './Header.module.css';
 
 export default function Header() {
     const pathname = usePathname();
     const { data: visitors } = useVisitors();
     useTrackVisitor();
+    const scrollDir = useScrollDirection();
 
     /**
      * 현재 경로와 네비게이션 항목을 비교하여 활성 탭을 판별
@@ -33,7 +35,7 @@ export default function Header() {
     };
 
     return (
-        <header className={styles.siteHeader}>
+        <header className={`${styles.siteHeader} ${scrollDir === 'down' ? styles.siteHeaderHidden : ''}`}>
             <div className={styles.headerInner}>
                 {/* 좌측: 로고 + 탭 네비게이션 */}
                 <div className={styles.headerLeft}>

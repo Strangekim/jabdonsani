@@ -30,6 +30,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden; /* html과 함께 body에도 적용해야 모바일 가로 스크롤 완전 차단 */
 }
 
 /* ── 링크 기본 스타일 ── */
@@ -112,6 +113,7 @@ img {
 
 .page-layout-trends {
   grid-template-columns: 1fr var(--sidebar-width);
+  padding-top: 0; /* 필터바 바로 아래 여백 제거 */
 }
 
 .page-layout-sub {
@@ -127,5 +129,20 @@ img {
   .page-layout-trends,
   .page-layout-sub {
     grid-template-columns: 1fr;
+  }
+}
+
+/* 모바일: 좌우 패딩 축소 */
+@media (max-width: 480px) {
+  .page-layout {
+    padding: 12px 14px;
+    gap: 16px;
+  }
+
+  /* 동향 피드: 상하좌우 여백 완전 제거 (X 스타일 full-bleed) */
+  .page-layout-trends {
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 }
