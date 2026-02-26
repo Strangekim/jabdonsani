@@ -45,11 +45,11 @@ jobs:
 
             # Docker Compose로 재빌드 및 재시작
             echo "🐳 Rebuilding and restarting containers..."
-            docker-compose down
-            docker-compose up -d --build
+            sudo docker-compose down
+            sudo docker-compose up -d --build
 
             # 사용하지 않는 이미지 정리
             echo "🧹 Cleaning up unused images..."
-            docker image prune -f
+            sudo docker image prune -f
 
             echo "========== 배포 완료 =========="
