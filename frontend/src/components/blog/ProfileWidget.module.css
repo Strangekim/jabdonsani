@@ -64,3 +64,49 @@
 .profileLinkIcon {
     font-size: 16px;
 }
+
+/* 포트폴리오 섹션 */
+.portfolioSection {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+}
+
+.portfolioLabel {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.portfolioList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.portfolioItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    padding: 5px 8px;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.portfolioItem:hover {
+    background: var(--color-accent-light);
+    color: var(--color-accent);
+}
+
+.portfolioIcon {
+    font-size: 16px;
+    color: var(--color-accent);
+    flex-shrink: 0;
+}

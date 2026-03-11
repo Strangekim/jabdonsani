@@ -17,7 +17,7 @@ export default function ProfileWidget() {
 
                 {/* 프로필 정보 */}
                 <div className={styles.profileInfo}>
-                    <span className={styles.profileName}>관리자</span>
+                    <span className={styles.profileName}>김연호</span>
                     <span className={styles.profileBio}>
                         개발을 좋아하는 엔지니어입니다.
                     </span>
@@ -26,7 +26,7 @@ export default function ProfileWidget() {
 
             {/* 링크 */}
             <div className={styles.profileLinks}>
-                <a href="#" className={styles.profileLink}>
+                <a href="https://github.com/Strangekim" target="_blank" rel="noopener noreferrer" className={styles.profileLink}>
                     <span
                         className={`material-symbols-outlined ${styles.profileLinkIcon}`}
                     >
@@ -42,6 +42,52 @@ export default function ProfileWidget() {
                     </span>
                     이메일
                 </a>
+            </div>
+
+            {/* 포트폴리오 PDF */}
+            <div className={styles.portfolioSection}>
+                <span className={styles.portfolioLabel}>포트폴리오</span>
+                <div className={styles.portfolioList}>
+                    <a
+                        href="/portfolio/stylelicense.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.portfolioItem}
+                    >
+                        <span
+                            className={`material-symbols-outlined ${styles.portfolioIcon}`}
+                        >
+                            picture_as_pdf
+                        </span>
+                        StyleLicense
+                    </a>
+                    <a
+                        href="/portfolio/savings.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.portfolioItem}
+                    >
+                        <span
+                            className={`material-symbols-outlined ${styles.portfolioIcon}`}
+                        >
+                            picture_as_pdf
+                        </span>
+                        적금통 키우기
+                    </a>
+                    <a
+                        href="/portfolio/football.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.portfolioItem}
+                    >
+                        <span
+                            className={`material-symbols-outlined ${styles.portfolioIcon}`}
+                        >
+                            picture_as_pdf
+                        </span>
+                        풋볼광장
+                    </a>
+                </div>
             </div>
         </Widget>
     );

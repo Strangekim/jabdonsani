@@ -5,7 +5,9 @@
       "Bash(node:*)",
       "Bash(grep:*)",
       "Bash(cd /c/Users/SSAFY/Desktop/pjt/jabdonsani/backend && npx tsc --noEmit 2>&1)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(find \"/c/Users/SSAFY/Desktop/pjt/saving_box_challenge_backend\" -type f -name \"*.js\" -o -name \"*.ts\" -o -name \"*.json\" -o -name \"*.html\" 2>/dev/null | grep -v node_modules | grep -v \".git\" | head -100)",
+      "Bash(find \"/c/Users/SSAFY/Desktop/pjt/14th-ai2\" -type f -name \"*.js\" -o -name \"*.ts\" -o -name \"*.jsx\" -o -name \"*.tsx\" -o -name \"*.html\" -o -name \"package.json\" 2>/dev/null | head -100)"
     ]
   }
 }

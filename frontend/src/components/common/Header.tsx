@@ -18,11 +18,17 @@ import { useVisitors, useTrackVisitor } from '@/hooks/useVisitors';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 import styles from './Header.module.css';
 
+/** 헤더를 완전히 숨기는 게임 전용 라우트 */
+const GAME_ROUTES = ['/stuff/watermelon', '/stuff/bugshooter', '/stuff/bowling'];
+
 export default function Header() {
     const pathname = usePathname();
     const { data: visitors } = useVisitors();
     useTrackVisitor();
     const scrollDir = useScrollDirection();
+
+    /* 게임 페이지에서는 헤더 미렌더 */
+    if (GAME_ROUTES.some((r) => pathname.startsWith(r))) return null;
 
     /**
      * 현재 경로와 네비게이션 항목을 비교하여 활성 탭을 판별

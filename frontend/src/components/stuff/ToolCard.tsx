@@ -39,7 +39,11 @@ export default function ToolCard({ tool }: ToolCardProps) {
                 </>
             ) : (
                 <>
-                    {tool.icon && <span className={styles.cardIcon}>{tool.icon}</span>}
+                    {tool.icon && (
+                        <span className={`material-symbols-outlined ${styles.cardIcon}`}>
+                            {tool.icon}
+                        </span>
+                    )}
                     <span className={styles.cardName}>{tool.name}</span>
                     <span className={styles.cardDesc}>{tool.description}</span>
                 </>

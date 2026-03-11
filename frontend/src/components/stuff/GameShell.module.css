@@ -1,0 +1,56 @@
+/* ================================================================
+   GameShell 스타일 — 웹 게임 iframe 래퍼
+   헤더 아래 전체 영역을 게임 화면으로 채웁니다.
+   ================================================================ */
+
+/* 전체 컨테이너: 뷰포트 풀사이즈 (헤더 미사용) */
+.shell {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    background: #000;
+}
+
+/* 상단 내비 바 */
+.topBar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+    height: 40px;
+    background: #0f172a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+}
+
+.backBtn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.backBtn:hover {
+    color: #e2e8f0;
+}
+
+.gameTitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e2e8f0;
+}
+
+/* 게임 iframe: 남은 공간 전체 사용 */
+.frame {
+    flex: 1;
+    width: 100%;
+    border: none;
+}

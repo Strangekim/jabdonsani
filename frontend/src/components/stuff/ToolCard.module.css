@@ -73,6 +73,22 @@
     background: linear-gradient(135deg, #ca8a04, #facc15);
 }
 
+.diceRoller {
+    background: linear-gradient(135deg, #0f766e, #2dd4bf);
+}
+
+.watermelonGame {
+    background: linear-gradient(135deg, #be185d, #fb7185);
+}
+
+.bugShooterGame {
+    background: linear-gradient(135deg, #166534, #4ade80);
+}
+
+.bowlingGame {
+    background: linear-gradient(135deg, #1e3a5f, #3b82f6);
+}
+
 /* 아이콘 */
 .cardIcon {
     font-size: 34px;

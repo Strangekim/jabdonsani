@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Header from '@/components/common/Header';
+import ContentWrapper from '@/components/common/ContentWrapper';
 import CookieBanner from '@/components/common/CookieBanner';
 import ScrollToTop from '@/components/common/ScrollToTop';
 import QueryProvider from '@/components/common/QueryProvider';
@@ -60,10 +61,10 @@ export default function RootLayout({
           {/* 공통 헤더 */}
           <Header />
 
-          {/* 페이지 콘텐츠 — 고정 헤더 높이만큼 상단 여백 */}
-          <div style={{ paddingTop: 'var(--header-height)' }}>
+          {/* 페이지 콘텐츠 — 고정 헤더 높이만큼 상단 여백 (게임 페이지 제외) */}
+          <ContentWrapper>
             {children}
-          </div>
+          </ContentWrapper>
 
           {/* 공통 하단 UI */}
           <CookieBanner />

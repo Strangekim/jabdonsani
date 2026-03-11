@@ -7,6 +7,8 @@
     background: var(--color-card-bg);
     border-bottom: 1px solid var(--color-border);
     transition: background var(--transition-fast);
+    /* 내부 긴 텍스트/이미지가 카드 바깥으로 삐져나오지 않도록 */
+    overflow-x: hidden;
 }
 
 .card:hover {
@@ -81,6 +83,8 @@
     line-height: 1.4;
     margin-bottom: 8px;
     color: var(--color-text-primary);
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 /* 본문 */
@@ -89,6 +93,8 @@
     line-height: 1.8;
     color: var(--color-text-primary);
     margin-bottom: 14px;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 /* 썸네일 캐러셀 */
@@ -138,6 +144,8 @@
     margin-bottom: 12px;
     border-left: 3px solid var(--color-accent);
     padding: 2px 0 2px 12px;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 /* 상위 댓글 목록 */

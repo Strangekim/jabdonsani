@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bug Slayer</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: radial-gradient(
+          circle at top,
+          #4fc3f7 0,
+          #1a237e 45%,
+          #0d0221 100%
+        );
+        color: #fff;
+      }
+      #game-container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+      }
+      #ui-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 12px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        pointer-events: none;
+        font-size: 18px;
+        text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
+        z-index: 2;
+      }
+      #ui-left,
+      #ui-right {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+      #logo {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #ffeb3b;
+      }
+      #score,
+      #shots {
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 0, 0, 0.7),
+          rgba(33, 33, 33, 0.7)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+      #center-crosshair {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 26px;
+        height: 26px;
+        margin-left: -13px;
+        margin-top: -13px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.95);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+        pointer-events: none;
+        z-index: 2;
+      }
+      #center-crosshair::before,
+      #center-crosshair::after {
+        content: "";
+        position: absolute;
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 2px;
+      }
+      #center-crosshair::before {
+        left: 50%;
+        top: 4px;
+        width: 2px;
+        height: 18px;
+        transform: translateX(-50%);
+      }
+      #center-crosshair::after {
+        top: 50%;
+        left: 4px;
+        width: 18px;
+        height: 2px;
+        transform: translateY(-50%);
+      }
+      #bottom-panel {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        padding: 14px 24px 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        pointer-events: none;
+        text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.5),
+          rgba(0, 0, 0, 0)
+        );
+        z-index: 2;
+      }
+      #message {
+        font-size: 17px;
+        max-width: 60%;
+      }
+      #start-button,
+      #restart-button {
+        pointer-events: auto;
+        padding: 9px 22px;
+        border-radius: 999px;
+        border: none;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        background: linear-gradient(135deg, #ff6b6b, #ffd54f);
+        color: #111;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+        transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+      }
+      #start-button:hover,
+      #restart-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
+        filter: brightness(1.05);
+      }
+      #start-button:active,
+      #restart-button:active {
+        transform: translateY(1px) scale(0.98);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+      }
+      #hint {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, 120%);
+        font-size: 14px;
+        opacity: 0.7;
+        pointer-events: none;
+        z-index: 2;
+      }
+      #end-panel {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px 28px;
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.78);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        z-index: 5;
+        pointer-events: auto;
+        text-align: center;
+      }
+      #end-score-text {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      #end-restart-button {
+        padding: 8px 20px;
+        border-radius: 999px;
+        border: none;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        background: linear-gradient(135deg, #ffeb3b, #ff9800);
+        color: #111;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <div id="ui-overlay">
+        <div id="ui-left">
+          <div id="logo">BUG SLAYER</div>
+        </div>
+        <div id="ui-right">
+          <div id="score">점수: 0</div>
+          <div id="shots">남은 탄환: 10</div>
+        </div>
+      </div>
+      <div id="center-crosshair"></div>
+      <div id="bottom-panel">
+        <div id="message">게임 시작을 눌러 벌레들을 소탕하세요!</div>
+        <div>
+          <button id="start-button">게임 시작</button>
+          <button id="restart-button" style="display: none">다시 하기</button>
+        </div>
+      </div>
+      <div id="hint">마우스를 움직여 조준, 화면을 클릭해 발사합니다.</div>
+    </div>
+
+    <!-- Three.js CDN -->
+    <script type="module">
+      import * as THREE from 'https://unpkg.com/three@0.161.0/build/three.module.js';
+      const container = document.getElementById("game-container");
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.Fog(0x1e1f3b, 25, 60);
+
+      const camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        200
+      );
+      camera.position.set(0, 3.5, 12);
+      camera.lookAt(0, 2, -10);
+
+      const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      const hemiLight = new THREE.HemisphereLight(0xfff9c4, 0x263238, 0.9);
+      hemiLight.position.set(0, 50, 0);
+      scene.add(hemiLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.85);
+      dirLight.position.set(-10, 20, 10);
+      dirLight.castShadow = true;
+      dirLight.shadow.mapSize.set(2048, 2048);
+      dirLight.shadow.camera.left = -40;
+      dirLight.shadow.camera.right = 40;
+      dirLight.shadow.camera.top = 40;
+      dirLight.shadow.camera.bottom = -40;
+      scene.add(dirLight);
+
+      const groundGeo = new THREE.PlaneGeometry(80, 80, 40, 40);
+      const groundMat = new THREE.MeshStandardMaterial({
+        color: 0x1b5e20,
+        roughness: 0.9,
+        metalness: 0.0,
+      });
+      const ground = new THREE.Mesh(groundGeo, groundMat);
+      ground.rotation.x = -Math.PI / 2;
+      ground.position.y = 0;
+      ground.receiveShadow = true;
+      scene.add(ground);
+
+      const gridGeo = new THREE.PlaneGeometry(60, 60, 20, 20);
+      const gridMat = new THREE.MeshBasicMaterial({
+        color: 0x00e5ff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.12,
+      });
+      const grid = new THREE.Mesh(gridGeo, gridMat);
+      grid.rotation.x = -Math.PI / 2;
+      grid.position.y = 0.01;
+      scene.add(grid);
+
+      const bugs = [];
+      const bugGroup = new THREE.Group();
+      scene.add(bugGroup);
+
+      const bombs = [];
+      const bombGroup = new THREE.Group();
+      scene.add(bombGroup);
+
+      function createBug(color, options = {}) {
+        const bug = new THREE.Group();
+
+        const abdomenGeo = new THREE.SphereGeometry(0.35, 18, 18);
+        const abdomenMat = new THREE.MeshStandardMaterial({
+          color,
+          roughness: 0.4,
+          metalness: 0.3,
+        });
+        const abdomen = new THREE.Mesh(abdomenGeo, abdomenMat);
+        abdomen.castShadow = true;
+        abdomen.position.set(0, 0, -0.15);
+
+        const thoraxGeo = new THREE.SphereGeometry(0.3, 18, 18);
+        const thoraxMat = new THREE.MeshStandardMaterial({
+          color: new THREE.Color(color).offsetHSL(0.02, 0, 0.05),
+        });
+        const thorax = new THREE.Mesh(thoraxGeo, thoraxMat);
+        thorax.castShadow = true;
+        thorax.position.set(0, 0, 0.2);
+
+        const headGeo = new THREE.SphereGeometry(0.25, 18, 18);
+        const headMat = new THREE.MeshStandardMaterial({
+          color: 0x263238,
+        });
+        const head = new THREE.Mesh(headGeo, headMat);
+        head.castShadow = true;
+        head.position.set(0, 0.05, 0.55);
+
+        const eyeGeo = new THREE.SphereGeometry(0.08, 16, 16);
+        const eyeWhiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+        const leftEye = new THREE.Mesh(eyeGeo, eyeWhiteMat);
+        const rightEye = new THREE.Mesh(eyeGeo, eyeWhiteMat);
+        leftEye.position.set(-0.11, 0.1, 0.67);
+        rightEye.position.set(0.11, 0.1, 0.67);
+
+        const pupilGeo = new THREE.SphereGeometry(0.04, 16, 16);
+        const pupilMat = new THREE.MeshStandardMaterial({ color: 0x000000 });
+        const leftPupil = new THREE.Mesh(pupilGeo, pupilMat);
+        const rightPupil = new THREE.Mesh(pupilGeo, pupilMat);
+        leftPupil.position.set(-0.11, 0.1, 0.71);
+        rightPupil.position.set(0.11, 0.1, 0.71);
+
+        const antennaGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.4, 8);
+        const antennaMat = new THREE.MeshStandardMaterial({ color: 0xffeb3b });
+        const leftAnt = new THREE.Mesh(antennaGeo, antennaMat);
+        const rightAnt = new THREE.Mesh(antennaGeo, antennaMat);
+        leftAnt.position.set(-0.08, 0.3, 0.6);
+        leftAnt.rotation.z = 0.3;
+        rightAnt.position.set(0.08, 0.3, 0.6);
+        rightAnt.rotation.z = -0.3;
+
+        const legGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.6, 6);
+        const legMat = new THREE.MeshStandardMaterial({ color: 0x212121 });
+        const legOffsets = [-0.2, 0, 0.2];
+        legOffsets.forEach((off) => {
+          const leftLeg = new THREE.Mesh(legGeo, legMat);
+          const rightLeg = new THREE.Mesh(legGeo, legMat);
+          leftLeg.position.set(-0.35, -0.1, off);
+          rightLeg.position.set(0.35, -0.1, off);
+          leftLeg.rotation.z = Math.PI / 2.8;
+          rightLeg.rotation.z = -Math.PI / 2.8;
+          leftLeg.castShadow = true;
+          rightLeg.castShadow = true;
+          bug.add(leftLeg, rightLeg);
+        });
+
+        bug.add(
+          abdomen,
+          thorax,
+          head,
+          leftEye,
+          rightEye,
+          leftPupil,
+          rightPupil,
+          leftAnt,
+          rightAnt
+        );
+        bug.userData.isBug = true;
+
+        if (options.rainbow) {
+          bug.userData.isRainbow = true;
+          bug.userData.rainbowPhase = Math.random() * Math.PI * 2;
+          bug.userData.rainbowSpeed = 0.8 + Math.random() * 1.2;
+          bug.userData.rainbowMeshes = [abdomen, thorax];
+        }
+
+        return bug;
+      }
+
+      function createBomb() {
+        const bombGroupMesh = new THREE.Group();
+
+        const bodyGeo = new THREE.SphereGeometry(0.4, 16, 16);
+        const bodyMat = new THREE.MeshStandardMaterial({
+          color: 0x212121,
+          metalness: 0.6,
+          roughness: 0.3,
+        });
+        const body = new THREE.Mesh(bodyGeo, bodyMat);
+        body.castShadow = true;
+        bombGroupMesh.add(body);
+
+        const fuseGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.6, 8);
+        const fuseMat = new THREE.MeshStandardMaterial({ color: 0xffc107 });
+        const fuse = new THREE.Mesh(fuseGeo, fuseMat);
+        fuse.position.set(0, 0.6, 0);
+        fuse.castShadow = true;
+        bombGroupMesh.add(fuse);
+
+        bombGroupMesh.userData.isBomb = true;
+        return bombGroupMesh;
+      }
+
+      const BUG_TYPES = [
+        { color: 0xff6b6b, score: 10, speedMultiplier: 1.2 },
+        { color: 0xffca28, score: 15, speedMultiplier: 1.4 },
+        { color: 0x4dd0e1, score: 20, speedMultiplier: 1.6 },
+        { color: 0xba68c8, score: 30, speedMultiplier: 1.8 },
+        { color: 0x8bc34a, score: 5, speedMultiplier: 1.0 },
+        { color: 0xffffff, score: 80, speedMultiplier: 2.4, rainbow: true },
+      ];
+
+      function spawnBugs(count = 90) {
+        while (bugGroup.children.length > 0) {
+          bugGroup.remove(bugGroup.children[0]);
+        }
+        bugs.length = 0;
+
+        for (let i = 0; i < count; i++) {
+          const type = BUG_TYPES[i % BUG_TYPES.length];
+          const bug = createBug(type.color, { rainbow: !!type.rainbow });
+
+          // 왼쪽 아래에서 날아오는 클레이 느낌의 시작 위치
+          const x = -15 - Math.random() * 10;
+          const z = -Math.random() * 40 - 5;
+          const y = 1.5 + Math.random() * 6;
+          bug.position.set(x, y, z);
+          bug.rotation.y = Math.random() * Math.PI * 2;
+
+          // 오른쪽 위 방향으로 더 빠르게 비행 (클레이 사격 느낌)
+          const baseSpeed = 7;
+          const direction = new THREE.Vector3(
+            1,
+            0.1 + Math.random() * 0.25,
+            (Math.random() - 0.5) * 0.35
+          ).normalize();
+          const speedRandom = 0.8 + Math.random() * 0.6;
+          const speed = baseSpeed * type.speedMultiplier * speedRandom;
+          bug.userData.velocity = direction.multiplyScalar(speed);
+          bug.userData.score = type.score;
+
+          bugGroup.add(bug);
+          bugs.push(bug);
+        }
+      }
+
+      function spawnBombs(count = 8) {
+        while (bombGroup.children.length > 0) {
+          bombGroup.remove(bombGroup.children[0]);
+        }
+        bombs.length = 0;
+
+        for (let i = 0; i < count; i++) {
+          const bomb = createBomb();
+
+          const x = -18 - Math.random() * 8;
+          const z = -Math.random() * 40 - 5;
+          const y = 1.5 + Math.random() * 5;
+          bomb.position.set(x, y, z);
+
+          const baseSpeed = 6 + Math.random() * 2;
+          const direction = new THREE.Vector3(
+            1,
+            0.05 + Math.random() * 0.15,
+            (Math.random() - 0.5) * 0.25
+          ).normalize();
+
+          bomb.userData.velocity = direction.multiplyScalar(baseSpeed);
+          bombGroup.add(bomb);
+          bombs.push(bomb);
+        }
+      }
+
+      const scoreEl = document.getElementById("score");
+      const shotsEl = document.getElementById("shots");
+      const messageEl = document.getElementById("message");
+      const startButton = document.getElementById("start-button");
+      const restartButton = document.getElementById("restart-button");
+      const hintEl = document.getElementById("hint");
+      const bottomPanel = document.getElementById("bottom-panel");
+
+      const endPanel = document.createElement("div");
+      endPanel.id = "end-panel";
+      endPanel.style.display = "none";
+      endPanel.innerHTML = `
+        <div>라운드 종료</div>
+        <div id="end-score-text">점수: 0점</div>
+        <button id="end-restart-button">다시 하기</button>
+      `;
+      container.appendChild(endPanel);
+      const endScoreText = endPanel.querySelector("#end-score-text");
+      const endRestartButton = endPanel.querySelector("#end-restart-button");
+
+      let score = 0;
+      let remainingShots = 10;
+      let isPlaying = false;
+
+      function updateUI() {
+        scoreEl.textContent = `점수: ${score}`;
+        shotsEl.textContent = `남은 탄환: ${remainingShots}`;
+      }
+
+      function startGame() {
+        score = 0;
+        remainingShots = 10;
+        isPlaying = true;
+        updateUI();
+        spawnBugs();
+        spawnBombs();
+        messageEl.textContent = "벌레에게 조준을 맞추고, 클릭해서 사격!";
+        startButton.style.display = "none";
+        restartButton.style.display = "none";
+        hintEl.style.opacity = 0.6;
+        endPanel.style.display = "none";
+      }
+
+      function endGame() {
+        isPlaying = false;
+        messageEl.textContent = `게임 종료! 최종 점수: ${score}점`;
+        restartButton.style.display = "inline-block";
+        hintEl.style.opacity = 0.2;
+
+        endScoreText.textContent = "점수: " + score + "점";
+        endPanel.style.display = "flex";
+      }
+
+      startButton.addEventListener("click", startGame);
+      restartButton.addEventListener("click", startGame);
+      endRestartButton.addEventListener("click", startGame);
+
+      let isAiming = false;
+
+      // window.addEventListener("mousemove", onMouseMove);
+
+      const raycaster = new THREE.Raycaster();
+
+      const muzzleFlashGroup = new THREE.Group();
+      camera.add(muzzleFlashGroup);
+      scene.add(camera);
+
+      const muzzleGeo = new THREE.PlaneGeometry(0.7, 0.7);
+      const muzzleMat = new THREE.MeshBasicMaterial({
+        color: 0xfff176,
+        transparent: true,
+        opacity: 0,
+        side: THREE.DoubleSide,
+      });
+      const muzzleFlash = new THREE.Mesh(muzzleGeo, muzzleMat);
+      muzzleFlash.position.set(0, -0.1, -2);
+      muzzleFlashGroup.add(muzzleFlash);
+
+      let muzzleFlashTime = 0;
+
+      function playMuzzleFlash() {
+        muzzleFlashTime = 0.08;
+        muzzleMat.opacity = 1;
+        muzzleFlash.rotation.z = Math.random() * Math.PI * 2;
+      }
+
+      const particles = [];
+      const tracers = [];
+
+      function spawnHitEffect(position) {
+        const count = 10 + Math.floor(Math.random() * 10);
+        for (let i = 0; i < count; i++) {
+          const g = new THREE.SphereGeometry(0.05 + Math.random() * 0.06, 8, 8);
+          const m = new THREE.MeshStandardMaterial({
+            color: 0xffeb3b,
+            emissive: 0xfff176,
+            emissiveIntensity: 0.8,
+          });
+          const p = new THREE.Mesh(g, m);
+          p.castShadow = true;
+          p.position.copy(position);
+          scene.add(p);
+
+          const dir = new THREE.Vector3(
+            (Math.random() - 0.5) * 2,
+            Math.random() * 2,
+            (Math.random() - 0.5) * 2
+          )
+            .normalize()
+            .multiplyScalar(0.12 + Math.random() * 0.18);
+
+          particles.push({
+            mesh: p,
+            velocity: dir,
+            life: 0.6 + Math.random() * 0.4,
+          });
+        }
+      }
+
+      const crosshairEl = document.getElementById("center-crosshair");
+      let aimX = 0;
+      let aimY = 0;
+
+      window.addEventListener("pointerdown", (event) => {
+        if (!isPlaying) return;
+        isAiming = true;
+        crosshairEl.style.display = 'block'; 
+      });
+
+      window.addEventListener("pointermove", (event) => {
+        if (!isAiming || !isPlaying) return;
+        
+        const x = (event.clientX / window.innerWidth) * 2 - 1;
+        const y = -(event.clientY / window.innerHeight) * 2 + 1;
+        aimX = x;
+        aimY = y;
+        
+        crosshairEl.style.left = `${event.clientX}px`;
+        crosshairEl.style.top = `${event.clientY}px`;
+      });
+
+      window.addEventListener("pointerup", () => {
+        if (!isAiming || !isPlaying) return;
+        shoot(aimX, aimY);
+        isAiming = false;
+        
+        aimX = 0;
+        aimY = 0;
+        crosshairEl.style.left = `50%`;
+        crosshairEl.style.top = `50%`;
+      });
+
+      function shoot(x, y) {
+        if (!isPlaying || remainingShots <= 0) return;
+
+        remainingShots--;
+        updateUI();
+        playMuzzleFlash();
+
+        const hitBugs = new Set();
+        const hitBombs = new Set();
+        let gainedScore = 0;
+        let lostScore = 0;
+        const pellets = 8;
+        const spread = 0.15;
+
+        for (let i = 0; i < pellets; i++) {
+          const offsetX = (Math.random() - 0.5) * spread;
+          const offsetY = (Math.random() - 0.5) * spread;
+
+          raycaster.setFromCamera({ x: x + offsetX, y: y + offsetY }, camera);
+
+          // Create tracer line
+          const tracerMat = new THREE.LineBasicMaterial({
+            color: 0xfff176,
+            linewidth: 2,
+            transparent: true,
+            opacity: 0.8,
+          });
+          const muzzlePos = new THREE.Vector3(0, -0.2, -2);
+          camera.localToWorld(muzzlePos);
+          
+          const tracerEnd = new THREE.Vector3(x + offsetX, y + offsetY, -1).unproject(camera);
+          const direction = tracerEnd.sub(muzzlePos).normalize();
+          const tracerLength = 80;
+          const endPos = muzzlePos.clone().add(direction.multiplyScalar(tracerLength));
+
+          const points = [muzzlePos, endPos];
+          const tracerGeo = new THREE.BufferGeometry().setFromPoints(points);
+          const tracerLine = new THREE.Line(tracerGeo, tracerMat);
+          scene.add(tracerLine);
+          tracers.push({ line: tracerLine, life: 0.15 });
+
+          const bugHits = raycaster.intersectObjects(bugGroup.children, true);
+          if (bugHits.length > 0) {
+            for (const hit of bugHits) {
+              let hitObject = hit.object;
+              while (hitObject.parent && !hitObject.userData.isBug) {
+                hitObject = hitObject.parent;
+              }
+
+              if (hitObject.userData.isBug && !hitBugs.has(hitObject.id)) {
+                hitBugs.add(hitObject.id);
+                const bugScore = hitObject.userData.score || 1;
+                score += bugScore;
+                gainedScore += bugScore;
+                
+                const hitPos = new THREE.Vector3();
+                hitObject.getWorldPosition(hitPos);
+                spawnHitEffect(hitPos);
+                
+                hitObject.userData.isHit = true; 
+              }
+            }
+          }
+
+          const bombHits = raycaster.intersectObjects(bombGroup.children, true);
+          if (bombHits.length > 0) {
+            for (const hit of bombHits) {
+              let hitObject = hit.object;
+              while (hitObject.parent && !hitObject.userData.isBomb) {
+                hitObject = hitObject.parent;
+              }
+
+              if (hitObject.userData.isBomb && !hitBombs.has(hitObject.id)) {
+                hitBombs.add(hitObject.id);
+                const penalty = 20;
+                score = Math.max(0, score - penalty);
+                lostScore += penalty;
+
+                const hitPos = new THREE.Vector3();
+                hitObject.getWorldPosition(hitPos);
+                spawnHitEffect(hitPos);
+
+                hitObject.userData.isHitBomb = true;
+                updateUI();
+              }
+            }
+          }
+        }
+
+        if (hitBugs.size > 0) {
+          const remainingBugs = [];
+          for(const bug of bugs) {
+            if (bug.userData.isHit) {
+              bugGroup.remove(bug);
+            } else {
+              remainingBugs.push(bug);
+            }
+          }
+          bugs.length = 0;
+          bugs.push(...remainingBugs);
+
+          updateUI();
+          messageEl.textContent = `${hitBugs.size}마리 명중! +${gainedScore}점`;
+        } else {
+          messageEl.textContent = "빗나갔습니다. 숨은 벌레를 더 잘 찾아보세요!";
+        }
+
+        if (remainingShots <= 0) {
+          endGame();
+        }
+      }
+
+      // ... (keep existing code until animate function)
+
+      // In animate function, add this loop for tracers
+      function animate() {
+        requestAnimationFrame(animate);
+
+        const now = performance.now();
+        const dt = (now - lastTime) / 1000;
+        lastTime = now;
+
+        const time = now * 0.001;
+        const bounds = { x: 25, y: 8, z: 45 };
+        const difficulty = 1 + (10 - remainingShots) * 0.1;
+
+        // 조준 포인트(aimX, aimY)에 따라 카메라 시점 부드럽게 이동
+        const baseTargetZ = -10;
+        const targetX = (aimX || 0) * 6;
+        const targetY = 2 + (aimY || 0) * 3;
+        const desiredTarget = new THREE.Vector3(targetX, targetY, baseTargetZ);
+        const currentDir = new THREE.Vector3();
+        camera.getWorldDirection(currentDir);
+        const desiredDir = desiredTarget.clone().sub(camera.position).normalize();
+        const lerpFactor = Math.min(1, dt * 5);
+        const newDir = currentDir.lerp(desiredDir, lerpFactor);
+        const lookPoint = camera.position.clone().add(newDir);
+        camera.lookAt(lookPoint);
+
+        bugs.forEach((bug, idx) => {
+          const vel = bug.userData.velocity;
+          const speedFactor = difficulty;
+          bug.position.x += vel.x * dt * speedFactor;
+          bug.position.y += vel.y * dt * speedFactor;
+          bug.position.z += vel.z * dt * speedFactor;
+
+          if (bug.position.x > bounds.x) {
+            bug.position.x = -bounds.x;
+          }
+
+          if (bug.position.y < 1 || bug.position.y > bounds.y) {
+            vel.y *= -1;
+          }
+          if (bug.position.z < -bounds.z || bug.position.z > 5) {
+            vel.z *= -1;
+          }
+
+          // 무지개 최고 등급 벌레 색상 변화
+          if (bug.userData.isRainbow && bug.userData.rainbowMeshes) {
+            const phase = bug.userData.rainbowPhase || 0;
+            const speed = bug.userData.rainbowSpeed || 1;
+            const h = ((time * speed + phase) * 0.25) % 1;
+            const color = new THREE.Color().setHSL(h, 0.9, 0.6);
+            bug.userData.rainbowMeshes.forEach((mesh) => {
+              if (!mesh.material) return;
+              mesh.material.color.copy(color);
+              if (mesh.material.emissive) {
+                mesh.material.emissive.copy(color);
+                mesh.material.emissiveIntensity = 0.4;
+              }
+            });
+          }
+
+          bug.rotation.y += vel.length() * dt * speedFactor;
+        });
+
+        bombs.forEach((bomb) => {
+          const vel = bomb.userData.velocity;
+          if (!vel) return;
+
+          bomb.position.x += vel.x * dt;
+          bomb.position.y += vel.y * dt;
+          bomb.position.z += vel.z * dt;
+
+          if (
+            bomb.position.x > bounds.x + 5 ||
+            bomb.position.y < 0.5 ||
+            bomb.position.y > bounds.y + 5 ||
+            bomb.position.z < -bounds.z - 5 ||
+            bomb.position.z > 5 + 5
+          ) {
+            const x = -18 - Math.random() * 8;
+            const z = -Math.random() * 40 - 5;
+            const y = 1.5 + Math.random() * 5;
+            bomb.position.set(x, y, z);
+
+            const baseSpeed = 6 + Math.random() * 2;
+            const direction = new THREE.Vector3(
+              1,
+              0.05 + Math.random() * 0.15,
+              (Math.random() - 0.5) * 0.25
+            ).normalize();
+            bomb.userData.velocity = direction.multiplyScalar(baseSpeed);
+            bomb.userData.isHitBomb = false;
+          }
+        });
+
+        if (muzzleFlashTime > 0) {
+          muzzleFlashTime -= dt;
+          const t = Math.max(muzzleFlashTime, 0);
+          muzzleMat.opacity = t / 0.08;
+          muzzleFlash.scale.setScalar(1 + (0.08 - t) * 4);
+        } else {
+          muzzleMat.opacity = 0;
+          muzzleFlash.scale.setScalar(1);
+        }
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.life -= dt;
+          if (p.life <= 0) {
+            scene.remove(p.mesh);
+            particles.splice(i, 1);
+            continue;
+          }
+          p.mesh.position.add(p.velocity);
+          p.velocity.y -= 0.25 * dt;
+          const alpha = p.life / 1.0;
+          p.mesh.material.opacity = alpha;
+          p.mesh.material.transparent = true;
+          p.mesh.material.emissiveIntensity = 0.3 + alpha * 0.7;
+        }
+
+        for (let i = tracers.length - 1; i >= 0; i--) {
+          const t = tracers[i];
+          t.life -= dt;
+          if (t.life <= 0) {
+            scene.remove(t.line);
+            tracers.splice(i, 1);
+            continue;
+          }
+          t.line.material.opacity = (t.life / 0.15) * 0.8;
+        }
+
+        renderer.render(scene, camera);
+      }
+
+      let lastTime = performance.now();
+      animate();
+    </script>
+  </body>
+</html>

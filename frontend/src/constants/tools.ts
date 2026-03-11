@@ -39,4 +39,25 @@ export const TOOL_LIST: ToolCardInfo[] = [
         colorClass: 'diceRoller',
         imageUrl: '/tools/dice-roller.png',
     },
+    {
+        id: 'watermelon',
+        name: '3D 수박게임',
+        description: '과일을 합쳐 수박을 만들어보세요. 3D 물리 엔진 기반.',
+        icon: 'sports_esports',
+        colorClass: 'watermelonGame',
+    },
+    {
+        id: 'bugshooter',
+        name: 'Bug Shooter',
+        description: '화면을 가득 채운 버그들을 조준해서 잡으세요.',
+        icon: 'bug_report',
+        colorClass: 'bugShooterGame',
+    },
+    {
+        id: 'bowling',
+        name: '바퀴벌레 볼링',
+        description: '3D 볼링장에서 바퀴벌레 볼로 핀을 쓰러뜨리세요.',
+        icon: 'sports_bowling',
+        colorClass: 'bowlingGame',
+    },
 ];

@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>3D 수박게임</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        width: 100dvw;
+        height: 100dvh;
+      }
+      body {
+        overflow: hidden;
+        overscroll-behavior: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: pan-x pan-y;
+        -webkit-user-drag: none;
+        background: #ffeaf1;
+        color: #14151f;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+          sans-serif;
+        display: flex;
+        flex-direction: column;
+      }
+      .game-root {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 12px 12px 16px;
+        gap: 8px;
+      }
+      .game-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        background: rgba(15, 17, 40, 0.9);
+        border-radius: 12px;
+        color: #ffffff;
+      }
+      .game-header-title {
+        font-weight: 600;
+        font-size: 16px;
+      }
+      .game-header-stats {
+        display: flex;
+        gap: 12px;
+        font-size: 13px;
+      }
+      .game-header-stats span {
+        opacity: 0.9;
+      }
+      .game-canvas-wrapper {
+        flex: 1;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        background: #ffeef5;
+        min-height: 0;
+      }
+      canvas#game-canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .fruit-rank-bar {
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 6px 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.9);
+        overflow-x: auto;
+      }
+      .fruit-rank-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        min-width: 40px;
+      }
+      .fruit-rank-item img {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        object-fit: cover;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+      }
+      .fruit-rank-item span {
+        font-size: 10px;
+        color: #555b7a;
+      }
+      .drop-position-indicator {
+        display: none;
+      }
+      .controls-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 4px;
+        gap: 8px;
+      }
+      @media (max-width: 600px) {
+        .controls-row {
+          flex-direction: row;
+          align-items: stretch;
+        }
+      }
+      .controls-group {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+      }
+      .controls-group.controls-group-view {
+        order: 1;
+      }
+      .controls-group.controls-group-drop {
+        order: 2;
+      }
+      .controls-group.controls-group-move {
+        order: 3;
+      }
+      .controls-group-column {
+        display: inline-grid;
+        grid-template-rows: repeat(3, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        justify-items: center;
+        align-items: center;
+      }
+      .controls-group-column button {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+      }
+      .joystick-container {
+        width: 96px;
+        height: 96px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .joystick-base {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(21, 23, 46, 0.95);
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25);
+        touch-action: none;
+      }
+      .joystick-thumb {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #00c896;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      }
+      button {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-size: 14px;
+        background: #242749;
+        color: #ffffff;
+        cursor: pointer;
+        min-width: 40px;
+        min-height: 40px;
+      }
+      button.primary {
+        background: #00c896;
+        color: #020615;
+        font-weight: 600;
+        padding-inline: 18px;
+      }
+      button.secondary {
+        background: #15172e;
+      }
+      button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .game-footer {
+        display: none;
+      }
+      .game-over-banner {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.7);
+        gap: 12px;
+        text-align: center;
+        color: #ffffff;
+      }
+      .game-over-title {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .game-over-score {
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-root">
+      <header class="game-header">
+        <div class="game-header-title">3D 수박게임</div>
+        <div class="game-header-stats">
+          <span>점수: <strong id="score-text">0</strong></span>
+          <span>최고 과일: <strong id="max-fruit-text">-</strong></span>
+        </div>
+      </header>
+
+      <div class="game-canvas-wrapper">
+        <div class="drop-position-indicator">
+          드롭 위치: <span id="drop-position-text">0, 0</span>
+        </div>
+        <canvas id="game-canvas"></canvas>
+        <div id="game-over-layer" class="game-over-banner" style="display: none">
+          <div class="game-over-title">게임 종료</div>
+          <div class="game-over-score">
+            최종 점수: <strong id="final-score-text">0</strong>
+          </div>
+          <button id="restart-button" class="primary">다시하기</button>
+        </div>
+      </div>
+
+      <div class="fruit-rank-bar">
+        <div class="fruit-rank-item">
+          <img src="asset/01.blueberry.png" alt="블루베리" />
+          <span>1점</span>
+        </div>
+        <div class="fruit-rank-item">
+          <img src="asset/02.cherry.png" alt="체리" />
+          <span>2점</span>
+        </div>
+        <div class="fruit-rank-item">
+          <img src="asset/03.strawberry.png" alt="딸기" />
+          <span>4점</span>
+        </div>
+        <div class="fruit-rank-item">
+          <img src="asset/04.orange.png" alt="오렌지" />
+          <span>8점</span>
+        </div>
+        <div class="fruit-rank-item">
+          <img src="asset/05.pear.png" alt="배" />
+          <span>16점</span>
+        </div>
+        <div class="fruit-rank-item">
+          <img src="asset/06.apple.png" alt="사과" />
+          <span>32점</span>
+        </div>
+        <div class="fruit-rank-item">
+          <img src="asset/07.avocado.png" alt="아보카도" />
+          <span>64점</span>
+        </div>
+        <div class="fruit-rank-item">
+          <img src="asset/08.peech.png" alt="복숭아" />
+          <span>128점</span>
+        </div>
+        <div class="fruit-rank-item">
+          <img src="asset/09.dragonfruit.png" alt="용과" />
+          <span>256점</span>
+        </div>
+        <div class="fruit-rank-item">
+          <img src="asset/10.melon.png" alt="메론" />
+          <span>512점</span>
+        </div>
+        <div class="fruit-rank-item">
+          <img src="asset/11.watermelon.png" alt="수박" />
+          <span>1024점</span>
+        </div>
+      </div>
+
+      <div class="controls-row">
+        <div class="controls-group controls-group-move">
+          <div class="controls-group-column">
+            <div></div>
+            <button id="move-forward-button">↑</button>
+            <div></div>
+            <button id="move-left-button">←</button>
+            <div></div>
+            <button id="move-right-button">→</button>
+            <div></div>
+            <button id="move-backward-button">↓</button>
+            <div></div>
+          </div>
+        </div>
+        <div class="controls-group controls-group-drop">
+          <button id="drop-button" class="primary">떨어뜨리기</button>
+        </div>
+        <div class="controls-group controls-group-view">
+          <button id="view-left-button" class="secondary">뷰 ◀</button>
+          <button id="view-right-button" class="secondary">뷰 ▶</button>
+        </div>
+      </div>
+
+      <footer class="game-footer">
+        <span>과일: 블루베리 → 수박까지 11단계</span>
+        <span>동일 과일 충돌 시 상위 과일로 병합</span>
+      </footer>
+    </div>
+
+    <script type="module">
+      import * as THREE from 'https://unpkg.com/three@0.164.0/build/three.module.js';
+      import * as CANNON from 'https://cdn.skypack.dev/cannon-es';
+
+      const FRUIT_LEVELS = [
+        { id: 0, name: '블루베리', score: 1, texture: 'asset/01.blueberry.png' },
+        { id: 1, name: '체리', score: 2, texture: 'asset/02.cherry.png' },
+        { id: 2, name: '딸기', score: 4, texture: 'asset/03.strawberry.png' },
+        { id: 3, name: '오렌지', score: 8, texture: 'asset/04.orange.png' },
+        { id: 4, name: '배', score: 16, texture: 'asset/05.pear.png' },
+        { id: 5, name: '사과', score: 32, texture: 'asset/06.apple.png' },
+        { id: 6, name: '아보카도', score: 64, texture: 'asset/07.avocado.png' },
+        { id: 7, name: '복숭아', score: 128, texture: 'asset/08.peech.png' },
+        { id: 8, name: '용과', score: 256, texture: 'asset/09.dragonfruit.png' },
+        { id: 9, name: '메론', score: 512, texture: 'asset/10.melon.png' },
+        { id: 10, name: '수박', score: 1024, texture: 'asset/11.watermelon.png' },
+      ];
+
+      const MAX_LEVEL = FRUIT_LEVELS.length - 1;
+
+      const canvas = document.getElementById('game-canvas');
+      const scoreText = document.getElementById('score-text');
+      const maxFruitText = document.getElementById('max-fruit-text');
+      const gameOverLayer = document.getElementById('game-over-layer');
+      const finalScoreText = document.getElementById('final-score-text');
+      const restartButton = document.getElementById('restart-button');
+
+      const moveForwardButton = document.getElementById('move-forward-button');
+      const moveBackwardButton = document.getElementById('move-backward-button');
+      const moveLeftButton = document.getElementById('move-left-button');
+      const moveRightButton = document.getElementById('move-right-button');
+
+      const firstControlsGroup = document.querySelector('.controls-row .controls-group');
+      let joystickBaseElem = null;
+      let joystickThumbElem = null;
+      if (firstControlsGroup) {
+        const oldPad = firstControlsGroup.querySelector('.controls-group-column');
+        if (oldPad) {
+          oldPad.style.display = 'none';
+        }
+        const joystickContainer = document.createElement('div');
+        joystickContainer.className = 'joystick-container';
+        const joystickBase = document.createElement('div');
+        joystickBase.className = 'joystick-base';
+        joystickBase.id = 'joystick-base';
+        const joystickThumb = document.createElement('div');
+        joystickThumb.className = 'joystick-thumb';
+        joystickThumb.id = 'joystick-thumb';
+        joystickBase.appendChild(joystickThumb);
+        joystickContainer.appendChild(joystickBase);
+        firstControlsGroup.appendChild(joystickContainer);
+        joystickBaseElem = joystickBase;
+        joystickThumbElem = joystickThumb;
+      }
+      const dropButton = document.getElementById('drop-button');
+      const viewLeftButton = document.getElementById('view-left-button');
+      const viewRightButton = document.getElementById('view-right-button');
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xffeef5);
+
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+      const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.1);
+      dirLight.position.set(5, 10, 5);
+      dirLight.castShadow = true;
+      dirLight.shadow.mapSize.set(2048, 2048);
+      scene.add(dirLight);
+
+      const world = new CANNON.World({
+        gravity: new CANNON.Vec3(0, -9.82, 0),
+      });
+
+      const MACHINE_WIDTH = 6.2;
+      const MACHINE_DEPTH = 6.2;
+      const MACHINE_HEIGHT = 7;
+
+      const DROP_Y = MACHINE_HEIGHT - 0.5;
+      const DROP_STEP = 0.4;
+
+      const FRUIT_BASE_RADIUS = 0.18;
+
+      const machineGroup = new THREE.Group();
+      scene.add(machineGroup);
+
+      const materialsCache = new Map();
+
+      let fruits = [];
+      let fruitIdCounter = 1;
+      let nextFruitLevel = 0;
+      let dropX = 0;
+      let dropZ = 0;
+      // 초기 시점: 기계의 한 면을 바라보도록 -90도
+      let cameraAngle = -Math.PI / 2;
+      let score = 0;
+      let maxFruitLevel = -1;
+      let isGameOver = false;
+      let lastTime = null;
+      let desiredDropX = 0;
+      let desiredDropZ = 0;
+      let joystickForward = 0;
+      let joystickRight = 0;
+      let moveForwardHeld = false;
+      let moveBackwardHeld = false;
+      let moveLeftHeld = false;
+      let moveRightHeld = false;
+
+      const dropperGeometry = new THREE.SphereGeometry(0.12, 16, 16);
+      const dropperMaterial = new THREE.MeshStandardMaterial({
+        color: 0x00c896,
+        emissive: 0x002a1f,
+        emissiveIntensity: 0.6,
+      });
+      const dropperMesh = new THREE.Mesh(dropperGeometry, dropperMaterial);
+      dropperMesh.castShadow = true;
+      scene.add(dropperMesh);
+
+      const dropPreviewGeometry = new THREE.RingGeometry(0.16, 0.2, 32);
+      const dropPreviewMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00c896,
+        transparent: true,
+        opacity: 0.6,
+        side: THREE.DoubleSide,
+      });
+      const dropPreviewMesh = new THREE.Mesh(
+        dropPreviewGeometry,
+        dropPreviewMaterial,
+      );
+      dropPreviewMesh.rotation.x = -Math.PI / 2;
+      dropPreviewMesh.position.set(0, 0.02, 0);
+      scene.add(dropPreviewMesh);
+
+      function createMachine() {
+        const floorGeometry = new THREE.BoxGeometry(
+          MACHINE_WIDTH,
+          0.2,
+          MACHINE_DEPTH,
+        );
+        const floorMaterial = new THREE.MeshStandardMaterial({
+          color: 0x181b34,
+          metalness: 0.2,
+          roughness: 0.7,
+        });
+        const floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+        floorMesh.position.set(0, -0.1, 0);
+        floorMesh.receiveShadow = true;
+        machineGroup.add(floorMesh);
+
+        const floorBody = new CANNON.Body({
+          type: CANNON.Body.STATIC,
+          shape: new CANNON.Box(
+            new CANNON.Vec3(MACHINE_WIDTH / 2, 0.1, MACHINE_DEPTH / 2),
+          ),
+          position: new CANNON.Vec3(0, -0.1, 0),
+        });
+        world.addBody(floorBody);
+
+        const wallThickness = 0.2;
+        const wallHeight = MACHINE_HEIGHT;
+
+        const walls = [
+          {
+            position: [0, wallHeight / 2, -MACHINE_DEPTH / 2],
+            size: [MACHINE_WIDTH, wallHeight, wallThickness],
+          },
+          {
+            position: [0, wallHeight / 2, MACHINE_DEPTH / 2],
+            size: [MACHINE_WIDTH, wallHeight, wallThickness],
+          },
+          {
+            position: [-MACHINE_WIDTH / 2, wallHeight / 2, 0],
+            size: [wallThickness, wallHeight, MACHINE_DEPTH],
+          },
+          {
+            position: [MACHINE_WIDTH / 2, wallHeight / 2, 0],
+            size: [wallThickness, wallHeight, MACHINE_DEPTH],
+          },
+        ];
+
+        walls.forEach((wall) => {
+          const [w, h, d] = wall.size;
+          const geometry = new THREE.BoxGeometry(w, h, d);
+          const edges = new THREE.EdgesGeometry(geometry);
+          const lineMaterial = new THREE.LineBasicMaterial({
+            color: 0x3a4075,
+          });
+          const line = new THREE.LineSegments(edges, lineMaterial);
+          line.position.set(...wall.position);
+          machineGroup.add(line);
+
+          const body = new CANNON.Body({
+            type: CANNON.Body.STATIC,
+            shape: new CANNON.Box(new CANNON.Vec3(w / 2, h / 2, d / 2)),
+            position: new CANNON.Vec3(...wall.position),
+          });
+          world.addBody(body);
+        });
+
+        const frameGeometry = new THREE.BoxGeometry(
+          MACHINE_WIDTH + 0.4,
+          0.2,
+          MACHINE_DEPTH + 0.4,
+        );
+        const frameMaterial = new THREE.MeshStandardMaterial({
+          color: 0x00c896,
+          metalness: 0.6,
+          roughness: 0.3,
+          emissive: 0x001a12,
+          emissiveIntensity: 0.6,
+        });
+        const frameMesh = new THREE.Mesh(frameGeometry, frameMaterial);
+        frameMesh.position.set(0, wallHeight + 0.1, 0);
+        frameMesh.castShadow = true;
+        machineGroup.add(frameMesh);
+
+        const baseGeometry = new THREE.BoxGeometry(
+          MACHINE_WIDTH + 1.0,
+          0.6,
+          MACHINE_DEPTH + 1.0,
+        );
+        const baseMaterial = new THREE.MeshStandardMaterial({
+          color: 0xf2d1e0,
+          metalness: 0.2,
+          roughness: 0.8,
+        });
+        const baseMesh = new THREE.Mesh(baseGeometry, baseMaterial);
+        baseMesh.position.set(0, -0.4, 0);
+        baseMesh.receiveShadow = true;
+        machineGroup.add(baseMesh);
+      }
+
+      function resizeRendererToDisplaySize() {
+        const width = canvas.clientWidth;
+        const height = canvas.clientHeight;
+        if (canvas.width !== width || canvas.height !== height) {
+          renderer.setSize(width, height, false);
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+        }
+      }
+
+      function updateCamera() {
+        // 더 멀리, 더 수평에 가깝게 조망
+        const radius = 14;
+        const camY = MACHINE_HEIGHT * 1.0;
+        const targetY = MACHINE_HEIGHT * 0.5;
+        const x = Math.cos(cameraAngle) * radius;
+        const z = Math.sin(cameraAngle) * radius;
+        camera.position.set(x, camY, z);
+        camera.lookAt(0, targetY, 0);
+      }
+
+      function getFruitRadius(level) {
+        return FRUIT_BASE_RADIUS * Math.pow(2, level / 2);
+      }
+
+      function loadFruitMaterial(level) {
+        if (materialsCache.has(level)) {
+          return materialsCache.get(level);
+        }
+        const info = FRUIT_LEVELS[level];
+        const texture = new THREE.TextureLoader().load(info.texture);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        const material = new THREE.MeshStandardMaterial({
+          map: texture,
+          metalness: 0.1,
+          roughness: 0.6,
+        });
+        materialsCache.set(level, material);
+        return material;
+      }
+
+      function updatePreviewMesh() {
+        const radius = getFruitRadius(nextFruitLevel);
+        dropperMesh.geometry.dispose();
+        dropperMesh.geometry = new THREE.SphereGeometry(radius, 32, 32);
+        dropperMesh.material = loadFruitMaterial(nextFruitLevel);
+
+        const baseRadius = 0.16;
+        const scale = radius / baseRadius;
+        dropPreviewMesh.scale.set(scale, scale, 1);
+      }
+
+      function spawnFruit(level, x, z, y) {
+        const radius = getFruitRadius(level);
+
+        // 항상 기계 내부에 생성되도록 X/Z를 반지름 기준으로 클램핑
+        const margin = 0.2;
+        const halfWidth = MACHINE_WIDTH / 2 - margin;
+        const halfDepth = MACHINE_DEPTH / 2 - margin;
+        const clampedX = x;
+        const clampedZ = z;
+
+        const geometry = new THREE.SphereGeometry(radius, 32, 32);
+        const material = loadFruitMaterial(level);
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.castShadow = true;
+        mesh.position.set(clampedX, y, clampedZ);
+        scene.add(mesh);
+
+        const shape = new CANNON.Sphere(radius);
+        const body = new CANNON.Body({
+          mass: 1 * Math.pow(2, level),
+          shape,
+          position: new CANNON.Vec3(clampedX, y, clampedZ),
+          material: new CANNON.Material('fruit'),
+        });
+        body.linearDamping = 0.25;
+        body.angularDamping = 0.3;
+        world.addBody(body);
+
+        const fruit = {
+          id: fruitIdCounter++,
+          level,
+          mesh,
+          body,
+          isMerging: false,
+          hasLeftMachine: false,
+        };
+        fruits.push(fruit);
+        updateMaxFruitLevel(level);
+        return fruit;
+      }
+
+      function spawnFruitExact(level, x, z, y) {
+        const radius = getFruitRadius(level);
+        const geometry = new THREE.SphereGeometry(radius, 32, 32);
+        const material = loadFruitMaterial(level);
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.castShadow = true;
+        mesh.position.set(x, y, z);
+        scene.add(mesh);
+
+        const shape = new CANNON.Sphere(radius);
+        const body = new CANNON.Body({
+          mass: 1 * Math.pow(2, level),
+          shape,
+          position: new CANNON.Vec3(x, y, z),
+          material: new CANNON.Material('fruit'),
+        });
+        body.linearDamping = 0.25;
+        body.angularDamping = 0.3;
+        world.addBody(body);
+
+        const fruit = {
+          id: fruitIdCounter++,
+          level,
+          mesh,
+          body,
+          isMerging: false,
+          hasLeftMachine: false,
+        };
+        fruits.push(fruit);
+        updateMaxFruitLevel(level);
+        return fruit;
+      }
+
+      function updateMaxFruitLevel(level) {
+        if (level > maxFruitLevel) {
+          maxFruitLevel = level;
+          const info = FRUIT_LEVELS[level];
+          maxFruitText.textContent = info.name;
+        }
+      }
+
+      function updateDropperPosition() {
+        dropperMesh.position.set(dropX, DROP_Y, dropZ);
+        dropPreviewMesh.position.set(dropX, 0.02, dropZ);
+      }
+
+      function canDrop() {
+        return !isGameOver;
+      }
+
+      function getNextFruitLevel() {
+        const maxSpawnLevel = 4;
+        return Math.floor(Math.random() * (maxSpawnLevel + 1));
+      }
+
+      function handleDrop() {
+        if (!canDrop()) return;
+        spawnFruit(nextFruitLevel, dropX, dropZ, DROP_Y);
+        nextFruitLevel = getNextFruitLevel();
+        updatePreviewMesh();
+      }
+
+      function handleMerge() {
+        const removal = new Set();
+        const newFruits = [];
+        const mergeCenters = [];
+
+        for (let i = 0; i < fruits.length; i++) {
+          for (let j = i + 1; j < fruits.length; j++) {
+            const a = fruits[i];
+            const b = fruits[j];
+            if (
+              a.level !== b.level ||
+              a.level >= MAX_LEVEL ||
+              a.isMerging ||
+              b.isMerging
+            ) {
+              continue;
+            }
+            const posA = a.body.position;
+            const posB = b.body.position;
+            const dx = posA.x - posB.x;
+            const dy = posA.y - posB.y;
+            const dz = posA.z - posB.z;
+            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            const radiusA = getFruitRadius(a.level);
+            const radiusB = getFruitRadius(b.level);
+            const threshold = radiusA + radiusB;
+            if (dist > threshold * 1.05) {
+              continue;
+            }
+
+            a.isMerging = true;
+            b.isMerging = true;
+            removal.add(a.id);
+            removal.add(b.id);
+
+            const midX = (posA.x + posB.x) / 2;
+            const midZ = (posA.z + posB.z) / 2;
+            const newLevel = a.level + 1;
+            const newRadius = getFruitRadius(newLevel);
+            // 새 과일은 더 낮은 과일 중심 높이를 기준으로 그 위에 놓이도록 함
+            const baseY = Math.min(posA.y, posB.y);
+            const midY = baseY + newRadius;
+            newFruits.push({ level: newLevel, x: midX, y: midY, z: midZ });
+            mergeCenters.push({ x: midX, y: midY, z: midZ, level: newLevel });
+          }
+        }
+
+        if (removal.size === 0 && newFruits.length === 0) return;
+
+        fruits = fruits.filter((fruit) => {
+          if (!removal.has(fruit.id)) return true;
+          scene.remove(fruit.mesh);
+          world.removeBody(fruit.body);
+          return false;
+        });
+
+        const createdFruitIds = new Set();
+        newFruits.forEach(({ level, x, y, z }) => {
+          // level, x, z, y 순서에 주의 (spawnFruitExact 시그니처와 맞춤)
+          const fruit = spawnFruitExact(level, x, z, y);
+          if (fruit) {
+            createdFruitIds.add(fruit.id);
+          }
+        });
+
+        const pushStrength = 2.2;
+        const pushRadiusMultiplier = 3.0;
+
+        mergeCenters.forEach((center) => {
+          const centerVec = new CANNON.Vec3(center.x, center.y, center.z);
+          const influenceRadius =
+            getFruitRadius(center.level) * pushRadiusMultiplier;
+
+          fruits.forEach((fruit) => {
+            if (removal.has(fruit.id)) return;
+            if (createdFruitIds.has(fruit.id)) return;
+            const toFruit = fruit.body.position.vsub(centerVec);
+            const distance = toFruit.length();
+            if (distance === 0 || distance > influenceRadius) return;
+
+            const dir = toFruit.scale(1 / distance);
+            const factor = 1 - distance / influenceRadius;
+            const impulse = dir.scale(pushStrength * factor);
+            fruit.body.applyImpulse(impulse, fruit.body.position);
+          });
+        });
+      }
+
+      function checkOutOfBounds() {
+        if (isGameOver) return;
+        for (const fruit of fruits) {
+          const pos = fruit.body.position;
+          const radius = getFruitRadius(fruit.level);
+
+          // 기계 내부 부피를 벗어났는지 (좌우/앞뒤로 넘었거나, 윗쪽으로 넘었는지)
+          const outsideHoriz =
+            Math.abs(pos.x) - radius > MACHINE_WIDTH / 2 + 0.2 ||
+            Math.abs(pos.z) - radius > MACHINE_DEPTH / 2 + 0.2;
+          const aboveTop = pos.y - radius > MACHINE_HEIGHT + 0.5;
+
+          if ((outsideHoriz || aboveTop) && !fruit.hasLeftMachine) {
+            fruit.hasLeftMachine = true;
+          }
+
+          // 한 번이라도 기계 밖으로 나간 과일이,
+          // 가상의 바닥(y = -1.0) 아래로 떨어지면 게임 종료
+          if (fruit.hasLeftMachine) {
+            // 실제 바닥은 y ≈ 0 부근이므로,
+            // 과일의 아랫부분이 바닥 높이 이하로 내려가면 종료
+            const outsideFloorY = 0.0;
+            if (pos.y - radius <= outsideFloorY) {
+              endGame();
+              return;
+            }
+          }
+        }
+      }
+
+      function updateScoreFromFruits() {
+        score = fruits.reduce((acc, fruit) => {
+          return acc + FRUIT_LEVELS[fruit.level].score;
+        }, 0);
+        scoreText.textContent = score.toString();
+      }
+
+      function endGame() {
+        isGameOver = true;
+        dropButton.disabled = true;
+
+        const totalScore = fruits.reduce((acc, fruit) => {
+          return acc + FRUIT_LEVELS[fruit.level].score;
+        }, 0);
+        score = totalScore;
+        scoreText.textContent = totalScore.toString();
+        finalScoreText.textContent = totalScore.toString();
+        gameOverLayer.style.display = 'flex';
+      }
+
+      function resetGame() {
+        fruits.forEach((fruit) => {
+          scene.remove(fruit.mesh);
+          world.removeBody(fruit.body);
+        });
+        fruits = [];
+        score = 0;
+        maxFruitLevel = -1;
+        isGameOver = false;
+        scoreText.textContent = '0';
+        maxFruitText.textContent = '-';
+        gameOverLayer.style.display = 'none';
+        dropButton.disabled = false;
+      }
+
+      function animate(timestamp) {
+        if (lastTime == null) {
+          lastTime = timestamp;
+        }
+        const deltaMs = timestamp - lastTime;
+        lastTime = timestamp;
+        const deltaSeconds = deltaMs / 1000;
+
+        resizeRendererToDisplaySize();
+        updateCamera();
+
+        // 입력 기반으로 목표 드롭 위치 갱신
+        const moveSpeed = 3.0;
+        let inputForward = joystickForward;
+        let inputRight = joystickRight;
+        if (inputForward !== 0 || inputRight !== 0) {
+          const len = Math.hypot(inputForward, inputRight);
+          inputForward /= len;
+          inputRight /= len;
+          const forwardX = -Math.cos(cameraAngle);
+          const forwardZ = -Math.sin(cameraAngle);
+          const rightX = -forwardZ;
+          const rightZ = forwardX;
+          desiredDropX +=
+            (inputForward * forwardX + inputRight * rightX) *
+            moveSpeed *
+            deltaSeconds;
+          desiredDropZ +=
+            (inputForward * forwardZ + inputRight * rightZ) *
+            moveSpeed *
+            deltaSeconds;
+        }
+
+        clampDropPosition();
+
+        // 드롭 위치를 목표 위치로 부드럽게 보간
+        const lerpSpeed = 10;
+        const t = Math.min(deltaSeconds * lerpSpeed, 1);
+        dropX += (desiredDropX - dropX) * t;
+        dropZ += (desiredDropZ - dropZ) * t;
+        updateDropperPosition();
+
+        const fixedTimeStep = 1 / 60;
+        const maxSubSteps = 3;
+        world.step(fixedTimeStep, deltaSeconds, maxSubSteps);
+
+        fruits.forEach((fruit) => {
+          const { mesh, body, level } = fruit;
+          const minY = getFruitRadius(level);
+          if (body.position.y < minY) {
+            body.position.y = minY;
+            if (body.velocity.y < 0) {
+              body.velocity.y = 0;
+            }
+          }
+          mesh.position.copy(body.position);
+          mesh.quaternion.copy(body.quaternion);
+        });
+
+        handleMerge();
+        updateScoreFromFruits();
+        checkOutOfBounds();
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+
+      function clampDropPosition() {
+        const margin = 0.4;
+        const halfWidth = MACHINE_WIDTH / 2 - margin;
+        const halfDepth = MACHINE_DEPTH / 2 - margin;
+        desiredDropX = Math.max(-halfWidth, Math.min(halfWidth, desiredDropX));
+        desiredDropZ = Math.max(-halfDepth, Math.min(halfDepth, desiredDropZ));
+      }
+
+      function setupJoystick() {
+        if (!joystickBaseElem || !joystickThumbElem) return;
+        const maxRadius = 30;
+        let activePointerId = null;
+        let rect = null;
+
+        function resetJoystick() {
+          joystickForward = 0;
+          joystickRight = 0;
+          joystickThumbElem.style.transform = 'translate(-50%, -50%)';
+        }
+
+        function updateFromEvent(event) {
+          if (!rect) {
+            rect = joystickBaseElem.getBoundingClientRect();
+          }
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const dx = event.clientX - centerX;
+          const dy = event.clientY - centerY;
+
+          const distance = Math.min(Math.hypot(dx, dy), maxRadius);
+          const angle = Math.atan2(dy, dx);
+          const normX = (distance / maxRadius) * Math.cos(angle);
+          const normY = (distance / maxRadius) * Math.sin(angle);
+
+          joystickRight = normX;
+          joystickForward = -normY;
+
+          const thumbOffsetX = normX * maxRadius;
+          const thumbOffsetY = normY * maxRadius;
+          joystickThumbElem.style.transform =
+            `translate(calc(-50% + ${thumbOffsetX}px), calc(-50% + ${thumbOffsetY}px))`;
+        }
+
+        joystickBaseElem.addEventListener('pointerdown', (event) => {
+          event.preventDefault();
+          activePointerId = event.pointerId;
+          rect = joystickBaseElem.getBoundingClientRect();
+          joystickBaseElem.setPointerCapture(activePointerId);
+          updateFromEvent(event);
+        });
+
+        joystickBaseElem.addEventListener('pointermove', (event) => {
+          if (event.pointerId !== activePointerId) return;
+          updateFromEvent(event);
+        });
+
+        function handlePointerEnd(event) {
+          if (event.pointerId !== activePointerId) return;
+          joystickBaseElem.releasePointerCapture(activePointerId);
+          activePointerId = null;
+          rect = null;
+          resetJoystick();
+        }
+
+        joystickBaseElem.addEventListener('pointerup', handlePointerEnd);
+        joystickBaseElem.addEventListener('pointercancel', handlePointerEnd);
+        joystickBaseElem.addEventListener('pointerleave', (event) => {
+          if (activePointerId === null) return;
+          handlePointerEnd(event);
+        });
+      }
+
+      function bindHoldButton(element, onChange) {
+        element.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          onChange(true);
+        });
+        element.addEventListener('pointerup', () => {
+          onChange(false);
+        });
+        element.addEventListener('pointerleave', () => {
+          onChange(false);
+        });
+      }
+
+      bindHoldButton(moveForwardButton, (v) => {
+        moveForwardHeld = v;
+      });
+      bindHoldButton(moveBackwardButton, (v) => {
+        moveBackwardHeld = v;
+      });
+      bindHoldButton(moveLeftButton, (v) => {
+        moveLeftHeld = v;
+      });
+      bindHoldButton(moveRightButton, (v) => {
+        moveRightHeld = v;
+      });
+
+      dropButton.addEventListener('click', () => {
+        handleDrop();
+      });
+
+      viewLeftButton.addEventListener('click', () => {
+        cameraAngle += Math.PI / 2;
+      });
+
+      viewRightButton.addEventListener('click', () => {
+        cameraAngle -= Math.PI / 2;
+      });
+
+      restartButton.addEventListener('click', () => {
+        resetGame();
+      });
+
+      createMachine();
+      setupJoystick();
+      nextFruitLevel = 0;
+      updatePreviewMesh();
+      resizeRendererToDisplaySize();
+      updateCamera();
+      desiredDropX = 0;
+      desiredDropZ = 0;
+      dropX = 0;
+      dropZ = 0;
+      updateDropperPosition();
+
+      window.addEventListener('resize', () => {
+        resizeRendererToDisplaySize();
+      });
+
+      requestAnimationFrame(animate);
+    </script>
+  </body>
+  </html>
