@@ -60,4 +60,11 @@ export const TOOL_LIST: ToolCardInfo[] = [
         icon: 'sports_bowling',
         colorClass: 'bowlingGame',
     },
+    {
+        id: 'gif-maker',
+        name: 'GIF 변환기',
+        description: '동영상을 업로드하고 원하는 구간만 잘라 GIF로 저장하세요.',
+        icon: 'gif_box',
+        colorClass: 'gifMaker',
+    },
 ];
