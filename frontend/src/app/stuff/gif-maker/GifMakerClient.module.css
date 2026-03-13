@@ -281,141 +281,128 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── 타임라인 ── */
-.timelineSection {
+/* ── 트리밍 슬라이더 ── */
+.trimSliders {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    margin-bottom: 20px;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--color-surface, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
 }
 
-/* 시간 레이블 행 */
-.timeLabels {
+/* 구간 시각화 바 */
+.rangeTrack {
     position: relative;
-    height: 18px;
+    height: 6px;
+    background: var(--color-border, #e2e8f0);
+    border-radius: 999px;
+    overflow: visible;
+    margin-bottom: 4px;
 }
 
-.timeLabel {
-    position: absolute;
-    transform: translateX(-50%);
-    font-size: 11px;
-    font-family: 'JetBrains Mono', monospace;
-    color: #6366f1;
-    pointer-events: none;
-    white-space: nowrap;
-}
-
-/* 타임라인 본체 */
-.timeline {
-    position: relative;
-    height: 56px;
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    background: #1e293b;
-    user-select: none;
-}
-
-/* 썸네일 스트립 */
-.thumbnailStrip {
-    position: absolute;
-    inset: 0;
-    display: flex;
-}
-
-.thumbnail {
-    flex: 1;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-}
-
-/* 선택 영역 바깥 어둠 */
-.dimLeft,
-.dimRight {
+.rangeSelected {
     position: absolute;
     top: 0;
     height: 100%;
-    background: rgba(0, 0, 0, 0.55);
+    background: #6366f1;
+    border-radius: 999px;
+    pointer-events: none;
+}
+
+.rangePlayhead {
+    position: absolute;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    background: #facc15;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: 1;
 }
-.dimLeft { left: 0; }
-.dimRight { right: 0; }
 
-/* 선택 영역 테두리 */
-.selection {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    border: 2px solid #6366f1;
-    box-sizing: border-box;
-    pointer-events: none;
-    z-index: 2;
-}
-
-/* 드래그 핸들 */
-.handle {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 14px;
-    background: #6366f1;
-    cursor: ew-resize;
-    z-index: 3;
+/* 슬라이더 행 */
+.sliderRow {
     display: flex;
     align-items: center;
-    justify-content: center;
-    touch-action: none;
+    gap: 10px;
 }
-.handleStart { transform: translateX(-100%); border-radius: 4px 0 0 4px; }
-.handleEnd  { transform: translateX(0);     border-radius: 0 4px 4px 0; }
 
-/* 그립 점 */
-.gripDots {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
+.sliderLabel {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-muted, #64748b);
+    width: 24px;
+    flex-shrink: 0;
 }
-.gripDots span {
-    display: block;
-    width: 4px;
+
+.slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
     height: 4px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.7);
+    border-radius: 999px;
+    outline: none;
+    cursor: pointer;
 }
 
-/* 플레이헤드 */
-.playhead {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 2px;
-    background: #facc15;
-    transform: translateX(-50%);
-    pointer-events: none;
-    z-index: 4;
-}
-.playhead::after {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #facc15;
+.sliderStart {
+    background: linear-gradient(
+        to right,
+        var(--color-border, #e2e8f0) 0%,
+        #6366f1 0%
+    );
 }
 
-/* 전체 길이 레이블 */
-.totalDuration {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
+.sliderEnd {
+    background: linear-gradient(
+        to right,
+        #6366f1 0%,
+        var(--color-border, #e2e8f0) 0%
+    );
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #6366f1;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    cursor: grab;
+    transition: transform 0.1s;
+}
+.slider::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.2); }
+.slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #6366f1;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    cursor: grab;
+}
+
+.sliderTime {
+    font-size: 12px;
     font-family: 'JetBrains Mono', monospace;
-    color: var(--color-text-muted, #94a3b8);
+    color: #6366f1;
+    font-weight: 600;
+    width: 60px;
+    text-align: right;
+    flex-shrink: 0;
 }
+
+.trimDuration {
+    font-size: 12px;
+    color: var(--color-text-muted, #64748b);
+    text-align: right;
+}
+.trimDuration strong { color: var(--color-text, #1e293b); }
 
 /* ── 진행 바 ── */
 .progressSection {

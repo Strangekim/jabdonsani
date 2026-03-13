@@ -63,14 +63,10 @@ export default function GifMakerClient() {
 
     /* UI */
     const [isDragOver, setIsDragOver] = useState(false);
-    const [thumbnails, setThumbnails] = useState<string[]>([]);
 
     /* Refs */
     const videoRef = useRef<HTMLVideoElement>(null);
-    const timelineRef = useRef<HTMLDivElement>(null);
     const ffmpegRef = useRef<any>(null);
-
-    /* 드래그 중 최신값을 클로저 없이 참조하기 위한 ref */
     const trimStartRef = useRef(0);
     const trimEndRef = useRef(0);
     const durationRef = useRef(0);
@@ -89,7 +85,6 @@ export default function GifMakerClient() {
         setVideoUrl(URL.createObjectURL(f));
         setGifUrl(null);
         setPhase('idle');
-        setThumbnails([]);
         setProgress(0);
     }, [videoUrl, gifUrl]);
 
@@ -109,31 +104,7 @@ export default function GifMakerClient() {
         setTrimStart(0);
         setTrimEnd(d);
         setCurrentTime(0);
-        generateThumbnails(video, d);
     }, []);
-
-    /* ── 썸네일 스트립 생성 ── */
-    async function generateThumbnails(video: HTMLVideoElement, dur: number) {
-        const COUNT = 16;
-        const canvas = document.createElement('canvas');
-        canvas.width = 80;
-        canvas.height = 45;
-        const ctx = canvas.getContext('2d')!;
-        const result: string[] = [];
-        const savedTime = video.currentTime;
-
-        for (let i = 0; i < COUNT; i++) {
-            video.currentTime = (i / (COUNT - 1)) * dur;
-            await new Promise<void>((resolve) =>
-                video.addEventListener('seeked', () => resolve(), { once: true })
-            );
-            ctx.drawImage(video, 0, 0, 80, 45);
-            result.push(canvas.toDataURL('image/jpeg', 0.5));
-        }
-
-        video.currentTime = savedTime;
-        setThumbnails(result);
-    }
 
     /* ── 재생 루프 (트리밍 구간 안에서) ── */
     useEffect(() => {
@@ -185,41 +156,18 @@ export default function GifMakerClient() {
         return () => window.removeEventListener('keydown', onKey);
     }, [togglePlay, file]);
 
-    /* ── 타임라인 클릭 (씩) ── */
-    const handleTimelineClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-        if (!timelineRef.current || !videoRef.current) return;
-        const rect = timelineRef.current.getBoundingClientRect();
-        const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-        const t = ratio * durationRef.current;
-        videoRef.current.currentTime = t;
-        setCurrentTime(t);
+    /* ── 시작 슬라이더 변경 ── */
+    const handleStartChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const v = Math.min(Number(e.target.value), trimEndRef.current - 0.1);
+        setTrimStart(v);
+        if (videoRef.current) videoRef.current.currentTime = v;
     }, []);
 
-    /* ── 핸들 드래그 (Pointer Capture 방식) ── */
-    const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        e.currentTarget.setPointerCapture(e.pointerId);
-    }, []);
-
-    const handleStartPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-        if (!e.currentTarget.hasPointerCapture(e.pointerId) || !timelineRef.current) return;
-        const rect = timelineRef.current.getBoundingClientRect();
-        const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-        const t = Math.max(0, Math.min(ratio * durationRef.current, trimEndRef.current - 0.1));
-        setTrimStart(t);
-        if (videoRef.current) videoRef.current.currentTime = t;
-        setCurrentTime(t);
-    }, []);
-
-    const handleEndPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-        if (!e.currentTarget.hasPointerCapture(e.pointerId) || !timelineRef.current) return;
-        const rect = timelineRef.current.getBoundingClientRect();
-        const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-        const t = Math.min(durationRef.current, Math.max(ratio * durationRef.current, trimStartRef.current + 0.1));
-        setTrimEnd(t);
-        if (videoRef.current) videoRef.current.currentTime = t;
-        setCurrentTime(t);
+    /* ── 끝 슬라이더 변경 ── */
+    const handleEndChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const v = Math.max(Number(e.target.value), trimStartRef.current + 0.1);
+        setTrimEnd(v);
+        if (videoRef.current) videoRef.current.currentTime = v;
     }, []);
 
     /* ── GIF 변환 ── */
@@ -311,7 +259,6 @@ export default function GifMakerClient() {
 
     /* ── 렌더 ── */
     if (!file || !videoUrl) {
-        /* ─ 드롭존 ─ */
         return (
             <main className={styles.main}>
                 <div className={styles.pageHeader}>
@@ -343,10 +290,10 @@ export default function GifMakerClient() {
         );
     }
 
-    /* ─ 에디터 ─ */
+    /* 선택 구간 퍼센트 (진행 바 시각화용) */
     const startPct = duration > 0 ? (trimStart / duration) * 100 : 0;
-    const endPct = duration > 0 ? (trimEnd / duration) * 100 : 100;
-    const playPct = duration > 0 ? (currentTime / duration) * 100 : 0;
+    const endPct   = duration > 0 ? (trimEnd   / duration) * 100 : 100;
+    const playPct  = duration > 0 ? (currentTime / duration) * 100 : 0;
 
     return (
         <main className={styles.main}>
@@ -384,12 +331,61 @@ export default function GifMakerClient() {
                             <span className={styles.timeSep}>/</span>
                             <span className={styles.timeDuration}>{fmt(duration)}</span>
                         </span>
-                        {/* 파일 재선택 */}
                         <label className={styles.reuploadBtn} title="다른 파일 선택">
                             <input type="file" accept="video/*" className={styles.fileInput}
                                 onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
                             <span className="material-symbols-outlined">upload_file</span>
                         </label>
+                    </div>
+
+                    {/* ── 트리밍 슬라이더 ── */}
+                    <div className={styles.trimSliders}>
+                        {/* 구간 시각화 바 */}
+                        <div className={styles.rangeTrack}>
+                            <div
+                                className={styles.rangeSelected}
+                                style={{ left: `${startPct}%`, width: `${endPct - startPct}%` }}
+                            />
+                            <div
+                                className={styles.rangePlayhead}
+                                style={{ left: `${playPct}%` }}
+                            />
+                        </div>
+
+                        {/* 시작 슬라이더 */}
+                        <div className={styles.sliderRow}>
+                            <span className={styles.sliderLabel}>시작</span>
+                            <input
+                                type="range"
+                                className={`${styles.slider} ${styles.sliderStart}`}
+                                min={0}
+                                max={duration}
+                                step={0.1}
+                                value={trimStart}
+                                onChange={handleStartChange}
+                            />
+                            <span className={styles.sliderTime}>{fmt(trimStart)}</span>
+                        </div>
+
+                        {/* 끝 슬라이더 */}
+                        <div className={styles.sliderRow}>
+                            <span className={styles.sliderLabel}>끝</span>
+                            <input
+                                type="range"
+                                className={`${styles.slider} ${styles.sliderEnd}`}
+                                min={0}
+                                max={duration}
+                                step={0.1}
+                                value={trimEnd}
+                                onChange={handleEndChange}
+                            />
+                            <span className={styles.sliderTime}>{fmt(trimEnd)}</span>
+                        </div>
+
+                        {/* 선택 길이 표시 */}
+                        <div className={styles.trimDuration}>
+                            선택 구간: <strong>{fmt(trimEnd - trimStart)}</strong>
+                        </div>
                     </div>
                 </div>
 
@@ -455,74 +451,6 @@ export default function GifMakerClient() {
                             <><span className="material-symbols-outlined">gif_box</span>GIF 변환하기</>
                         )}
                     </button>
-                </div>
-            </div>
-
-            {/* ── 타임라인 ── */}
-            <div className={styles.timelineSection}>
-                {/* 시간 레이블 (위) */}
-                <div className={styles.timeLabels}>
-                    <span style={{ left: `${startPct}%` }} className={styles.timeLabel}>{fmt(trimStart)}</span>
-                    <span style={{ left: `${endPct}%` }} className={styles.timeLabel}>{fmt(trimEnd)}</span>
-                </div>
-
-                {/* 타임라인 바 */}
-                <div
-                    ref={timelineRef}
-                    className={styles.timeline}
-                    onClick={handleTimelineClick}
-                >
-                    {/* 썸네일 스트립 */}
-                    {thumbnails.length > 0 && (
-                        <div className={styles.thumbnailStrip}>
-                            {thumbnails.map((src, i) => (
-                                <div key={i} className={styles.thumbnail} style={{ backgroundImage: `url(${src})` }} />
-                            ))}
-                        </div>
-                    )}
-
-                    {/* 선택 영역 바깥 어둡게 */}
-                    <div className={styles.dimLeft} style={{ width: `${startPct}%` }} />
-                    <div className={styles.dimRight} style={{ width: `${100 - endPct}%` }} />
-
-                    {/* 선택 영역 테두리 */}
-                    <div
-                        className={styles.selection}
-                        style={{ left: `${startPct}%`, width: `${endPct - startPct}%` }}
-                    />
-
-                    {/* 시작 핸들 */}
-                    <div
-                        className={`${styles.handle} ${styles.handleStart}`}
-                        style={{ left: `${startPct}%` }}
-                        onPointerDown={handlePointerDown}
-                        onPointerMove={handleStartPointerMove}
-                    >
-                        <div className={styles.gripDots}>
-                            <span /><span /><span />
-                        </div>
-                    </div>
-
-                    {/* 끝 핸들 */}
-                    <div
-                        className={`${styles.handle} ${styles.handleEnd}`}
-                        style={{ left: `${endPct}%` }}
-                        onPointerDown={handlePointerDown}
-                        onPointerMove={handleEndPointerMove}
-                    >
-                        <div className={styles.gripDots}>
-                            <span /><span /><span />
-                        </div>
-                    </div>
-
-                    {/* 플레이헤드 */}
-                    <div className={styles.playhead} style={{ left: `${playPct}%` }} />
-                </div>
-
-                {/* 전체 길이 레이블 (아래) */}
-                <div className={styles.totalDuration}>
-                    <span>0:00</span>
-                    <span>{fmt(duration)}</span>
                 </div>
             </div>
 
