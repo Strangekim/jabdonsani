@@ -282,7 +282,7 @@ export default function GifMakerClient() {
 
             /* 결과 읽기 */
             const data = (await ffmpeg.readFile('output.gif')) as Uint8Array;
-            const blob = new Blob([data.buffer], { type: 'image/gif' });
+            const blob = new Blob([data.buffer as ArrayBuffer], { type: 'image/gif' });
             setGifUrl(URL.createObjectURL(blob));
             setGifSize(blob.size);
             setProgress(100);
