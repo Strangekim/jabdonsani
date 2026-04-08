@@ -387,7 +387,18 @@ function showGameOver(){
     if (gameOverEl) { gameOverEl.remove(); gameOverEl = null; }
     paused = false; resetGame();
   };
-  btnRow.append(btnRestart);
+  const btnRanking = document.createElement('button');
+  btnRanking.textContent = '전체 랭킹';
+  Object.assign(btnRanking.style, {
+    padding:'8px 18px', border:'none', borderRadius:'8px',
+    background:'#2d6cdf', color:'#fff', fontWeight:'800', cursor:'pointer'
+  });
+  btnRanking.onclick = () => {
+    // iframe 안에서 부모 프레임 이동
+    (window.top || window).location.href = '/stuff/bowling/rankings';
+  };
+
+  btnRow.append(btnRestart, btnRanking);
 
   gameOverEl.append(title, scoreLbl, form, statusMsg, btnRow);
   document.body.appendChild(gameOverEl);
