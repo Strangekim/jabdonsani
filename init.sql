@@ -197,3 +197,20 @@ CREATE TABLE uploads (
 CREATE INDEX idx_uploads_filename ON uploads (filename);
 
 COMMENT ON TABLE uploads IS '블로그 이미지 업로드 파일 관리 (VM 로컬 저장)';
+
+
+-- ============================================================
+-- 10. 게임 점수 (랭킹)
+-- ============================================================
+CREATE TABLE game_scores (
+    id          SERIAL PRIMARY KEY,
+    game_id     VARCHAR(50)  NOT NULL,               -- 게임 식별자: bowling, watermelon, bugshooter
+    nickname    VARCHAR(20)  NOT NULL,               -- 플레이어 닉네임
+    score       INT          NOT NULL DEFAULT 0,     -- 점수
+    created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+-- 게임별 랭킹 조회 (점수 높은 순)
+CREATE INDEX idx_game_scores_ranking ON game_scores (game_id, score DESC);
+
+COMMENT ON TABLE game_scores IS '게임별 플레이어 점수 기록 — 랭킹 시스템';

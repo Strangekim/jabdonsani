@@ -48,6 +48,13 @@ jobs:
             sudo docker-compose down
             sudo docker-compose up -d --build
 
+            # DB 마이그레이션 실행 (컨테이너 기동 대기 후)
+            echo "📦 Running migrations..."
+            sleep 5
+            for f in migrations/*.sql; do
+              [ -f "$f" ] && sudo docker-compose exec -T db psql -U "$(grep DB_USER .env | cut -d= -f2)" -d "$(grep DB_NAME .env | cut -d= -f2)" -f /dev/stdin < "$f" 2>/dev/null || true
+            done
+
             # 사용하지 않는 이미지 정리
             echo "🧹 Cleaning up unused images..."
             sudo docker image prune -f

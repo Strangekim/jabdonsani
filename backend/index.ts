@@ -11,6 +11,7 @@ import tagsRouter from './tags/router';
 import toolsRouter from './tools/router';
 import visitorsRouter from './visitors/router';
 import batchRouter from './batch/router';
+import gamesRouter from './games/router';
 import { initScheduler } from './batch/scheduler';
 
 dotenv.config();
@@ -52,6 +53,7 @@ app.use("/api/tags", tagsRouter);
 app.use("/api/tools", toolsRouter);
 app.use("/api/visitors", visitorsRouter);
 app.use("/api/batch", batchRouter);
+app.use("/api/games", gamesRouter);
 
 
 // ============= 에러 핸들러 =============

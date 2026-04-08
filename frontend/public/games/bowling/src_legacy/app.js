@@ -36,6 +36,33 @@ let plateLs = [], plateRs = [];
 let wallRainbow = false; // rainbow effect flag when X >= 1024
 let rankingBoard = null; // 3D billboard mesh
 let rankingTop3Cache = null; // cache fetched Top3 to keep across rounds
+
+// ── 랭킹 API ──
+const API_BASE = '/api/games/bowling';
+async function fetchRankings() {
+  try {
+    const res = await fetch(API_BASE + '/rankings?limit=3');
+    const json = await res.json();
+    if (json.success && Array.isArray(json.data)) {
+      rankingTop3Cache = json.data;
+    }
+  } catch (e) { console.warn('랭킹 조회 실패:', e); }
+}
+async function submitScore(nickname, score) {
+  try {
+    const res = await fetch(API_BASE + '/scores', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nickname, score })
+    });
+    return await res.json();
+  } catch (e) { console.warn('점수 등록 실패:', e); return null; }
+}
+// 빌보드 강제 갱신
+function refreshRankingBillboard() {
+  if (rankingBoard) { scene.remove(rankingBoard); rankingBoard = null; }
+  createRankingBillboard();
+}
 // Lane floor refs for LOD switching
 let ground = null, fore = null;
 let groundMatWood = null, groundMatFlat = null;
@@ -281,16 +308,90 @@ function showGameOver(){
   gameOverEl = document.createElement('div');
   Object.assign(gameOverEl.style, {
     position:'fixed', inset:'0', display:'flex', alignItems:'center', justifyContent:'center',
-    background:'rgba(0,0,0,0.6)', color:'#fff', zIndex:8, flexDirection:'column', gap:'12px'
+    background:'rgba(0,0,0,0.6)', color:'#fff', zIndex:8, flexDirection:'column', gap:'16px'
   });
-  const title = document.createElement('div'); title.textContent = '게임 종료!'; title.style.fontSize='28px'; title.style.fontWeight='800';
-  const score = document.createElement('div'); score.textContent = '총점: ' + scoreState.total; score.style.fontSize='22px';
-  const btn = document.createElement('button'); btn.textContent = '\uC0C8\uB85C\uACE0\uCE68'; Object.assign(btn.style, {
-    padding:'10px 16px', borderRadius:'10px', border:'none', background:'#2d6cdf', color:'#fff', fontWeight:'800', cursor:'pointer'
+
+  const title = document.createElement('div');
+  title.textContent = '게임 종료!';
+  title.style.fontSize = '28px'; title.style.fontWeight = '800';
+
+  const scoreLbl = document.createElement('div');
+  scoreLbl.textContent = '총점: ' + scoreState.total;
+  scoreLbl.style.fontSize = '22px';
+
+  // 닉네임 입력 폼
+  const form = document.createElement('div');
+  Object.assign(form.style, { display:'flex', gap:'8px', alignItems:'center' });
+
+  const input = document.createElement('input');
+  input.type = 'text'; input.maxLength = 20; input.placeholder = '닉네임 입력';
+  // 이전에 사용한 닉네임 복원
+  const saved = localStorage.getItem('bowling_nickname') || '';
+  input.value = saved;
+  Object.assign(input.style, {
+    padding:'8px 12px', borderRadius:'8px', border:'2px solid #6366f1', outline:'none',
+    fontSize:'15px', width:'160px', background:'#1e293b', color:'#fff', fontWeight:'600'
   });
-  btn.onclick = ()=>{ if (refreshWrap) refreshWrap.style.display=''; if (gameOverEl) { gameOverEl.remove(); gameOverEl = null; } paused = false; resetGame(); };
-  gameOverEl.append(title, score, btn);
+
+  const btnSubmit = document.createElement('button');
+  btnSubmit.textContent = '등록';
+  Object.assign(btnSubmit.style, {
+    padding:'8px 16px', borderRadius:'8px', border:'none',
+    background:'#6366f1', color:'#fff', fontWeight:'800', cursor:'pointer', fontSize:'14px'
+  });
+
+  const statusMsg = document.createElement('div');
+  Object.assign(statusMsg.style, { fontSize:'13px', color:'#94a3b8', minHeight:'18px' });
+
+  let submitted = false;
+  async function doSubmit() {
+    const nick = input.value.trim();
+    if (!nick) { statusMsg.textContent = '닉네임을 입력해주세요.'; statusMsg.style.color='#f87171'; return; }
+    if (submitted) return;
+    submitted = true;
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = '등록 중...';
+    localStorage.setItem('bowling_nickname', nick);
+    const result = await submitScore(nick, scoreState.total);
+    if (result && result.success) {
+      statusMsg.textContent = '랭킹에 등록되었습니다!';
+      statusMsg.style.color = '#4ade80';
+      // 랭킹 갱신
+      await fetchRankings();
+      refreshRankingBillboard();
+    } else {
+      statusMsg.textContent = '등록 실패. 다시 시도해주세요.';
+      statusMsg.style.color = '#f87171';
+      submitted = false;
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = '등록';
+    }
+  }
+  btnSubmit.onclick = doSubmit;
+  input.onkeydown = (e) => { if (e.key === 'Enter') doSubmit(); };
+
+  form.append(input, btnSubmit);
+
+  // 하단 버튼 행
+  const btnRow = document.createElement('div');
+  Object.assign(btnRow.style, { display:'flex', gap:'10px', marginTop:'4px' });
+
+  const btnRestart = document.createElement('button');
+  btnRestart.textContent = '다시 하기';
+  Object.assign(btnRestart.style, {
+    padding:'8px 18px', border:'none', borderRadius:'8px',
+    background:'#374151', color:'#fff', fontWeight:'800', cursor:'pointer'
+  });
+  btnRestart.onclick = () => {
+    if (refreshWrap) refreshWrap.style.display = '';
+    if (gameOverEl) { gameOverEl.remove(); gameOverEl = null; }
+    paused = false; resetGame();
+  };
+  btnRow.append(btnRestart);
+
+  gameOverEl.append(title, scoreLbl, form, statusMsg, btnRow);
   document.body.appendChild(gameOverEl);
+  input.focus();
 }
 function resetGame(){
   scoreState.frame = 1; scoreState.throwInFrame = 1; scoreState.total = 0; scoreState.currentThrowId = 0; scoreState.wallHitsThisThrow = 0; scoreState.gameOver = false;
@@ -299,11 +400,8 @@ function resetGame(){
   if (gameOverEl) { gameOverEl.remove(); gameOverEl = null; }
   updateScoreUI();
   placePins();
-  // Ensure the ranking billboard is visible from the very start
-  createRankingBillboard();
-  if (rankingBoard) { scene.remove(rankingBoard); rankingBoard = null; }
-  // 3D ranking billboard behind the pins, within side walls
-  createRankingBillboard();
+  // 랭킹 빌보드 갱신
+  fetchRankings().then(() => refreshRankingBillboard());
   updateScoreUI();
   resetRoach();
   if (refreshWrap) refreshWrap.style.display='';
@@ -595,8 +693,10 @@ function init() {
     pinAimPoint.set(0, 1.0, headZ);
   };
   placePins();
-  // Create the ranking billboard at startup
-  createRankingBillboard();
+  // 서버에서 랭킹 조회 후 빌보드 생성
+  fetchRankings().then(() => {
+    createRankingBillboard();
+  });
   const resetBtn = document.getElementById('resetPinsBtn');
   if (resetBtn && resetBtn.remove) resetBtn.remove();
   // Hidden legacy target
@@ -1246,30 +1346,6 @@ init();
   };
 })();
 
-// Override game over screen to support nickname save and menu back
-(function overrideGameOver(){
-  if (typeof showGameOver !== 'function') return;
-  const __orig = showGameOver;
-  showGameOver = function(){
-    __orig();
-    try {
-      if (!gameOverEl) return;
-      // Replace title/score labels
-      const nodes = Array.from(gameOverEl.children||[]);
-      if (nodes[0]) nodes[0].textContent = '게임 종료!';
-      if (nodes[1]) nodes[1].textContent = '총점: ' + scoreState.total;
-      // Insert form and buttons if not present
-      if (!gameOverEl.querySelector('#btnRestart')){
-        const btnRestart = document.createElement('button');
-        btnRestart.id = 'btnRestart';
-        btnRestart.textContent = '다시 하기';
-        Object.assign(btnRestart.style, { padding:'8px 18px', border:'none', borderRadius:'8px', background:'#374151', color:'#fff', fontWeight:'800', cursor:'pointer', marginTop:'8px' });
-        btnRestart.onclick = ()=>{ location.reload(); };
-        gameOverEl.appendChild(btnRestart);
-      }
-    } catch {}
-  };
-})();
 
 
 
