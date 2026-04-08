@@ -19,6 +19,7 @@ const scoreBodySchema = z.object({
     score: z.number()
         .int("SCORE_INVALID:점수는 정수여야 합니다.")
         .min(0, "SCORE_INVALID:점수는 0 이상이어야 합니다.")
+        .max(10000, "SCORE_INVALID:점수가 허용 범위를 초과했습니다.")
 });
 
 // GET /api/games/:gameId/rankings — 랭킹 조회
