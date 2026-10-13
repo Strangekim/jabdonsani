@@ -1,0 +1,951 @@
+{
+  "seed": 12807,
+  "gamesPerMatchup": 4,
+  "caveat": "각 경기는 양쪽 선수가 공격·수비 역할을 모두 맡는다. 25개 선수 조합의 결과와 공격/수비 능력치 구간별 세부 성능이다.",
+  "matchups": {
+    "balanced/balanced": {
+      "games": 4,
+      "possessions": 120,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 4,
+        "winRate": 1
+      },
+      "shooting": {
+        "attempts": 170,
+        "successes": 68,
+        "rate": 0.4
+      },
+      "turnovers": 0.058333333333333334,
+      "breakthroughs": {
+        "attempts": 389,
+        "successes": 16,
+        "rate": 0.04113110539845758
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 3324,
+          "possessions": 120,
+          "points": 74,
+          "turnovers": 7,
+          "shots": 170,
+          "madeShots": 68,
+          "drives": 16
+        }
+      },
+      "averageGameSeconds": 115.1384482485
+    },
+    "balanced/guard": {
+      "games": 4,
+      "possessions": 128,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 0,
+        "winRate": 0
+      },
+      "shooting": {
+        "attempts": 182,
+        "successes": 74,
+        "rate": 0.4065934065934066
+      },
+      "turnovers": 0.09375,
+      "breakthroughs": {
+        "attempts": 427,
+        "successes": 31,
+        "rate": 0.07259953161592506
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 1826,
+          "possessions": 64,
+          "points": 34,
+          "turnovers": 8,
+          "shots": 93,
+          "madeShots": 31,
+          "drives": 11
+        },
+        "공격 70–100 / 수비 40–69": {
+          "decisions": 1733,
+          "possessions": 64,
+          "points": 44,
+          "turnovers": 4,
+          "shots": 89,
+          "madeShots": 43,
+          "drives": 20
+        }
+      },
+      "averageGameSeconds": 121.923842249
+    },
+    "balanced/shooter": {
+      "games": 4,
+      "possessions": 111,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 1,
+        "winRate": 0.25
+      },
+      "shooting": {
+        "attempts": 128,
+        "successes": 73,
+        "rate": 0.5703125
+      },
+      "turnovers": 0.0990990990990991,
+      "breakthroughs": {
+        "attempts": 343,
+        "successes": 5,
+        "rate": 0.014577259475218658
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 1394,
+          "possessions": 56,
+          "points": 36,
+          "turnovers": 6,
+          "shots": 65,
+          "madeShots": 33,
+          "drives": 3
+        },
+        "공격 70–100 / 수비 40–69": {
+          "decisions": 1335,
+          "possessions": 55,
+          "points": 43,
+          "turnovers": 5,
+          "shots": 63,
+          "madeShots": 40,
+          "drives": 2
+        }
+      },
+      "averageGameSeconds": 93.196536089
+    },
+    "balanced/defender": {
+      "games": 4,
+      "possessions": 128,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 0,
+        "winRate": 0
+      },
+      "shooting": {
+        "attempts": 183,
+        "successes": 69,
+        "rate": 0.3770491803278688
+      },
+      "turnovers": 0.1015625,
+      "breakthroughs": {
+        "attempts": 413,
+        "successes": 8,
+        "rate": 0.01937046004842615
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 70–100": {
+          "decisions": 1593,
+          "possessions": 64,
+          "points": 28,
+          "turnovers": 9,
+          "shots": 68,
+          "madeShots": 26,
+          "drives": 0
+        },
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 2059,
+          "possessions": 64,
+          "points": 45,
+          "turnovers": 4,
+          "shots": 115,
+          "madeShots": 43,
+          "drives": 8
+        }
+      },
+      "averageGameSeconds": 124.22944677749999
+    },
+    "balanced/finisher": {
+      "games": 4,
+      "possessions": 126,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 0,
+        "winRate": 0
+      },
+      "shooting": {
+        "attempts": 176,
+        "successes": 65,
+        "rate": 0.3693181818181818
+      },
+      "turnovers": 0.07936507936507936,
+      "breakthroughs": {
+        "attempts": 398,
+        "successes": 11,
+        "rate": 0.02763819095477387
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 3454,
+          "possessions": 126,
+          "points": 70,
+          "turnovers": 10,
+          "shots": 176,
+          "madeShots": 65,
+          "drives": 11
+        }
+      },
+      "averageGameSeconds": 117.95392555875
+    },
+    "guard/balanced": {
+      "games": 4,
+      "possessions": 119,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 3,
+        "winRate": 0.75
+      },
+      "shooting": {
+        "attempts": 156,
+        "successes": 75,
+        "rate": 0.4807692307692308
+      },
+      "turnovers": 0.09243697478991597,
+      "breakthroughs": {
+        "attempts": 403,
+        "successes": 22,
+        "rate": 0.05459057071960298
+      },
+      "ratingCombinations": {
+        "공격 70–100 / 수비 40–69": {
+          "decisions": 1617,
+          "possessions": 61,
+          "points": 43,
+          "turnovers": 2,
+          "shots": 81,
+          "madeShots": 42,
+          "drives": 18
+        },
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 1533,
+          "possessions": 58,
+          "points": 35,
+          "turnovers": 9,
+          "shots": 75,
+          "madeShots": 33,
+          "drives": 4
+        }
+      },
+      "averageGameSeconds": 107.16331625875
+    },
+    "guard/guard": {
+      "games": 4,
+      "possessions": 93,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 3,
+        "winRate": 0.75
+      },
+      "shooting": {
+        "attempts": 138,
+        "successes": 72,
+        "rate": 0.5217391304347826
+      },
+      "turnovers": 0.010752688172043012,
+      "breakthroughs": {
+        "attempts": 318,
+        "successes": 29,
+        "rate": 0.09119496855345911
+      },
+      "ratingCombinations": {
+        "공격 70–100 / 수비 40–69": {
+          "decisions": 2529,
+          "possessions": 93,
+          "points": 77,
+          "turnovers": 1,
+          "shots": 138,
+          "madeShots": 72,
+          "drives": 29
+        }
+      },
+      "averageGameSeconds": 85.43024980899999
+    },
+    "guard/shooter": {
+      "games": 4,
+      "possessions": 100,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 4,
+        "winRate": 1
+      },
+      "shooting": {
+        "attempts": 134,
+        "successes": 72,
+        "rate": 0.5373134328358209
+      },
+      "turnovers": 0.07,
+      "breakthroughs": {
+        "attempts": 327,
+        "successes": 29,
+        "rate": 0.08868501529051988
+      },
+      "ratingCombinations": {
+        "공격 70–100 / 수비 40–69": {
+          "decisions": 2609,
+          "possessions": 100,
+          "points": 78,
+          "turnovers": 7,
+          "shots": 134,
+          "madeShots": 72,
+          "drives": 29
+        }
+      },
+      "averageGameSeconds": 87.93004956775
+    },
+    "guard/defender": {
+      "games": 4,
+      "possessions": 143,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 1,
+        "winRate": 0.25
+      },
+      "shooting": {
+        "attempts": 200,
+        "successes": 70,
+        "rate": 0.35
+      },
+      "turnovers": 0.1048951048951049,
+      "breakthroughs": {
+        "attempts": 457,
+        "successes": 21,
+        "rate": 0.045951859956236324
+      },
+      "ratingCombinations": {
+        "공격 70–100 / 수비 70–100": {
+          "decisions": 1878,
+          "possessions": 72,
+          "points": 34,
+          "turnovers": 9,
+          "shots": 83,
+          "madeShots": 32,
+          "drives": 13
+        },
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 2165,
+          "possessions": 71,
+          "points": 40,
+          "turnovers": 6,
+          "shots": 117,
+          "madeShots": 38,
+          "drives": 8
+        }
+      },
+      "averageGameSeconds": 136.43495905525
+    },
+    "guard/finisher": {
+      "games": 4,
+      "possessions": 124,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 2,
+        "winRate": 0.5
+      },
+      "shooting": {
+        "attempts": 184,
+        "successes": 72,
+        "rate": 0.391304347826087
+      },
+      "turnovers": 0.08870967741935484,
+      "breakthroughs": {
+        "attempts": 407,
+        "successes": 31,
+        "rate": 0.07616707616707617
+      },
+      "ratingCombinations": {
+        "공격 70–100 / 수비 40–69": {
+          "decisions": 1684,
+          "possessions": 63,
+          "points": 36,
+          "turnovers": 4,
+          "shots": 89,
+          "madeShots": 33,
+          "drives": 29
+        },
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 1765,
+          "possessions": 61,
+          "points": 40,
+          "turnovers": 7,
+          "shots": 95,
+          "madeShots": 39,
+          "drives": 2
+        }
+      },
+      "averageGameSeconds": 116.303196496
+    },
+    "shooter/balanced": {
+      "games": 4,
+      "possessions": 130,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 2,
+        "winRate": 0.5
+      },
+      "shooting": {
+        "attempts": 170,
+        "successes": 78,
+        "rate": 0.4588235294117647
+      },
+      "turnovers": 0.07692307692307693,
+      "breakthroughs": {
+        "attempts": 414,
+        "successes": 9,
+        "rate": 0.021739130434782608
+      },
+      "ratingCombinations": {
+        "공격 70–100 / 수비 40–69": {
+          "decisions": 1660,
+          "possessions": 66,
+          "points": 42,
+          "turnovers": 7,
+          "shots": 77,
+          "madeShots": 40,
+          "drives": 1
+        },
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 1819,
+          "possessions": 64,
+          "points": 40,
+          "turnovers": 3,
+          "shots": 93,
+          "madeShots": 38,
+          "drives": 8
+        }
+      },
+      "averageGameSeconds": 119.69642690825
+    },
+    "shooter/guard": {
+      "games": 4,
+      "possessions": 95,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 1,
+        "winRate": 0.25
+      },
+      "shooting": {
+        "attempts": 128,
+        "successes": 69,
+        "rate": 0.5390625
+      },
+      "turnovers": 0.06315789473684211,
+      "breakthroughs": {
+        "attempts": 302,
+        "successes": 20,
+        "rate": 0.06622516556291391
+      },
+      "ratingCombinations": {
+        "공격 70–100 / 수비 40–69": {
+          "decisions": 2499,
+          "possessions": 95,
+          "points": 74,
+          "turnovers": 6,
+          "shots": 128,
+          "madeShots": 69,
+          "drives": 20
+        }
+      },
+      "averageGameSeconds": 84.25789763575
+    },
+    "shooter/shooter": {
+      "games": 4,
+      "possessions": 121,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 1,
+        "winRate": 0.25
+      },
+      "shooting": {
+        "attempts": 132,
+        "successes": 77,
+        "rate": 0.5833333333333334
+      },
+      "turnovers": 0.1322314049586777,
+      "breakthroughs": {
+        "attempts": 380,
+        "successes": 6,
+        "rate": 0.015789473684210527
+      },
+      "ratingCombinations": {
+        "공격 70–100 / 수비 40–69": {
+          "decisions": 2984,
+          "possessions": 121,
+          "points": 79,
+          "turnovers": 16,
+          "shots": 132,
+          "madeShots": 77,
+          "drives": 6
+        }
+      },
+      "averageGameSeconds": 101.96488375525
+    },
+    "shooter/defender": {
+      "games": 4,
+      "possessions": 136,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 0,
+        "winRate": 0
+      },
+      "shooting": {
+        "attempts": 171,
+        "successes": 69,
+        "rate": 0.40350877192982454
+      },
+      "turnovers": 0.11764705882352941,
+      "breakthroughs": {
+        "attempts": 431,
+        "successes": 11,
+        "rate": 0.025522041763341066
+      },
+      "ratingCombinations": {
+        "공격 70–100 / 수비 70–100": {
+          "decisions": 1672,
+          "possessions": 68,
+          "points": 26,
+          "turnovers": 10,
+          "shots": 63,
+          "madeShots": 26,
+          "drives": 2
+        },
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 2060,
+          "possessions": 68,
+          "points": 44,
+          "turnovers": 6,
+          "shots": 108,
+          "madeShots": 43,
+          "drives": 9
+        }
+      },
+      "averageGameSeconds": 126.59551909825001
+    },
+    "shooter/finisher": {
+      "games": 4,
+      "possessions": 104,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 4,
+        "winRate": 1
+      },
+      "shooting": {
+        "attempts": 151,
+        "successes": 73,
+        "rate": 0.48344370860927155
+      },
+      "turnovers": 0.028846153846153848,
+      "breakthroughs": {
+        "attempts": 344,
+        "successes": 11,
+        "rate": 0.03197674418604651
+      },
+      "ratingCombinations": {
+        "공격 70–100 / 수비 40–69": {
+          "decisions": 1351,
+          "possessions": 54,
+          "points": 44,
+          "turnovers": 1,
+          "shots": 66,
+          "madeShots": 41,
+          "drives": 0
+        },
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 1548,
+          "possessions": 50,
+          "points": 34,
+          "turnovers": 2,
+          "shots": 85,
+          "madeShots": 32,
+          "drives": 11
+        }
+      },
+      "averageGameSeconds": 98.44487054525
+    },
+    "defender/balanced": {
+      "games": 4,
+      "possessions": 102,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 4,
+        "winRate": 1
+      },
+      "shooting": {
+        "attempts": 155,
+        "successes": 55,
+        "rate": 0.3548387096774194
+      },
+      "turnovers": 0.06862745098039216,
+      "breakthroughs": {
+        "attempts": 331,
+        "successes": 12,
+        "rate": 0.03625377643504532
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 1712,
+          "possessions": 53,
+          "points": 44,
+          "turnovers": 3,
+          "shots": 100,
+          "madeShots": 41,
+          "drives": 11
+        },
+        "공격 40–69 / 수비 70–100": {
+          "decisions": 1296,
+          "possessions": 49,
+          "points": 15,
+          "turnovers": 4,
+          "shots": 55,
+          "madeShots": 14,
+          "drives": 1
+        }
+      },
+      "averageGameSeconds": 102.43505543675
+    },
+    "defender/guard": {
+      "games": 4,
+      "possessions": 155,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 1,
+        "winRate": 0.25
+      },
+      "shooting": {
+        "attempts": 228,
+        "successes": 74,
+        "rate": 0.32456140350877194
+      },
+      "turnovers": 0.13548387096774195,
+      "breakthroughs": {
+        "attempts": 500,
+        "successes": 27,
+        "rate": 0.054
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 2336,
+          "possessions": 78,
+          "points": 41,
+          "turnovers": 10,
+          "shots": 130,
+          "madeShots": 38,
+          "drives": 10
+        },
+        "공격 70–100 / 수비 70–100": {
+          "decisions": 2065,
+          "possessions": 77,
+          "points": 37,
+          "turnovers": 11,
+          "shots": 98,
+          "madeShots": 36,
+          "drives": 17
+        }
+      },
+      "averageGameSeconds": 148.6500172735
+    },
+    "defender/shooter": {
+      "games": 4,
+      "possessions": 132,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 2,
+        "winRate": 0.5
+      },
+      "shooting": {
+        "attempts": 172,
+        "successes": 71,
+        "rate": 0.4127906976744186
+      },
+      "turnovers": 0.12121212121212122,
+      "breakthroughs": {
+        "attempts": 418,
+        "successes": 11,
+        "rate": 0.02631578947368421
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 1973,
+          "possessions": 67,
+          "points": 41,
+          "turnovers": 6,
+          "shots": 106,
+          "madeShots": 39,
+          "drives": 11
+        },
+        "공격 70–100 / 수비 70–100": {
+          "decisions": 1558,
+          "possessions": 65,
+          "points": 36,
+          "turnovers": 10,
+          "shots": 66,
+          "madeShots": 32,
+          "drives": 0
+        }
+      },
+      "averageGameSeconds": 119.399227763
+    },
+    "defender/defender": {
+      "games": 4,
+      "possessions": 142,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 2,
+        "winRate": 0.5
+      },
+      "shooting": {
+        "attempts": 175,
+        "successes": 65,
+        "rate": 0.37142857142857144
+      },
+      "turnovers": 0.1056338028169014,
+      "breakthroughs": {
+        "attempts": 461,
+        "successes": 7,
+        "rate": 0.015184381778741865
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 70–100": {
+          "decisions": 3827,
+          "possessions": 142,
+          "points": 70,
+          "turnovers": 15,
+          "shots": 175,
+          "madeShots": 65,
+          "drives": 7
+        }
+      },
+      "averageGameSeconds": 128.30214541325
+    },
+    "defender/finisher": {
+      "games": 4,
+      "possessions": 151,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 1,
+        "winRate": 0.25
+      },
+      "shooting": {
+        "attempts": 182,
+        "successes": 74,
+        "rate": 0.4065934065934066
+      },
+      "turnovers": 0.11258278145695365,
+      "breakthroughs": {
+        "attempts": 476,
+        "successes": 6,
+        "rate": 0.012605042016806723
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 2000,
+          "possessions": 76,
+          "points": 37,
+          "turnovers": 10,
+          "shots": 93,
+          "madeShots": 35,
+          "drives": 5
+        },
+        "공격 40–69 / 수비 70–100": {
+          "decisions": 1970,
+          "possessions": 75,
+          "points": 41,
+          "turnovers": 7,
+          "shots": 89,
+          "madeShots": 39,
+          "drives": 1
+        }
+      },
+      "averageGameSeconds": 134.03614278375
+    },
+    "finisher/balanced": {
+      "games": 4,
+      "possessions": 112,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 4,
+        "winRate": 1
+      },
+      "shooting": {
+        "attempts": 181,
+        "successes": 60,
+        "rate": 0.3314917127071823
+      },
+      "turnovers": 0.09821428571428571,
+      "breakthroughs": {
+        "attempts": 376,
+        "successes": 14,
+        "rate": 0.03723404255319149
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 3378,
+          "possessions": 112,
+          "points": 63,
+          "turnovers": 11,
+          "shots": 181,
+          "madeShots": 60,
+          "drives": 14
+        }
+      },
+      "averageGameSeconds": 115.79307793125
+    },
+    "finisher/guard": {
+      "games": 4,
+      "possessions": 111,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 3,
+        "winRate": 0.75
+      },
+      "shooting": {
+        "attempts": 177,
+        "successes": 72,
+        "rate": 0.4067796610169492
+      },
+      "turnovers": 0.11711711711711711,
+      "breakthroughs": {
+        "attempts": 383,
+        "successes": 27,
+        "rate": 0.07049608355091384
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 1709,
+          "possessions": 57,
+          "points": 42,
+          "turnovers": 6,
+          "shots": 96,
+          "madeShots": 39,
+          "drives": 9
+        },
+        "공격 70–100 / 수비 40–69": {
+          "decisions": 1452,
+          "possessions": 54,
+          "points": 35,
+          "turnovers": 7,
+          "shots": 81,
+          "madeShots": 33,
+          "drives": 18
+        }
+      },
+      "averageGameSeconds": 106.87862097925
+    },
+    "finisher/shooter": {
+      "games": 4,
+      "possessions": 115,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 3,
+        "winRate": 0.75
+      },
+      "shooting": {
+        "attempts": 153,
+        "successes": 73,
+        "rate": 0.477124183006536
+      },
+      "turnovers": 0.08695652173913043,
+      "breakthroughs": {
+        "attempts": 376,
+        "successes": 5,
+        "rate": 0.013297872340425532
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 1680,
+          "possessions": 59,
+          "points": 42,
+          "turnovers": 6,
+          "shots": 88,
+          "madeShots": 40,
+          "drives": 5
+        },
+        "공격 70–100 / 수비 40–69": {
+          "decisions": 1454,
+          "possessions": 56,
+          "points": 34,
+          "turnovers": 4,
+          "shots": 65,
+          "madeShots": 33,
+          "drives": 0
+        }
+      },
+      "averageGameSeconds": 106.68127171249999
+    },
+    "finisher/defender": {
+      "games": 4,
+      "possessions": 172,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 4,
+        "winRate": 1
+      },
+      "shooting": {
+        "attempts": 231,
+        "successes": 70,
+        "rate": 0.30303030303030304
+      },
+      "turnovers": 0.08139534883720931,
+      "breakthroughs": {
+        "attempts": 553,
+        "successes": 8,
+        "rate": 0.014466546112115732
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 70–100": {
+          "decisions": 2437,
+          "possessions": 88,
+          "points": 44,
+          "turnovers": 8,
+          "shots": 120,
+          "madeShots": 42,
+          "drives": 1
+        },
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 2375,
+          "possessions": 84,
+          "points": 31,
+          "turnovers": 6,
+          "shots": 111,
+          "madeShots": 28,
+          "drives": 7
+        }
+      },
+      "averageGameSeconds": 163.0850005315
+    },
+    "finisher/finisher": {
+      "games": 4,
+      "possessions": 121,
+      "p1Wins": {
+        "appearances": 4,
+        "wins": 3,
+        "winRate": 0.75
+      },
+      "shooting": {
+        "attempts": 164,
+        "successes": 74,
+        "rate": 0.45121951219512196
+      },
+      "turnovers": 0.08264462809917356,
+      "breakthroughs": {
+        "attempts": 405,
+        "successes": 14,
+        "rate": 0.0345679012345679
+      },
+      "ratingCombinations": {
+        "공격 40–69 / 수비 40–69": {
+          "decisions": 3300,
+          "possessions": 121,
+          "points": 76,
+          "turnovers": 10,
+          "shots": 164,
+          "madeShots": 74,
+          "drives": 14
+        }
+      },
+      "averageGameSeconds": 112.90909989175
+    }
+  }
+}

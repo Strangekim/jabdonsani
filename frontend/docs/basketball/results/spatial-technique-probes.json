@@ -1,0 +1,702 @@
+{
+  "trialsPerCombination": 64,
+  "totalTrials": 5760,
+  "note": "드리블 1동작의 공간 돌파 성공을 측정한다. 정면 조건의 실패는 기술 전체의 실패가 아니다. 동일한 임의 방향을 입력해 각 기술의 기본 방향을 재정의한 통제 조건이다.",
+  "scenarios": [
+    {
+      "id": "frontal",
+      "description": "동일 능력치, 정면 1m 수비",
+      "defender": {
+        "x": 7.5,
+        "y": 5
+      },
+      "direction": {
+        "x": 0.5,
+        "y": -1
+      },
+      "players": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "open_left",
+      "description": "동일 능력치, 오른쪽으로 치우친 수비의 반대편 경로",
+      "defender": {
+        "x": 8.4,
+        "y": 5.8
+      },
+      "direction": {
+        "x": -0.8,
+        "y": -1
+      },
+      "players": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "speed_mismatch",
+      "description": "비대칭 공간에서 빠른 공격 대 느린 수비, 능력치 조합 변경 명시",
+      "defender": {
+        "x": 8,
+        "y": 5.7
+      },
+      "direction": {
+        "x": -0.6,
+        "y": -1
+      },
+      "players": [
+        {
+          "attributes": {
+            "Speed": 90,
+            "Acceleration": 90,
+            "Agility": 90,
+            "DribbleSpeed": 90
+          }
+        },
+        {
+          "attributes": {
+            "Speed": 40,
+            "Acceleration": 40,
+            "LateralQuickness": 40,
+            "PerimeterDefense": 45
+          }
+        }
+      ]
+    }
+  ],
+  "combinations": {
+    "frontal/NormalDribble/HoldPosition": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "frontal/NormalDribble/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "frontal/NormalDribble/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "frontal/SpeedDribble/HoldPosition": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 0,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0
+    },
+    "frontal/SpeedDribble/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 0,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0
+    },
+    "frontal/SpeedDribble/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 0,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0
+    },
+    "frontal/ProtectedDribble/HoldPosition": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 0,
+      "controlRate": 1,
+      "breakthroughRate": 0
+    },
+    "frontal/ProtectedDribble/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 0,
+      "controlRate": 1,
+      "breakthroughRate": 0
+    },
+    "frontal/ProtectedDribble/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 0,
+      "controlRate": 1,
+      "breakthroughRate": 0
+    },
+    "frontal/Crossover/HoldPosition": {
+      "attempts": 64,
+      "controls": 56,
+      "drives": 0,
+      "controlRate": 0.875,
+      "breakthroughRate": 0
+    },
+    "frontal/Crossover/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 56,
+      "drives": 0,
+      "controlRate": 0.875,
+      "breakthroughRate": 0
+    },
+    "frontal/Crossover/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 56,
+      "drives": 0,
+      "controlRate": 0.875,
+      "breakthroughRate": 0
+    },
+    "frontal/BetweenTheLegs/HoldPosition": {
+      "attempts": 64,
+      "controls": 59,
+      "drives": 0,
+      "controlRate": 0.921875,
+      "breakthroughRate": 0
+    },
+    "frontal/BetweenTheLegs/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 59,
+      "drives": 0,
+      "controlRate": 0.921875,
+      "breakthroughRate": 0
+    },
+    "frontal/BetweenTheLegs/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 59,
+      "drives": 0,
+      "controlRate": 0.921875,
+      "breakthroughRate": 0
+    },
+    "frontal/BehindTheBack/HoldPosition": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 0,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0
+    },
+    "frontal/BehindTheBack/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 0,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0
+    },
+    "frontal/BehindTheBack/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 0,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0
+    },
+    "frontal/Hesitation/HoldPosition": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "frontal/Hesitation/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "frontal/Hesitation/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "frontal/InAndOut/HoldPosition": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "frontal/InAndOut/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "frontal/InAndOut/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "frontal/SpinMove/HoldPosition": {
+      "attempts": 64,
+      "controls": 59,
+      "drives": 0,
+      "controlRate": 0.921875,
+      "breakthroughRate": 0
+    },
+    "frontal/SpinMove/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 59,
+      "drives": 0,
+      "controlRate": 0.921875,
+      "breakthroughRate": 0
+    },
+    "frontal/SpinMove/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 59,
+      "drives": 0,
+      "controlRate": 0.921875,
+      "breakthroughRate": 0
+    },
+    "frontal/RetreatDribble/HoldPosition": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 0,
+      "controlRate": 1,
+      "breakthroughRate": 0
+    },
+    "frontal/RetreatDribble/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 0,
+      "controlRate": 1,
+      "breakthroughRate": 0
+    },
+    "frontal/RetreatDribble/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 0,
+      "controlRate": 1,
+      "breakthroughRate": 0
+    },
+    "open_left/NormalDribble/HoldPosition": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 63,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0.984375
+    },
+    "open_left/NormalDribble/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "open_left/NormalDribble/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 63,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0.984375
+    },
+    "open_left/SpeedDribble/HoldPosition": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 60,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0.9375
+    },
+    "open_left/SpeedDribble/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 0,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0
+    },
+    "open_left/SpeedDribble/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 60,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0.9375
+    },
+    "open_left/ProtectedDribble/HoldPosition": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 64,
+      "controlRate": 1,
+      "breakthroughRate": 1
+    },
+    "open_left/ProtectedDribble/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 0,
+      "controlRate": 1,
+      "breakthroughRate": 0
+    },
+    "open_left/ProtectedDribble/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 64,
+      "controlRate": 1,
+      "breakthroughRate": 1
+    },
+    "open_left/Crossover/HoldPosition": {
+      "attempts": 64,
+      "controls": 56,
+      "drives": 56,
+      "controlRate": 0.875,
+      "breakthroughRate": 0.875
+    },
+    "open_left/Crossover/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 56,
+      "drives": 0,
+      "controlRate": 0.875,
+      "breakthroughRate": 0
+    },
+    "open_left/Crossover/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 56,
+      "drives": 56,
+      "controlRate": 0.875,
+      "breakthroughRate": 0.875
+    },
+    "open_left/BetweenTheLegs/HoldPosition": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 60,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0.9375
+    },
+    "open_left/BetweenTheLegs/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 0,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0
+    },
+    "open_left/BetweenTheLegs/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 60,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0.9375
+    },
+    "open_left/BehindTheBack/HoldPosition": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 60,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0.9375
+    },
+    "open_left/BehindTheBack/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 0,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0
+    },
+    "open_left/BehindTheBack/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 60,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0.9375
+    },
+    "open_left/Hesitation/HoldPosition": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 63,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0.984375
+    },
+    "open_left/Hesitation/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "open_left/Hesitation/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 63,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0.984375
+    },
+    "open_left/InAndOut/HoldPosition": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 63,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0.984375
+    },
+    "open_left/InAndOut/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "open_left/InAndOut/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 63,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0.984375
+    },
+    "open_left/SpinMove/HoldPosition": {
+      "attempts": 64,
+      "controls": 59,
+      "drives": 59,
+      "controlRate": 0.921875,
+      "breakthroughRate": 0.921875
+    },
+    "open_left/SpinMove/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 59,
+      "drives": 0,
+      "controlRate": 0.921875,
+      "breakthroughRate": 0
+    },
+    "open_left/SpinMove/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 59,
+      "drives": 59,
+      "controlRate": 0.921875,
+      "breakthroughRate": 0.921875
+    },
+    "open_left/RetreatDribble/HoldPosition": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 64,
+      "controlRate": 1,
+      "breakthroughRate": 1
+    },
+    "open_left/RetreatDribble/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 0,
+      "controlRate": 1,
+      "breakthroughRate": 0
+    },
+    "open_left/RetreatDribble/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 64,
+      "controlRate": 1,
+      "breakthroughRate": 1
+    },
+    "speed_mismatch/NormalDribble/HoldPosition": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 63,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0.984375
+    },
+    "speed_mismatch/NormalDribble/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "speed_mismatch/NormalDribble/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 63,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0.984375
+    },
+    "speed_mismatch/SpeedDribble/HoldPosition": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 60,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0.9375
+    },
+    "speed_mismatch/SpeedDribble/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 0,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0
+    },
+    "speed_mismatch/SpeedDribble/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 60,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0.9375
+    },
+    "speed_mismatch/ProtectedDribble/HoldPosition": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 64,
+      "controlRate": 1,
+      "breakthroughRate": 1
+    },
+    "speed_mismatch/ProtectedDribble/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 0,
+      "controlRate": 1,
+      "breakthroughRate": 0
+    },
+    "speed_mismatch/ProtectedDribble/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 64,
+      "controlRate": 1,
+      "breakthroughRate": 1
+    },
+    "speed_mismatch/Crossover/HoldPosition": {
+      "attempts": 64,
+      "controls": 56,
+      "drives": 56,
+      "controlRate": 0.875,
+      "breakthroughRate": 0.875
+    },
+    "speed_mismatch/Crossover/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 56,
+      "drives": 0,
+      "controlRate": 0.875,
+      "breakthroughRate": 0
+    },
+    "speed_mismatch/Crossover/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 56,
+      "drives": 56,
+      "controlRate": 0.875,
+      "breakthroughRate": 0.875
+    },
+    "speed_mismatch/BetweenTheLegs/HoldPosition": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 60,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0.9375
+    },
+    "speed_mismatch/BetweenTheLegs/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 0,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0
+    },
+    "speed_mismatch/BetweenTheLegs/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 60,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0.9375
+    },
+    "speed_mismatch/BehindTheBack/HoldPosition": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 60,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0.9375
+    },
+    "speed_mismatch/BehindTheBack/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 0,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0
+    },
+    "speed_mismatch/BehindTheBack/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 60,
+      "drives": 60,
+      "controlRate": 0.9375,
+      "breakthroughRate": 0.9375
+    },
+    "speed_mismatch/Hesitation/HoldPosition": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 63,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0.984375
+    },
+    "speed_mismatch/Hesitation/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "speed_mismatch/Hesitation/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 63,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0.984375
+    },
+    "speed_mismatch/InAndOut/HoldPosition": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 63,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0.984375
+    },
+    "speed_mismatch/InAndOut/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 0,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0
+    },
+    "speed_mismatch/InAndOut/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 63,
+      "drives": 63,
+      "controlRate": 0.984375,
+      "breakthroughRate": 0.984375
+    },
+    "speed_mismatch/SpinMove/HoldPosition": {
+      "attempts": 64,
+      "controls": 59,
+      "drives": 59,
+      "controlRate": 0.921875,
+      "breakthroughRate": 0.921875
+    },
+    "speed_mismatch/SpinMove/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 59,
+      "drives": 0,
+      "controlRate": 0.921875,
+      "breakthroughRate": 0
+    },
+    "speed_mismatch/SpinMove/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 59,
+      "drives": 59,
+      "controlRate": 0.921875,
+      "breakthroughRate": 0.921875
+    },
+    "speed_mismatch/RetreatDribble/HoldPosition": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 64,
+      "controlRate": 1,
+      "breakthroughRate": 1
+    },
+    "speed_mismatch/RetreatDribble/CutOffDrivingLane": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 0,
+      "controlRate": 1,
+      "breakthroughRate": 0
+    },
+    "speed_mismatch/RetreatDribble/DefensiveSlideLeft": {
+      "attempts": 64,
+      "controls": 64,
+      "drives": 64,
+      "controlRate": 1,
+      "breakthroughRate": 1
+    }
+  },
+  "wallClockSeconds": 5.632721001
+}

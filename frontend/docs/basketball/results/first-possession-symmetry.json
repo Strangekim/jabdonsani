@@ -1,0 +1,70 @@
+{
+  "seed": 20261013,
+  "matchedSeeds": 100,
+  "totalGames": 200,
+  "note": "동일한 능력치와 시드의 경기를 선공 P1/P2로 각각 실행한다. 확률 경합의 표본 분산은 남는다. 아래 윌슨 구간은 단순 이항 기술통계이며 짝지은 표본의 독립성을 보장하지 않는다.",
+  "p1First": {
+    "wins": {
+      "p1": {
+        "appearances": 100,
+        "wins": 55,
+        "winRate": 0.55,
+        "confidence95": {
+          "low": 0.45244427031643447,
+          "high": 0.6438562489359654
+        }
+      },
+      "p2": {
+        "appearances": 100,
+        "wins": 45,
+        "winRate": 0.45,
+        "confidence95": {
+          "low": 0.3561437510640346,
+          "high": 0.5475557296835656
+        }
+      }
+    },
+    "possessions": 3301
+  },
+  "p2First": {
+    "wins": {
+      "p1": {
+        "appearances": 100,
+        "wins": 44,
+        "winRate": 0.44,
+        "confidence95": {
+          "low": 0.34671865400968327,
+          "high": 0.537720722887437
+        }
+      },
+      "p2": {
+        "appearances": 100,
+        "wins": 56,
+        "winRate": 0.56,
+        "confidence95": {
+          "low": 0.4622792771125631,
+          "high": 0.6532813459903167
+        }
+      }
+    },
+    "possessions": 3302
+  },
+  "pooledP1": {
+    "wins": 99,
+    "games": 200,
+    "rate": 0.495,
+    "confidence95": {
+      "low": 0.4264572195415849,
+      "high": 0.5637312405175983
+    }
+  },
+  "pooledStarter": {
+    "wins": 111,
+    "games": 200,
+    "rate": 0.555,
+    "confidence95": {
+      "low": 0.4857317563236392,
+      "high": 0.6221951830253456
+    }
+  }
+}

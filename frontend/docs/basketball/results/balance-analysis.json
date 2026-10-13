@@ -1,0 +1,87 @@
+{
+  "notes": [
+    "기본 AI 표본에서 미관측 드리블: Hesitation, InAndOut, SpinMove, RetreatDribble. 별도 기술 대결 실험이 필요합니다.",
+    "P1 승률 58.42% (윌슨 95% 구간 52.79~63.83%). 모든 경기의 선공은 P1이며 능력치·선공 효과와 ID 편향은 구분해야 합니다."
+  ],
+  "starterAudit": {
+    "P1WhenP1Starts": 0.55,
+    "P2WhenP2Starts": 0.56,
+    "pooledP1WinRate": 0.495,
+    "pooledStarterWinRate": 0.555,
+    "interpretation": "동일 시드·능력치의 선공 교대 표본에서는 P1이 49.5%를 이겼다. ID 자체의 우위는 입증되지 않았다. 선공 이점 추정 55.5%에는 유한 표본 불확실성이 있다."
+  },
+  "smallSampleInverseAttributeWinChanges": {
+    "Deceleration": -0.25,
+    "DribbleSpeed": -0.125,
+    "ShotCreation": -0.125,
+    "Block": -0.25,
+    "DefensiveAwareness": -0.125,
+    "Balance": -0.125,
+    "Composure": -0.125,
+    "DecisionMaking": -0.125
+  },
+  "attributeCaveat": "각 값당 8경기. 개별 경기 승률은 다른 결정·기하·난수 경로를 포함하며, 8개 통제된 능력치 관계의 단조 결과와 혼동하지 않는다.",
+  "frontalTechniqueProbe": {
+    "trials": 7680,
+    "drives": 0,
+    "interpretation": "정면 1m의 단일 동작으로 완전히 제치는 사례는 없었다. 실전 전체 경기와 다양한 공간 조건을 분리해 보아야 한다."
+  },
+  "spatialScenarios": {
+    "frontal": {
+      "attempts": 1920,
+      "drives": 0,
+      "rate": 0.0
+    },
+    "open_left": {
+      "attempts": 1920,
+      "drives": 1224,
+      "rate": 0.6375
+    },
+    "speed_mismatch": {
+      "attempts": 1920,
+      "drives": 1224,
+      "rate": 0.6375
+    }
+  },
+  "beforeAfter": {
+    "averagePossessionSeconds": {
+      "before": 4.061007984031932,
+      "after": 3.928258735555222
+    },
+    "averageDecisionPoints": {
+      "before": 5.185828343313373,
+      "after": 28.290831088496457
+    },
+    "averageDribbles": {
+      "before": 2.7461077844311377,
+      "after": 2.7509727626459144
+    },
+    "averageGameSeconds": {
+      "before": 118.63352769679291,
+      "after": 129.943687480099
+    },
+    "turnoverRate": {
+      "before": 0.09810379241516966,
+      "after": 0.0848049486181782
+    }
+  },
+  "shootingBeforeAfter": {
+    "before": 0.44240307369891724,
+    "after": 0.3637411047102677
+  },
+  "driveEventsPerPossessionBeforeAfter": {
+    "before": 0.42544910179640716,
+    "after": 0.10855033423126809
+  },
+  "denominators": {
+    "techniqueControl": "제어 성공 수 / 해당 기술이 실제 시작된 단위 수",
+    "shooting": "필드골 성공 수 / 릴리스된 필드골 수. 자유투 제외",
+    "steal": "완전히 탈취한 스틸 수 / 시작된 StealAttempt·ReachIn 수. 루즈볼 쳐내기는 별도",
+    "block": "슛 블록 수 / 시작된 BlockAttempt·JumpContest 수. 상대가 슛하지 않은 점프도 시도로 센다",
+    "breakthrough": "공간 돌파 우위 사건 수 / 시작된 공격 이동 행동 수(이동 배율>0, 공 회수 행동 제외). 드리블 외 이동 풋워크·러닝 슛 포함",
+    "turnover": "턴오버 수 / 완료 포제션 수",
+    "foul": "파울 수 / 완료 포제션 수",
+    "stamina": "누적 행동 체력 비용 / 완료 포제션 수. 회복과 0 바닥을 포함한 최종 게이지의 순감소와 다름"
+  },
+  "beforeAfterCaveat": "중단 지점, 회복 지연, 난수 시드 혼합, 경로 충돌 및 측정 분모를 수정한 전후 비교다. 임의의 슛 성공률 보너스를 가감한 보정이 아니다. 기존 돌파 성공률은 드리블 횟수가 분모였으므로 최종 성공률과 직접 비교하지 않는다."
+}

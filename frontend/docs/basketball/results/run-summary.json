@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-10-13T04:10:22.881Z",
+  "command": "npm run stats:basketball -- 10000 100",
+  "wallClockSeconds": 364.569269025,
+  "baselinePossessions": 10023,
+  "baselineGames": 303,
+  "additionalAttributeGames": 480,
+  "additionalProfileGames": 100,
+  "techniqueTrials": 7680,
+  "aiExamples": [
+    {
+      "player": "p1",
+      "command": {
+        "actionId": "Crossover",
+        "speed": 0.9,
+        "direction": {
+          "x": -0.3280116889704119,
+          "y": -0.9446736642347863
+        }
+      }
+    },
+    {
+      "player": "p2",
+      "command": {
+        "actionId": "CutOffDrivingLane",
+        "speed": 0.9,
+        "desiredGap": 1.25,
+        "anticipatedDirection": {
+          "x": 0,
+          "y": -1
+        }
+      }
+    }
+  ],
+  "anomalies": [
+    "기본 AI 표본에서 미관측 드리블: Hesitation, InAndOut, SpinMove, RetreatDribble. 별도 기술 대결 실험이 필요합니다.",
+    "P1 승률 58.42% (윌슨 95% 구간 52.79~63.83%). 모든 경기의 선공은 P1이며 능력치·선공 효과와 ID 편향은 구분해야 합니다."
+  ],
+  "additionalStarterAuditGames": 200,
+  "starterAuditWallClockSecondsApprox": 82.575,
+  "starterAuditTimingMethod": "별도 실행: 기준 통계 경고 보강 파일 저장 직후부터 감사 결과 파일 저장까지 파일 타임스탬프 차이. 본 실행 wallClockSeconds에 포함하지 않음.",
+  "spatialTechniqueTrials": 5760,
+  "spatialProbeWallClockSeconds": 5.632721001,
+  "totalFinalFullGames": 1083,
+  "totalFinalCompletedPossessions": 34938,
+  "supplementalRuns": "선공 대칭성 검사와 추가 공간 표본은 본 실행과 별도로 실행했다. 현재 CLI는 모두 한 명령에서 재현한다."
+}

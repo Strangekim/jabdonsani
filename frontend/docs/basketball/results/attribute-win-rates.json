@@ -1,0 +1,1478 @@
+{
+  "seed": 9501,
+  "baseline": 65,
+  "gamesPerValue": 8,
+  "caveat": "각 능력치는 20/95에서 동일한 시드의 8경기를 비교한다. 경기 승률은 소표본이며 단조 관계의 통계적 증명이 아니다. 요구된 8개 관계는 별도 256~512회 통제 실험으로 검증한다.",
+  "attributes": {
+    "Speed": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 243,
+        "winRate": 0.125,
+        "shooting": {
+          "attempts": 367,
+          "successes": 133,
+          "rate": 0.36239782016348776
+        },
+        "steals": {
+          "attempts": 9,
+          "successes": 2,
+          "rate": 0.2222222222222222
+        },
+        "breakthrough": {
+          "attempts": 791,
+          "successes": 17,
+          "rate": 0.021491782553729456
+        },
+        "staminaPerPossession": 11.928020534934067,
+        "averageGameSeconds": 119.73559737349998
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 228,
+        "winRate": 0.75,
+        "shooting": {
+          "attempts": 348,
+          "successes": 146,
+          "rate": 0.41954022988505746
+        },
+        "steals": {
+          "attempts": 5,
+          "successes": 1,
+          "rate": 0.2
+        },
+        "breakthrough": {
+          "attempts": 767,
+          "successes": 45,
+          "rate": 0.05867014341590613
+        },
+        "staminaPerPossession": 12.148981990051668,
+        "averageGameSeconds": 111.808492468
+      },
+      "highMinusLowWinRate": 0.625
+    },
+    "Acceleration": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 221,
+        "winRate": 0.125,
+        "shooting": {
+          "attempts": 344,
+          "successes": 130,
+          "rate": 0.37790697674418605
+        },
+        "steals": {
+          "attempts": 10,
+          "successes": 1,
+          "rate": 0.1
+        },
+        "breakthrough": {
+          "attempts": 703,
+          "successes": 34,
+          "rate": 0.04836415362731152
+        },
+        "staminaPerPossession": 12.183031677193963,
+        "averageGameSeconds": 110.282898732375
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 247,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 360,
+          "successes": 133,
+          "rate": 0.36944444444444446
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 2,
+          "rate": 0.25
+        },
+        "breakthrough": {
+          "attempts": 799,
+          "successes": 39,
+          "rate": 0.04881101376720901
+        },
+        "staminaPerPossession": 11.81136645035261,
+        "averageGameSeconds": 118.07132994162501
+      },
+      "highMinusLowWinRate": 0.5
+    },
+    "Agility": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 247,
+        "winRate": 0.375,
+        "shooting": {
+          "attempts": 398,
+          "successes": 136,
+          "rate": 0.3417085427135678
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 2,
+          "rate": 0.25
+        },
+        "breakthrough": {
+          "attempts": 837,
+          "successes": 28,
+          "rate": 0.03345280764635603
+        },
+        "staminaPerPossession": 12.356058886699982,
+        "averageGameSeconds": 128.04028858249998
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 258,
+        "winRate": 0.75,
+        "shooting": {
+          "attempts": 395,
+          "successes": 143,
+          "rate": 0.3620253164556962
+        },
+        "steals": {
+          "attempts": 10,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 867,
+          "successes": 33,
+          "rate": 0.03806228373702422
+        },
+        "staminaPerPossession": 12.09556604268587,
+        "averageGameSeconds": 129.31067642662498
+      },
+      "highMinusLowWinRate": 0.375
+    },
+    "Deceleration": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 245,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 369,
+          "successes": 127,
+          "rate": 0.34417344173441733
+        },
+        "steals": {
+          "attempts": 12,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 815,
+          "successes": 28,
+          "rate": 0.0343558282208589
+        },
+        "staminaPerPossession": 12.139784399767015,
+        "averageGameSeconds": 122.464310089875
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 283,
+        "winRate": 0.375,
+        "shooting": {
+          "attempts": 388,
+          "successes": 146,
+          "rate": 0.37628865979381443
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 896,
+          "successes": 17,
+          "rate": 0.018973214285714284
+        },
+        "staminaPerPossession": 11.352755932925907,
+        "averageGameSeconds": 133.16022309862498
+      },
+      "highMinusLowWinRate": -0.25
+    },
+    "Footwork": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 255,
+        "winRate": 0.125,
+        "shooting": {
+          "attempts": 367,
+          "successes": 135,
+          "rate": 0.3678474114441417
+        },
+        "steals": {
+          "attempts": 12,
+          "successes": 4,
+          "rate": 0.3333333333333333
+        },
+        "breakthrough": {
+          "attempts": 822,
+          "successes": 18,
+          "rate": 0.021897810218978103
+        },
+        "staminaPerPossession": 11.815375694879878,
+        "averageGameSeconds": 122.82095234887501
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 247,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 390,
+          "successes": 138,
+          "rate": 0.35384615384615387
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 1,
+          "rate": 0.125
+        },
+        "breakthrough": {
+          "attempts": 822,
+          "successes": 30,
+          "rate": 0.0364963503649635
+        },
+        "staminaPerPossession": 12.45884508192521,
+        "averageGameSeconds": 125.95000488562499
+      },
+      "highMinusLowWinRate": 0.5
+    },
+    "BallHandling": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 259,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 371,
+          "successes": 140,
+          "rate": 0.37735849056603776
+        },
+        "steals": {
+          "attempts": 9,
+          "successes": 4,
+          "rate": 0.4444444444444444
+        },
+        "breakthrough": {
+          "attempts": 838,
+          "successes": 41,
+          "rate": 0.04892601431980907
+        },
+        "staminaPerPossession": 11.528213685893446,
+        "averageGameSeconds": 124.73713636949999
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 225,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 363,
+          "successes": 142,
+          "rate": 0.39118457300275483
+        },
+        "steals": {
+          "attempts": 6,
+          "successes": 2,
+          "rate": 0.3333333333333333
+        },
+        "breakthrough": {
+          "attempts": 769,
+          "successes": 26,
+          "rate": 0.033810143042912875
+        },
+        "staminaPerPossession": 12.466206718082285,
+        "averageGameSeconds": 114.10190413937501
+      },
+      "highMinusLowWinRate": 0
+    },
+    "BallControl": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 297,
+        "winRate": 0.375,
+        "shooting": {
+          "attempts": 400,
+          "successes": 128,
+          "rate": 0.32
+        },
+        "steals": {
+          "attempts": 97,
+          "successes": 28,
+          "rate": 0.28865979381443296
+        },
+        "breakthrough": {
+          "attempts": 925,
+          "successes": 34,
+          "rate": 0.036756756756756756
+        },
+        "staminaPerPossession": 11.259074787737982,
+        "averageGameSeconds": 138.58911192149998
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 258,
+        "winRate": 0.5,
+        "shooting": {
+          "attempts": 414,
+          "successes": 137,
+          "rate": 0.3309178743961353
+        },
+        "steals": {
+          "attempts": 4,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 871,
+          "successes": 25,
+          "rate": 0.02870264064293915
+        },
+        "staminaPerPossession": 12.215226984428396,
+        "averageGameSeconds": 131.8601580815
+      },
+      "highMinusLowWinRate": 0.125
+    },
+    "DribbleSpeed": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 273,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 387,
+          "successes": 141,
+          "rate": 0.3643410852713178
+        },
+        "steals": {
+          "attempts": 14,
+          "successes": 4,
+          "rate": 0.2857142857142857
+        },
+        "breakthrough": {
+          "attempts": 895,
+          "successes": 28,
+          "rate": 0.03128491620111732
+        },
+        "staminaPerPossession": 11.698586413867488,
+        "averageGameSeconds": 133.106234824375
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 266,
+        "winRate": 0.5,
+        "shooting": {
+          "attempts": 435,
+          "successes": 146,
+          "rate": 0.335632183908046
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 901,
+          "successes": 49,
+          "rate": 0.05438401775804662
+        },
+        "staminaPerPossession": 12.590095369592769,
+        "averageGameSeconds": 137.425196097375
+      },
+      "highMinusLowWinRate": -0.125
+    },
+    "DribbleProtection": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 245,
+        "winRate": 0.375,
+        "shooting": {
+          "attempts": 381,
+          "successes": 134,
+          "rate": 0.35170603674540685
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 3,
+          "rate": 0.375
+        },
+        "breakthrough": {
+          "attempts": 801,
+          "successes": 27,
+          "rate": 0.033707865168539325
+        },
+        "staminaPerPossession": 12.080376587764423,
+        "averageGameSeconds": 122.9924550515
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 275,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 424,
+          "successes": 140,
+          "rate": 0.330188679245283
+        },
+        "steals": {
+          "attempts": 5,
+          "successes": 1,
+          "rate": 0.2
+        },
+        "breakthrough": {
+          "attempts": 902,
+          "successes": 31,
+          "rate": 0.03436807095343681
+        },
+        "staminaPerPossession": 12.242862774792767,
+        "averageGameSeconds": 139.88408795875
+      },
+      "highMinusLowWinRate": 0.25
+    },
+    "CloseShot": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 281,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 447,
+          "successes": 149,
+          "rate": 0.3333333333333333
+        },
+        "steals": {
+          "attempts": 11,
+          "successes": 1,
+          "rate": 0.09090909090909091
+        },
+        "breakthrough": {
+          "attempts": 944,
+          "successes": 35,
+          "rate": 0.037076271186440676
+        },
+        "staminaPerPossession": 12.561332951709582,
+        "averageGameSeconds": 144.81037612025
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 260,
+        "winRate": 0.75,
+        "shooting": {
+          "attempts": 406,
+          "successes": 140,
+          "rate": 0.3448275862068966
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 1,
+          "rate": 0.125
+        },
+        "breakthrough": {
+          "attempts": 858,
+          "successes": 25,
+          "rate": 0.029137529137529136
+        },
+        "staminaPerPossession": 12.378539730270719,
+        "averageGameSeconds": 131.048934703
+      },
+      "highMinusLowWinRate": 0.125
+    },
+    "MidRangeShot": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 274,
+        "winRate": 0.5,
+        "shooting": {
+          "attempts": 457,
+          "successes": 125,
+          "rate": 0.2735229759299781
+        },
+        "steals": {
+          "attempts": 5,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 950,
+          "successes": 41,
+          "rate": 0.0431578947368421
+        },
+        "staminaPerPossession": 13.133742027275217,
+        "averageGameSeconds": 147.43902762774997
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 223,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 314,
+          "successes": 137,
+          "rate": 0.43630573248407645
+        },
+        "steals": {
+          "attempts": 10,
+          "successes": 1,
+          "rate": 0.1
+        },
+        "breakthrough": {
+          "attempts": 717,
+          "successes": 16,
+          "rate": 0.022315202231520222
+        },
+        "staminaPerPossession": 11.436553926263747,
+        "averageGameSeconds": 104.8517947985
+      },
+      "highMinusLowWinRate": 0.125
+    },
+    "LongRangeShot": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 261,
+        "winRate": 0.375,
+        "shooting": {
+          "attempts": 411,
+          "successes": 144,
+          "rate": 0.35036496350364965
+        },
+        "steals": {
+          "attempts": 9,
+          "successes": 2,
+          "rate": 0.2222222222222222
+        },
+        "breakthrough": {
+          "attempts": 864,
+          "successes": 28,
+          "rate": 0.032407407407407406
+        },
+        "staminaPerPossession": 12.35131768767816,
+        "averageGameSeconds": 132.98644639125
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 245,
+        "winRate": 0.375,
+        "shooting": {
+          "attempts": 384,
+          "successes": 139,
+          "rate": 0.3619791666666667
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 1,
+          "rate": 0.125
+        },
+        "breakthrough": {
+          "attempts": 813,
+          "successes": 28,
+          "rate": 0.03444034440344403
+        },
+        "staminaPerPossession": 12.275761020615262,
+        "averageGameSeconds": 124.450636035875
+      },
+      "highMinusLowWinRate": 0
+    },
+    "Layup": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 248,
+        "winRate": 0.25,
+        "shooting": {
+          "attempts": 390,
+          "successes": 146,
+          "rate": 0.37435897435897436
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 1,
+          "rate": 0.125
+        },
+        "breakthrough": {
+          "attempts": 817,
+          "successes": 21,
+          "rate": 0.025703794369645042
+        },
+        "staminaPerPossession": 12.33810168552853,
+        "averageGameSeconds": 125.46366713650002
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 235,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 332,
+          "successes": 141,
+          "rate": 0.4246987951807229
+        },
+        "steals": {
+          "attempts": 9,
+          "successes": 2,
+          "rate": 0.2222222222222222
+        },
+        "breakthrough": {
+          "attempts": 786,
+          "successes": 36,
+          "rate": 0.04580152671755725
+        },
+        "staminaPerPossession": 11.62274381003603,
+        "averageGameSeconds": 111.78271943075
+      },
+      "highMinusLowWinRate": 0.375
+    },
+    "Dunk": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 247,
+        "winRate": 0.375,
+        "shooting": {
+          "attempts": 390,
+          "successes": 140,
+          "rate": 0.358974358974359
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 1,
+          "rate": 0.125
+        },
+        "breakthrough": {
+          "attempts": 821,
+          "successes": 28,
+          "rate": 0.0341047503045067
+        },
+        "staminaPerPossession": 12.326980136491848,
+        "averageGameSeconds": 125.923475552
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 247,
+        "winRate": 0.375,
+        "shooting": {
+          "attempts": 385,
+          "successes": 140,
+          "rate": 0.36363636363636365
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 1,
+          "rate": 0.125
+        },
+        "breakthrough": {
+          "attempts": 821,
+          "successes": 28,
+          "rate": 0.0341047503045067
+        },
+        "staminaPerPossession": 12.276261994328017,
+        "averageGameSeconds": 125.123937893375
+      },
+      "highMinusLowWinRate": 0
+    },
+    "ShotCreation": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 277,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 456,
+          "successes": 143,
+          "rate": 0.31359649122807015
+        },
+        "steals": {
+          "attempts": 7,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 924,
+          "successes": 40,
+          "rate": 0.04329004329004329
+        },
+        "staminaPerPossession": 12.599552398469415,
+        "averageGameSeconds": 145.092354996875
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 258,
+        "winRate": 0.5,
+        "shooting": {
+          "attempts": 383,
+          "successes": 139,
+          "rate": 0.3629242819843342
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 1,
+          "rate": 0.125
+        },
+        "breakthrough": {
+          "attempts": 839,
+          "successes": 24,
+          "rate": 0.028605482717520857
+        },
+        "staminaPerPossession": 11.922167808665565,
+        "averageGameSeconds": 126.43686113325
+      },
+      "highMinusLowWinRate": -0.125
+    },
+    "PerimeterDefense": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 236,
+        "winRate": 0,
+        "shooting": {
+          "attempts": 395,
+          "successes": 136,
+          "rate": 0.34430379746835443
+        },
+        "steals": {
+          "attempts": 4,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 804,
+          "successes": 32,
+          "rate": 0.03980099502487562
+        },
+        "staminaPerPossession": 12.759633197676367,
+        "averageGameSeconds": 123.20721793012501
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 269,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 396,
+          "successes": 132,
+          "rate": 0.3333333333333333
+        },
+        "steals": {
+          "attempts": 14,
+          "successes": 2,
+          "rate": 0.14285714285714285
+        },
+        "breakthrough": {
+          "attempts": 873,
+          "successes": 29,
+          "rate": 0.033218785796105384
+        },
+        "staminaPerPossession": 12.154998934224603,
+        "averageGameSeconds": 132.964348755375
+      },
+      "highMinusLowWinRate": 0.625
+    },
+    "LateralQuickness": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 218,
+        "winRate": 0.25,
+        "shooting": {
+          "attempts": 368,
+          "successes": 136,
+          "rate": 0.3695652173913043
+        },
+        "steals": {
+          "attempts": 6,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 733,
+          "successes": 33,
+          "rate": 0.045020463847203276
+        },
+        "staminaPerPossession": 12.53425092242999,
+        "averageGameSeconds": 113.20995244025
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 253,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 401,
+          "successes": 146,
+          "rate": 0.3640897755610973
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 1,
+          "rate": 0.125
+        },
+        "breakthrough": {
+          "attempts": 851,
+          "successes": 27,
+          "rate": 0.03172737955346651
+        },
+        "staminaPerPossession": 12.379992410022673,
+        "averageGameSeconds": 128.13533330950003
+      },
+      "highMinusLowWinRate": 0.375
+    },
+    "Steal": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 250,
+        "winRate": 0.25,
+        "shooting": {
+          "attempts": 385,
+          "successes": 139,
+          "rate": 0.36103896103896105
+        },
+        "steals": {
+          "attempts": 5,
+          "successes": 1,
+          "rate": 0.2
+        },
+        "breakthrough": {
+          "attempts": 820,
+          "successes": 26,
+          "rate": 0.03170731707317073
+        },
+        "staminaPerPossession": 12.236469502893812,
+        "averageGameSeconds": 125.328461028375
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 268,
+        "winRate": 0.75,
+        "shooting": {
+          "attempts": 342,
+          "successes": 142,
+          "rate": 0.4152046783625731
+        },
+        "steals": {
+          "attempts": 52,
+          "successes": 18,
+          "rate": 0.34615384615384615
+        },
+        "breakthrough": {
+          "attempts": 859,
+          "successes": 20,
+          "rate": 0.023282887077997673
+        },
+        "staminaPerPossession": 11.18998129577533,
+        "averageGameSeconds": 121.43507905675001
+      },
+      "highMinusLowWinRate": 0.5
+    },
+    "Block": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 282,
+        "winRate": 0.75,
+        "shooting": {
+          "attempts": 420,
+          "successes": 145,
+          "rate": 0.34523809523809523
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 1,
+          "rate": 0.125
+        },
+        "breakthrough": {
+          "attempts": 937,
+          "successes": 21,
+          "rate": 0.022411953041622197
+        },
+        "staminaPerPossession": 11.880626214513741,
+        "averageGameSeconds": 140.039047983125
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 258,
+        "winRate": 0.5,
+        "shooting": {
+          "attempts": 384,
+          "successes": 136,
+          "rate": 0.3541666666666667
+        },
+        "steals": {
+          "attempts": 7,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 851,
+          "successes": 19,
+          "rate": 0.022326674500587545
+        },
+        "staminaPerPossession": 12.068699415162428,
+        "averageGameSeconds": 128.210098824625
+      },
+      "highMinusLowWinRate": -0.25
+    },
+    "ShotContest": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 235,
+        "winRate": 0.875,
+        "shooting": {
+          "attempts": 379,
+          "successes": 140,
+          "rate": 0.36939313984168864
+        },
+        "steals": {
+          "attempts": 4,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 809,
+          "successes": 38,
+          "rate": 0.04697156983930779
+        },
+        "staminaPerPossession": 12.49158258689465,
+        "averageGameSeconds": 121.395189758625
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 276,
+        "winRate": 1,
+        "shooting": {
+          "attempts": 411,
+          "successes": 150,
+          "rate": 0.36496350364963503
+        },
+        "steals": {
+          "attempts": 7,
+          "successes": 2,
+          "rate": 0.2857142857142857
+        },
+        "breakthrough": {
+          "attempts": 920,
+          "successes": 35,
+          "rate": 0.03804347826086957
+        },
+        "staminaPerPossession": 12.083386755251283,
+        "averageGameSeconds": 138.021754343625
+      },
+      "highMinusLowWinRate": 0.125
+    },
+    "DefensiveAwareness": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 261,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 401,
+          "successes": 143,
+          "rate": 0.3566084788029925
+        },
+        "steals": {
+          "attempts": 7,
+          "successes": 1,
+          "rate": 0.14285714285714285
+        },
+        "breakthrough": {
+          "attempts": 870,
+          "successes": 29,
+          "rate": 0.03333333333333333
+        },
+        "staminaPerPossession": 12.191582534197728,
+        "averageGameSeconds": 132.08712373712498
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 260,
+        "winRate": 0.5,
+        "shooting": {
+          "attempts": 367,
+          "successes": 136,
+          "rate": 0.37057220708446864
+        },
+        "steals": {
+          "attempts": 16,
+          "successes": 2,
+          "rate": 0.125
+        },
+        "breakthrough": {
+          "attempts": 845,
+          "successes": 29,
+          "rate": 0.03431952662721893
+        },
+        "staminaPerPossession": 11.758883370771896,
+        "averageGameSeconds": 124.90428758499999
+      },
+      "highMinusLowWinRate": -0.125
+    },
+    "Reaction": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 224,
+        "winRate": 0.25,
+        "shooting": {
+          "attempts": 350,
+          "successes": 140,
+          "rate": 0.4
+        },
+        "steals": {
+          "attempts": 7,
+          "successes": 2,
+          "rate": 0.2857142857142857
+        },
+        "breakthrough": {
+          "attempts": 742,
+          "successes": 30,
+          "rate": 0.04043126684636118
+        },
+        "staminaPerPossession": 12.107684743172014,
+        "averageGameSeconds": 111.67953211237499
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 269,
+        "winRate": 0.875,
+        "shooting": {
+          "attempts": 363,
+          "successes": 143,
+          "rate": 0.3939393939393939
+        },
+        "steals": {
+          "attempts": 10,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 867,
+          "successes": 15,
+          "rate": 0.01730103806228374
+        },
+        "staminaPerPossession": 11.351386234533729,
+        "averageGameSeconds": 126.13970149112501
+      },
+      "highMinusLowWinRate": 0.625
+    },
+    "Strength": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 256,
+        "winRate": 0.25,
+        "shooting": {
+          "attempts": 385,
+          "successes": 127,
+          "rate": 0.32987012987012987
+        },
+        "steals": {
+          "attempts": 7,
+          "successes": 1,
+          "rate": 0.14285714285714285
+        },
+        "breakthrough": {
+          "attempts": 833,
+          "successes": 25,
+          "rate": 0.030012004801920768
+        },
+        "staminaPerPossession": 11.913759223383273,
+        "averageGameSeconds": 126.23920901174998
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 250,
+        "winRate": 1,
+        "shooting": {
+          "attempts": 403,
+          "successes": 135,
+          "rate": 0.3349875930521092
+        },
+        "steals": {
+          "attempts": 4,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 838,
+          "successes": 19,
+          "rate": 0.022673031026252982
+        },
+        "staminaPerPossession": 12.461638077118065,
+        "averageGameSeconds": 127.923301823875
+      },
+      "highMinusLowWinRate": 0.75
+    },
+    "Balance": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 300,
+        "winRate": 0.5,
+        "shooting": {
+          "attempts": 415,
+          "successes": 136,
+          "rate": 0.327710843373494
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 3,
+          "rate": 0.375
+        },
+        "breakthrough": {
+          "attempts": 960,
+          "successes": 24,
+          "rate": 0.025
+        },
+        "staminaPerPossession": 11.60111686980392,
+        "averageGameSeconds": 144.08016726674998
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 221,
+        "winRate": 0.375,
+        "shooting": {
+          "attempts": 372,
+          "successes": 141,
+          "rate": 0.3790322580645161
+        },
+        "steals": {
+          "attempts": 9,
+          "successes": 2,
+          "rate": 0.2222222222222222
+        },
+        "breakthrough": {
+          "attempts": 739,
+          "successes": 33,
+          "rate": 0.044654939106901215
+        },
+        "staminaPerPossession": 12.787328590599058,
+        "averageGameSeconds": 114.77640222037502
+      },
+      "highMinusLowWinRate": -0.125
+    },
+    "Vertical": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 270,
+        "winRate": 0.25,
+        "shooting": {
+          "attempts": 445,
+          "successes": 147,
+          "rate": 0.3303370786516854
+        },
+        "steals": {
+          "attempts": 5,
+          "successes": 1,
+          "rate": 0.2
+        },
+        "breakthrough": {
+          "attempts": 899,
+          "successes": 27,
+          "rate": 0.030033370411568408
+        },
+        "staminaPerPossession": 12.728259839013665,
+        "averageGameSeconds": 142.087979565
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 245,
+        "winRate": 0.875,
+        "shooting": {
+          "attempts": 374,
+          "successes": 132,
+          "rate": 0.35294117647058826
+        },
+        "steals": {
+          "attempts": 11,
+          "successes": 1,
+          "rate": 0.09090909090909091
+        },
+        "breakthrough": {
+          "attempts": 802,
+          "successes": 14,
+          "rate": 0.017456359102244388
+        },
+        "staminaPerPossession": 12.028039305410752,
+        "averageGameSeconds": 123.10820024825
+      },
+      "highMinusLowWinRate": 0.625
+    },
+    "Endurance": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 253,
+        "winRate": 0.125,
+        "shooting": {
+          "attempts": 382,
+          "successes": 133,
+          "rate": 0.3481675392670157
+        },
+        "steals": {
+          "attempts": 18,
+          "successes": 4,
+          "rate": 0.2222222222222222
+        },
+        "breakthrough": {
+          "attempts": 820,
+          "successes": 28,
+          "rate": 0.03414634146341464
+        },
+        "staminaPerPossession": 14.710339623822023,
+        "averageGameSeconds": 126.58199892462501
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 226,
+        "winRate": 0.75,
+        "shooting": {
+          "attempts": 335,
+          "successes": 132,
+          "rate": 0.3940298507462687
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 1,
+          "rate": 0.125
+        },
+        "breakthrough": {
+          "attempts": 743,
+          "successes": 22,
+          "rate": 0.029609690444145357
+        },
+        "staminaPerPossession": 10.309279276825796,
+        "averageGameSeconds": 109.79179010187501
+      },
+      "highMinusLowWinRate": 0.625
+    },
+    "BodyControl": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 262,
+        "winRate": 0.25,
+        "shooting": {
+          "attempts": 378,
+          "successes": 129,
+          "rate": 0.3412698412698413
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 2,
+          "rate": 0.25
+        },
+        "breakthrough": {
+          "attempts": 858,
+          "successes": 27,
+          "rate": 0.03146853146853147
+        },
+        "staminaPerPossession": 11.625415120872301,
+        "averageGameSeconds": 125.94988292162499
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 241,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 367,
+          "successes": 136,
+          "rate": 0.37057220708446864
+        },
+        "steals": {
+          "attempts": 2,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 795,
+          "successes": 14,
+          "rate": 0.01761006289308176
+        },
+        "staminaPerPossession": 12.276492421346678,
+        "averageGameSeconds": 119.92933316825
+      },
+      "highMinusLowWinRate": 0.375
+    },
+    "Composure": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 220,
+        "winRate": 0.75,
+        "shooting": {
+          "attempts": 363,
+          "successes": 135,
+          "rate": 0.371900826446281
+        },
+        "steals": {
+          "attempts": 6,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 738,
+          "successes": 33,
+          "rate": 0.044715447154471545
+        },
+        "staminaPerPossession": 12.630538882887247,
+        "averageGameSeconds": 114.707220553375
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 243,
+        "winRate": 0.625,
+        "shooting": {
+          "attempts": 374,
+          "successes": 138,
+          "rate": 0.3689839572192513
+        },
+        "steals": {
+          "attempts": 9,
+          "successes": 0,
+          "rate": 0
+        },
+        "breakthrough": {
+          "attempts": 793,
+          "successes": 30,
+          "rate": 0.03783102143757881
+        },
+        "staminaPerPossession": 12.192974476249182,
+        "averageGameSeconds": 120.937979754
+      },
+      "highMinusLowWinRate": -0.125
+    },
+    "Anticipation": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 244,
+        "winRate": 0.25,
+        "shooting": {
+          "attempts": 392,
+          "successes": 146,
+          "rate": 0.37244897959183676
+        },
+        "steals": {
+          "attempts": 9,
+          "successes": 4,
+          "rate": 0.4444444444444444
+        },
+        "breakthrough": {
+          "attempts": 830,
+          "successes": 36,
+          "rate": 0.043373493975903614
+        },
+        "staminaPerPossession": 12.54889641846393,
+        "averageGameSeconds": 124.15595001162501
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 268,
+        "winRate": 0.5,
+        "shooting": {
+          "attempts": 362,
+          "successes": 148,
+          "rate": 0.4088397790055249
+        },
+        "steals": {
+          "attempts": 15,
+          "successes": 3,
+          "rate": 0.2
+        },
+        "breakthrough": {
+          "attempts": 848,
+          "successes": 29,
+          "rate": 0.03419811320754717
+        },
+        "staminaPerPossession": 11.339635822347118,
+        "averageGameSeconds": 125.33504294625001
+      },
+      "highMinusLowWinRate": 0.25
+    },
+    "DecisionMaking": {
+      "low": {
+        "value": 20,
+        "games": 8,
+        "possessions": 284,
+        "winRate": 0.5,
+        "shooting": {
+          "attempts": 454,
+          "successes": 140,
+          "rate": 0.30837004405286345
+        },
+        "steals": {
+          "attempts": 8,
+          "successes": 3,
+          "rate": 0.375
+        },
+        "breakthrough": {
+          "attempts": 956,
+          "successes": 28,
+          "rate": 0.029288702928870293
+        },
+        "staminaPerPossession": 12.47915407684267,
+        "averageGameSeconds": 145.7724063215
+      },
+      "high": {
+        "value": 95,
+        "games": 8,
+        "possessions": 251,
+        "winRate": 0.375,
+        "shooting": {
+          "attempts": 362,
+          "successes": 140,
+          "rate": 0.3867403314917127
+        },
+        "steals": {
+          "attempts": 12,
+          "successes": 1,
+          "rate": 0.08333333333333333
+        },
+        "breakthrough": {
+          "attempts": 834,
+          "successes": 24,
+          "rate": 0.02877697841726619
+        },
+        "staminaPerPossession": 11.80661765163231,
+        "averageGameSeconds": 122.351371160375
+      },
+      "highMinusLowWinRate": -0.125
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "route": "/basketball",
+  "source": "Next production generated HTML",
+  "required_text_checks": 7,
+  "navigation_link": true,
+  "button_count": 40,
+  "svg_count": 16,
+  "html_bytes": 39601,
+  "browser_hydration_verified": false
+}

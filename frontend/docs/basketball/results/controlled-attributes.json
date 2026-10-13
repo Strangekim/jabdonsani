@@ -1,0 +1,77 @@
+{
+  "description": "동일 초기 상태·시드 쌍에서 실제 명령을 실행한 결과 평균. 낮은/높은 값 외 조건 고정.",
+  "experiments": {
+    "볼 핸들링 → 제어": {
+      "attribute": "BallHandling",
+      "trialsPerValue": 512,
+      "lowAttribute": 20,
+      "highAttribute": 95,
+      "lowMean": 61.52856333355908,
+      "highMean": 86.88705583982447,
+      "difference": 25.358492506265392
+    },
+    "스틸 → 성공": {
+      "attribute": "Steal",
+      "trialsPerValue": 512,
+      "lowAttribute": 20,
+      "highAttribute": 95,
+      "lowMean": 0.123046875,
+      "highMean": 0.392578125,
+      "difference": 0.26953125
+    },
+    "대인 수비 → 전진 제한": {
+      "attribute": "PerimeterDefense",
+      "trialsPerValue": 512,
+      "lowAttribute": 20,
+      "highAttribute": 95,
+      "lowMean": 5.949082068313221,
+      "highMean": 6.481627630296355,
+      "difference": 0.5325455619831345
+    },
+    "횡이동 → 방향 대응": {
+      "attribute": "LateralQuickness",
+      "trialsPerValue": 512,
+      "lowAttribute": 20,
+      "highAttribute": 95,
+      "lowMean": 2.1164052627352756,
+      "highMean": 2.1474854782568453,
+      "difference": 0.0310802155215697
+    },
+    "중거리 슛 → 성공": {
+      "attribute": "MidRangeShot",
+      "trialsPerValue": 512,
+      "lowAttribute": 20,
+      "highAttribute": 95,
+      "lowMean": 0.42578125,
+      "highMean": 0.96875,
+      "difference": 0.54296875
+    },
+    "컨테스트 → 피슛 성공": {
+      "attribute": "ShotContest",
+      "trialsPerValue": 512,
+      "lowAttribute": 20,
+      "highAttribute": 95,
+      "lowMean": 0.9296875,
+      "highMean": 0.888671875,
+      "difference": -0.041015625
+    },
+    "지구력 → 체력 소비": {
+      "attribute": "Endurance",
+      "trialsPerValue": 512,
+      "lowAttribute": 20,
+      "highAttribute": 95,
+      "lowMean": 4.853830078124986,
+      "highMean": 3.3370081787109,
+      "difference": -1.516821899414086
+    },
+    "균형 → 회복": {
+      "attribute": "Balance",
+      "trialsPerValue": 512,
+      "lowAttribute": 20,
+      "highAttribute": 95,
+      "lowMean": 31.190035274411905,
+      "highMean": 33.73710228130262,
+      "difference": 2.547067006890714
+    }
+  }
+}

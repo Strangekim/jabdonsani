@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test:basketball": "bash scripts/basketball/run.sh test",
+    "stats:basketball": "bash scripts/basketball/run.sh statistics",
+    "check:basketball": "bash scripts/basketball/run.sh all",
+    "lint:basketball": "eslint src/lib/basketball src/app/basketball src/constants/navigation.ts src/components/common/Header.tsx tests/basketball tests/basketball-ui scripts/basketball vitest.basketball.config.ts",
+    "test:basketball-ui": "vitest run --config vitest.basketball.config.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -25,6 +31,9 @@
     "three": "^0.183.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
     "@types/node": "^20",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
@@ -32,6 +41,8 @@
     "@types/three": "^0.183.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
-    "typescript": "^5"
+    "jsdom": "^26.1.0",
+    "typescript": "^5",
+    "vitest": "^3.2.7"
   }
 }

@@ -108,3 +108,24 @@
         flex-shrink: 0;
     }
 }
+/* 네 번째 농구 탭도 좁은 화면에서 줄바꿈 없이 사용할 수 있게 한다. */
+.navLink {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+@media (max-width: 620px) {
+    .visitorBadge {
+        display: none;
+    }
+
+    .headerLeft {
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .navTabs {
+        gap: 2px;
+    }
+}

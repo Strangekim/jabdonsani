@@ -34,3 +34,18 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## 농구 탭 (Micro-Turn Basketball)
+
+`npm run dev` 후 `/basketball`에서 플레이합니다. 백엔드 없이 동작하는 순수 TypeScript 1:1 엔진과 React/SVG 디버그 UI입니다.
+
+```bash
+npm run test:basketball       # 엔진 규칙·재현·대칭성·능력치 테스트
+npm run test:basketball-ui    # 실제 엔진을 연결한 React DOM 상호작용 테스트
+npm run stats:basketball      # 10,000포제션 이상 + 능력치/조합 실험
+npm run lint:basketball
+npm run typecheck
+npm run build
+```
+
+설계 및 검증: [`docs/basketball/game_design.md`](docs/basketball/game_design.md), [`test_results.md`](docs/basketball/test_results.md), [`balance_report.md`](docs/basketball/balance_report.md). 통계는 `docs/basketball/results/`에 저장됩니다. 이 게임의 3드리블은 실제 바운스가 아닌 드리블 **행동 단위**를 뜻합니다. 로컬 hotseat는 온라인 대전/보안 프로토콜이 아닙니다.

@@ -1,0 +1,179 @@
+/* 농구 전용 화면: 기존 슬레이트/블루 팔레트에 코트의 앰버 포인트를 더한다. */
+.page { --ink: #172033; --muted: #627086; --line: #e3e9f1; --amber: #fbbf24; max-width: 1440px; margin: 0 auto; padding: 32px 28px 64px; color: var(--ink); }
+.page button, .page input, .page select { font: inherit; }
+.page button { transition: background .15s, border-color .15s, transform .15s; }
+.page button:focus-visible, .page input:focus-visible, .page select:focus-visible, .page summary:focus-visible { outline: 3px solid #60a5fa; outline-offset: 3px; }
+.page button:disabled { opacity: .42; cursor: not-allowed; }
+.hero { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 26px; }
+.eyebrow { color: #a65b08; font-weight: 800; font-size: 11px; letter-spacing: .18em; display: flex; gap: 8px; align-items: center; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; }
+.hero h1 { font-size: clamp(28px, 3vw, 40px); line-height: 1.3; letter-spacing: -.06em; margin: 8px 0; }
+.hero p { font-size: 14px; color: var(--muted); }
+.heroActions { display: flex; gap: 8px; flex-shrink: 0; }
+.button, .primaryButton, .amberButton { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 14px; border-radius: 9px; font-size: 13px; font-weight: 700; min-height: 42px; }
+.button { background: white; border: 1px solid #dce3ec; color: #475569; }
+.button:hover:not(:disabled) { background: #f1f5f9; border-color: #b7c3d3; }
+.primaryButton { background: #2563eb; color: white; }
+.primaryButton:hover:not(:disabled) { background: #1d4ed8; }
+.amberButton { background: #fbbf24; color: #1e293b; }
+.amberButton:hover:not(:disabled) { background: #f59e0b; }
+.icon { width: 18px; height: 18px; flex: 0 0 auto; }
+.modeBar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; border: 1px solid var(--line); background: #eef2f7; border-radius: 13px; padding: 6px; margin-bottom: 24px; }
+.modeButton { color: #637187; text-align: left; padding: 12px 14px; border: 1px solid transparent; border-radius: 8px; display: flex; align-items: center; gap: 11px; }
+.modeButton strong { display: block; color: inherit; font-size: 13px; }
+.modeButton small { display: block; font-size: 11px; color: #748197; margin-top: 2px; }
+.modeActive { background: white; border-color: #dce4ef; color: #1d4ed8; box-shadow: 0 2px 5px #0f172a08; }
+.mainGrid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(340px, 1fr); gap: 22px; align-items: start; }
+.courtColumn, .controlColumn { min-width: 0; display: grid; gap: 18px; }
+.arena { background: #101e30; border-radius: 16px; overflow: hidden; color: white; box-shadow: 0 10px 30px #0f172a13; position: relative; }
+.scoreboard { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 22px 25px 17px; gap: 15px; }
+.scoreSide { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.scoreSide:last-child { justify-content: flex-end; text-align: right; }
+.playerDot { width: 9px; height: 9px; border-radius: 50%; background: #fbbf24; flex: 0 0 auto; }
+.blueDot { background: #60a5fa; }
+.scoreName { color: #dce6f2; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+.scoreRole { font-size: 10px; letter-spacing: .08em; color: #8ea1b9; margin-top: 3px; }
+.scoreNumber { font-family: var(--font-mono); font-size: 38px; font-weight: 700; line-height: 1; }
+.scoreCenter { text-align: center; color: #758aa4; font-size: 10px; }
+.scoreCenter b { display: block; color: #e6eef8; font-size: 12px; letter-spacing: .08em; margin-bottom: 3px; }
+.courtHeader { display: flex; justify-content: space-between; padding: 10px 23px; border-top: 1px solid #26364a; border-bottom: 1px solid #26364a; gap: 10px; background: #15253a; font-size: 11px; color: #9cafc7; }
+.live { display: inline-flex; align-items: center; gap: 6px; color: #d9e9f7; }
+.live i { width: 5px; height: 5px; background: #34d399; border-radius: 50%; }
+.court { width: 100%; height: auto; display: block; max-height: 500px; }
+.court text { font-family: var(--font-sans); }
+.courtPlayer { transition: transform .35s ease-out; }
+.courtFoot { padding: 14px 20px 19px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.courtMetric { display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid #29394d; }
+.courtMetric:last-child { border: 0; }
+.courtMetric > span { font-size: 10px; letter-spacing: .06em; color: #90a3bc; }
+.courtMetric strong { font-family: var(--font-mono); font-size: 20px; font-weight: 600; }
+.courtMetric strong small { font-family: var(--font-sans); font-size: 11px; font-weight: 400; color: #9cafc7; margin-left: 5px; }
+.clockLow { color: #fb7185; }
+.dribbleDots { display: flex; gap: 6px; min-height: 32px; align-items: center; }
+.dribbleDot { width: 18px; height: 18px; border-radius: 50%; background: #fbbf24; border: 2px solid #fbbf24; }
+.dribbleUsed { background: #253247; border-color: #475569; }
+.legend { display: flex; gap: 15px; align-items: center; font-size: 10px; color: #8da1bb; padding: 0 20px 16px; justify-content: center; flex-wrap: wrap; }
+.legend span { display: flex; align-items: center; gap: 6px; }
+.dash { width: 16px; border-top: 2px dashed #fbbf24; }
+.playerCards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.playerCard { border-radius: 12px; border: 1px solid var(--line); padding: 17px; background: white; }
+.playerHeading { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 14px; }
+.playerHeading strong { font-size: 13px; display: flex; align-items: center; gap: 7px; }
+.roleBadge { padding: 3px 7px; border-radius: 4px; background: #fef3c7; font-size: 10px; color: #92400e; font-weight: 700; }
+.defenseBadge { background: #dbeafe; color: #1d4ed8; }
+.meterRow { display: grid; grid-template-columns: 38px 1fr 25px; gap: 8px; align-items: center; margin-top: 8px; font-size: 10px; color: #64748b; }
+.meter { height: 5px; background: #edf1f6; overflow: hidden; border-radius: 5px; }
+.meter i { height: 100%; display: block; border-radius: inherit; transition: width .35s; }
+.meterRow b { color: #475569; font-size: 10px; text-align: right; font-family: var(--font-mono); font-weight: 500; }
+.playerMeta { margin-top: 12px; border-top: 1px solid #edf1f6; padding-top: 10px; color: #758296; font-size: 10px; line-height: 1.9; }
+.card { background: white; border: 1px solid var(--line); border-radius: 13px; overflow: hidden; }
+.cardHead { display: flex; justify-content: space-between; align-items: center; padding: 18px 19px; gap: 10px; border-bottom: 1px solid #edf1f6; }
+.cardHead h2 { font-size: 14px; letter-spacing: -.02em; display: flex; align-items: center; gap: 7px; }
+.cardHead > span { font-size: 10px; color: var(--muted); }
+.controls { padding: 18px; }
+.turnInfo { background: #f2f6ff; border: 1px solid #dce8ff; border-radius: 8px; padding: 11px 12px; display: flex; gap: 10px; align-items: center; margin-bottom: 16px; }
+.turnInfo strong { display: block; color: #1e40af; font-size: 12px; }
+.turnInfo small { font-size: 10px; color: #61749a; }
+.sectionLabel { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #475569; font-weight: 700; margin-bottom: 9px; gap: 8px; }
+.sectionLabel small { color: #8a96a8; font-size: 10px; font-weight: 400; }
+.categories { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 11px; }
+.category { font-size: 11px; color: #738197; background: #f3f5f8; border: 1px solid transparent; border-radius: 6px; padding: 6px 9px; }
+.categoryActive { color: #1e40af; background: #eff6ff; border-color: #c9dcfa; }
+.actionGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-height: 252px; overflow-y: auto; padding: 2px; margin: -2px; }
+.action { position: relative; border: 1px solid #e5eaf1; padding: 10px 7px; border-radius: 7px; text-align: left; color: #4b5870; min-height: 56px; }
+.action:hover:not(:disabled) { border-color: #90b9f7; background: #f8fbff; }
+.action strong { font-size: 11px; display: block; letter-spacing: -.02em; }
+.action small { font-size: 9px; color: #93a0b3; display: block; margin-top: 3px; }
+.actionSelected { background: #eff6ff; border-color: #3b82f6; color: #1d4ed8; box-shadow: 0 0 0 1px #3b82f620; }
+.actionSelected small { color: #658dc9; }
+.actionDescription { color: #6e7d92; font-size: 11px; line-height: 1.7; margin: 12px 0 17px; min-height: 37px; }
+.controlRow { display: grid; grid-template-columns: 125px 1fr; gap: 22px; padding-top: 16px; border-top: 1px solid #edf1f6; }
+.directionGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.direction { border: 1px solid #e1e7f0; border-radius: 6px; height: 32px; color: #6c7d94; font-size: 16px; background: #fff; }
+.directionActive { border-color: #a5c4f5; background: #eff6ff; color: #2563eb; }
+.fields { display: grid; gap: 13px; align-content: start; }
+.fields label, .settingField { font-size: 11px; color: #5c6b80; display: grid; gap: 7px; }
+.fields input[type=range], .timeline input { accent-color: #3b82f6; width: 100%; }
+.inlineChoices { display: flex; border: 1px solid #e2e8f0; border-radius: 7px; overflow: hidden; }
+.inlineChoices button { flex: 1; min-height: 30px; padding: 5px; font-size: 10px; color: #64748b; border-right: 1px solid #e2e8f0; }
+.inlineChoices button:last-child { border: 0; }
+.inlineChoices .choiceActive { background: #eff6ff; color: #1d4ed8; font-weight: 700; }
+.select { width: 100%; border: 1px solid #dbe3ee; border-radius: 7px; padding: 8px 9px; background: #fff; color: #475569; min-width: 0; }
+.defenseControls { margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.queue { margin-top: 18px; padding-top: 15px; border-top: 1px solid #edf1f6; }
+.queueItems { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+.queueItem { background: #f1f5f9; border: 1px solid #e0e7f1; font-size: 10px; color: #53647e; padding: 5px 7px; border-radius: 5px; }
+.queueEmpty { color: #91a0b2; font-size: 10px; padding: 2px 0 8px; }
+.textButton { color: #64748b; font-size: 10px; text-decoration: underline; text-underline-offset: 3px; }
+.submitRow { display: grid; grid-template-columns: auto 1fr; gap: 8px; }
+.submitRow .button { font-size: 11px; padding: 9px 11px; }
+.submitRow .primaryButton { font-size: 12px; }
+.notice { border-radius: 8px; padding: 10px 12px; background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; font-size: 11px; margin-bottom: 14px; }
+.success { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.handoff, .finished, .autoPanel { padding: 42px 24px; text-align: center; }
+.handoff .icon, .finished .icon, .autoPanel .icon { width: 44px; height: 44px; color: #2563eb; margin-bottom: 14px; }
+.handoff h3, .finished h3, .autoPanel h3 { font-size: 20px; letter-spacing: -.04em; margin-bottom: 9px; }
+.handoff p, .finished p, .autoPanel p { color: #718097; font-size: 12px; margin-bottom: 22px; }
+.handoff { background: #f5f8fd; min-height: 440px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.autoButtons { display: flex; justify-content: center; gap: 8px; }
+.logList { max-height: 312px; overflow-y: auto; padding: 6px 18px 12px; }
+.logItem { display: grid; grid-template-columns: 42px 1fr; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f3f7; }
+.logItem:last-child { border: 0; }
+.logTime { font-family: var(--font-mono); color: #92a0b2; font-size: 10px; padding-top: 2px; }
+.logText { color: #59677e; font-size: 11px; line-height: 1.7; }
+.logImportant { color: #1e40af; font-weight: 600; }
+.eventDetail { font-family: var(--font-mono); color: #8998ad; font-size: 9px; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px; }
+.emptyLog { text-align: center; color: #94a3b8; padding: 25px 0; font-size: 12px; }
+.timeline { display: flex; gap: 12px; padding: 16px 18px; align-items: center; }
+.timeline .button { padding: 8px; min-height: 33px; }
+.timelineTrack { flex: 1; min-width: 0; }
+.timelineTrack > div { display: flex; justify-content: space-between; font-size: 10px; color: #8a97a9; }
+.replayActions { display: flex; gap: 8px; align-items: center; padding: 0 18px 17px; flex-wrap: wrap; }
+.replayActions .button { font-size: 10px; min-height: 32px; padding: 7px 10px; }
+.replayActions > span { margin-left: auto; color: #8a98ac; font-size: 10px; }
+.bottomGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 22px; }
+.help { padding: 19px; display: grid; gap: 15px; }
+.helpItem { display: flex; gap: 11px; }
+.helpNumber { background: #eff4fb; color: #6582aa; width: 24px; height: 24px; flex-shrink: 0; display: grid; place-items: center; border-radius: 7px; font-size: 10px; font-family: var(--font-mono); }
+.helpItem strong { font-size: 12px; }
+.helpItem p { font-size: 11px; color: #7b889c; line-height: 1.8; margin-top: 3px; }
+.statsBody { padding: 19px; }
+.statsBody > p { font-size: 12px; color: #7b889c; line-height: 1.8; margin-bottom: 15px; }
+.statsGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.statBox { padding: 12px; background: #f6f8fc; border-radius: 8px; }
+.statBox small { display: block; color: #8290a4; font-size: 10px; }
+.statBox strong { display: block; font-family: var(--font-mono); font-size: 17px; color: #425575; margin-top: 5px; }
+.progress { height: 7px; background: #e8eef7; border-radius: 10px; overflow: hidden; margin: 14px 0 8px; }
+.progress i { display: block; height: 100%; background: #3b82f6; transition: width .15s; }
+.statsProgress { font-size: 11px; color: #6c7f98; }
+.footer { margin-top: 22px; text-align: center; color: #96a1b2; font-size: 10px; letter-spacing: .04em; }
+.modalBackdrop { position: fixed; inset: 0; z-index: 1500; background: #0f172a9e; display: flex; align-items: center; justify-content: center; padding: 22px; backdrop-filter: blur(3px); }
+.modal { background: #f8fafc; border-radius: 16px; max-width: 800px; width: 100%; max-height: 88vh; overflow-y: auto; box-shadow: 0 25px 80px #0f172a33; }
+.modalHeader { display: flex; align-items: center; justify-content: space-between; padding: 22px 25px; background: white; border-bottom: 1px solid #e1e7f0; }
+.modalHeader h2 { font-size: 19px; letter-spacing: -.04em; }
+.modalHeader p { font-size: 11px; color: #8290a5; margin-top: 4px; }
+.modalHeader button { font-size: 26px; color: #8190a3; padding: 5px; }
+.modalBody { padding: 24px; }
+.settingsGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 24px; }
+.settingsTitle { font-size: 13px; margin-bottom: 13px; }
+.settingField input { width: 100%; border: 1px solid #dbe3ee; border-radius: 7px; padding: 8px 9px; background: #fff; color: #475569; min-width: 0; }
+.profileGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.profile { border: 1px solid #dfe7f1; padding: 16px; border-radius: 10px; background: white; min-width: 0; }
+.profile > h3 { font-size: 12px; margin-bottom: 12px; }
+.profile > p { font-size: 10px; color: #8a98ac; margin-top: 8px; }
+.profile details { margin-top: 13px; }
+.profile summary { color: #6380a5; font-size: 11px; cursor: pointer; }
+.attributeList { margin-top: 12px; display: grid; gap: 8px; }
+.attribute { display: grid; grid-template-columns: 77px 1fr 26px; align-items: center; gap: 7px; font-size: 10px; color: #6e7b8d; }
+.attribute input { width: 100%; accent-color: #3b82f6; }
+.attribute b { text-align: right; font-family: var(--font-mono); font-size: 10px; color: #526986; }
+.modalFooter { padding: 18px 24px; border-top: 1px solid #e1e7f0; display: flex; justify-content: flex-end; gap: 8px; background: white; }
+.hiddenInput { display: none; }
+.diagnostic { margin-top: 12px; font-size: 10px; color: #697b94; }
+.diagnostic summary { cursor: pointer; padding: 6px 0; }
+.diagnostic pre { max-height: 270px; overflow: auto; padding: 12px; background: #f5f7fb; border-radius: 6px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 9px; }
+@media (min-width: 1200px) { .page { padding-left: 42px; padding-right: 42px; } }
+@media (max-width: 1020px) { .mainGrid { grid-template-columns: minmax(0, 1.15fr) minmax(320px, 1fr); gap: 15px; } .page { padding: 25px 20px 50px; } .scoreboard { padding: 20px 17px 17px; gap: 10px; } .scoreSide { gap: 8px; } .scoreNumber { font-size: 31px; } .scoreName { max-width: 85px; } .modeButton { padding: 10px; gap: 7px; } .modeButton small { font-size: 9px; } .playerCard { padding: 13px; } .controlRow { gap: 15px; } }
+@media (max-width: 800px) { .mainGrid { grid-template-columns: 1fr; } .heroActions .button { font-size: 11px; padding: 8px 10px; } .hero { gap: 12px; } .hero p { font-size: 12px; } .bottomGrid { grid-template-columns: 1fr; } .court { max-height: 470px; } .controlColumn { grid-template-columns: 1fr 1fr; align-items: start; } .controlColumn > :first-child { grid-row: span 2; } .actionGrid { grid-template-columns: repeat(2, 1fr); } .controlRow { grid-template-columns: 105px 1fr; gap: 12px; } .controls { padding: 14px; } .submitRow { grid-template-columns: 1fr; } .modeBar { gap: 4px; } .modeButton { padding: 9px 7px; } .modeButton > .icon { display: none; } .modeButton strong { font-size: 11px; } }
+@media (max-width: 580px) { .page { padding: 20px 14px 40px; } .hero { align-items: flex-start; } .hero h1 { font-size: 29px; } .hero p { max-width: 225px; font-size: 11px; } .heroActions { flex-direction: column; gap: 5px; } .heroActions .button { padding: 7px 9px; min-height: 33px; font-size: 10px; } .heroActions .icon { width: 13px; height: 13px; } .eyebrow { font-size: 8px; } .modeBar { grid-template-columns: 1fr 1fr; margin-bottom: 16px; } .modeButton { padding: 10px 12px; } .modeButton > .icon { display: block; width: 16px; height: 16px; } .modeButton small { font-size: 9px; } .controlColumn { grid-template-columns: 1fr; } .controlColumn > :first-child { grid-row: auto; } .actionGrid { grid-template-columns: repeat(3, 1fr); } .controls { padding: 17px; } .controlRow { grid-template-columns: 125px 1fr; gap: 23px; } .submitRow { grid-template-columns: auto 1fr; } .cardHead { padding: 16px 17px; } .scoreboard { padding: 20px 17px 16px; } .scoreSide { gap: 8px; } .scoreName { font-size: 11px; max-width: 75px; } .scoreNumber { font-size: 32px; } .scoreCenter b { font-size: 10px; } .scoreCenter { font-size: 9px; } .courtHeader { font-size: 9px; padding: 9px 15px; } .courtFoot { padding: 11px 12px 15px; gap: 7px; } .courtMetric > span { font-size: 9px; } .courtMetric strong { font-size: 18px; } .dribbleDot { width: 15px; height: 15px; } .legend { font-size: 9px; gap: 10px; } .playerCards { gap: 8px; } .playerCard { padding: 12px; } .playerHeading strong { font-size: 11px; } .roleBadge { font-size: 9px; padding: 2px 5px; } .meterRow { gap: 5px; grid-template-columns: 32px 1fr 22px; font-size: 9px; } .playerMeta { font-size: 9px; } .modalBackdrop { padding: 10px; } .modalBody { padding: 17px; } .modalHeader { padding: 18px; } .settingsGrid { grid-template-columns: 1fr 1fr; gap: 12px; } .profileGrid { grid-template-columns: 1fr; } .statsGrid { grid-template-columns: repeat(3, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .page *, .page *::before, .page *::after { transition: none !important; animation: none !important; } }
