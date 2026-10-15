@@ -63,9 +63,6 @@
 .situationHeading h2 { font-size: 14px; color: #1e40af; }
 .situation p { margin-top: 9px; font-size: 13px; line-height: 1.7; color: #243d64; overflow-wrap: anywhere; }
 .situation small { display: block; margin-top: 6px; color: #61749a; font-size: 11px; line-height: 1.7; }
-.responses { margin-bottom: 18px; }
-.responseChoices { display: flex; gap: 6px; flex-wrap: wrap; }
-.responseChoices .button { font-size: 11px; min-height: 34px; padding: 7px 10px; }
 .playerCard { border-radius: 12px; border: 1px solid var(--line); padding: 17px; background: white; }
 .playerHeading { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 14px; }
 .playerHeading strong { font-size: 13px; display: flex; align-items: center; gap: 7px; }
@@ -86,10 +83,7 @@
 .turnInfo small { font-size: 10px; color: #61749a; }
 .sectionLabel { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #475569; font-weight: 700; margin-bottom: 9px; gap: 8px; }
 .sectionLabel small { color: #8a96a8; font-size: 10px; font-weight: 400; }
-.categories { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 11px; }
-.category { font-size: 11px; color: #738197; background: #f3f5f8; border: 1px solid transparent; border-radius: 6px; padding: 6px 9px; }
-.categoryActive { color: #1e40af; background: #eff6ff; border-color: #c9dcfa; }
-.actionGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-height: 252px; overflow-y: auto; padding: 2px; margin: -2px; }
+.actionGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 2px; margin: -2px; }
 .action { position: relative; border: 1px solid #e5eaf1; padding: 10px 7px; border-radius: 7px; text-align: left; color: #4b5870; min-height: 56px; }
 .action:hover:not(:disabled) { border-color: #90b9f7; background: #f8fbff; }
 .action strong { font-size: 11px; display: block; letter-spacing: -.02em; }
@@ -97,19 +91,13 @@
 .actionSelected { background: #eff6ff; border-color: #3b82f6; color: #1d4ed8; box-shadow: 0 0 0 1px #3b82f620; }
 .actionSelected small { color: #658dc9; }
 .actionDescription { color: #6e7d92; font-size: 11px; line-height: 1.7; margin: 12px 0 17px; min-height: 37px; }
-.controlRow { display: grid; grid-template-columns: 125px 1fr; gap: 22px; padding-top: 16px; border-top: 1px solid #edf1f6; }
-.directionGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
-.direction { border: 1px solid #e1e7f0; border-radius: 6px; height: 32px; color: #6c7d94; font-size: 16px; background: #fff; }
-.directionActive { border-color: #a5c4f5; background: #eff6ff; color: #2563eb; }
-.fields { display: grid; gap: 13px; align-content: start; }
-.fields label, .settingField { font-size: 11px; color: #5c6b80; display: grid; gap: 7px; }
-.fields input[type=range], .timeline input { accent-color: #3b82f6; width: 100%; }
+.settingField { font-size: 11px; color: #5c6b80; display: grid; gap: 7px; }
+.timeline input { accent-color: #3b82f6; width: 100%; }
 .inlineChoices { display: flex; border: 1px solid #e2e8f0; border-radius: 7px; overflow: hidden; }
 .inlineChoices button { flex: 1; min-height: 30px; padding: 5px; font-size: 10px; color: #64748b; border-right: 1px solid #e2e8f0; }
 .inlineChoices button:last-child { border: 0; }
 .inlineChoices .choiceActive { background: #eff6ff; color: #1d4ed8; font-weight: 700; }
 .select { width: 100%; border: 1px solid #dbe3ee; border-radius: 7px; padding: 8px 9px; background: #fff; color: #475569; min-width: 0; }
-.defenseControls { margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .queue { margin-top: 18px; padding-top: 15px; border-top: 1px solid #edf1f6; }
 .queueItems { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
 .queueItem { background: #f1f5f9; border: 1px solid #e0e7f1; font-size: 10px; color: #53647e; padding: 5px 7px; border-radius: 5px; }
@@ -183,7 +171,11 @@
 .diagnostic summary { cursor: pointer; padding: 6px 0; }
 .diagnostic pre { max-height: 270px; overflow: auto; padding: 12px; background: #f5f7fb; border-radius: 6px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 9px; }
 @media (min-width: 1200px) { .page { padding-left: 42px; padding-right: 42px; } }
-@media (max-width: 1020px) { .mainGrid { grid-template-columns: minmax(0, 1.15fr) minmax(320px, 1fr); gap: 15px; } .page { padding: 25px 20px 50px; } .scoreboard { padding: 20px 17px 17px; gap: 10px; } .scoreSide { gap: 8px; } .scoreNumber { font-size: 31px; } .scoreName { max-width: 85px; } .modeButton { padding: 10px; gap: 7px; } .modeButton small { font-size: 9px; } .playerCard { padding: 13px; } .controlRow { gap: 15px; } }
-@media (max-width: 800px) { .mainGrid { grid-template-columns: 1fr; } .heroActions .button { font-size: 11px; padding: 8px 10px; } .hero { gap: 12px; } .hero p { font-size: 12px; } .bottomGrid { grid-template-columns: 1fr; } .court { max-height: 470px; } .controlColumn { grid-template-columns: 1fr 1fr; align-items: start; } .controlColumn > :first-child { grid-row: span 2; } .actionGrid { grid-template-columns: repeat(2, 1fr); } .controlRow { grid-template-columns: 105px 1fr; gap: 12px; } .controls { padding: 14px; } .submitRow { grid-template-columns: 1fr; } .modeBar { gap: 4px; } .modeButton { padding: 9px 7px; } .modeButton > .icon { display: none; } .modeButton strong { font-size: 11px; } }
-@media (max-width: 580px) { .page { padding: 20px 14px 40px; } .hero { align-items: flex-start; } .hero h1 { font-size: 29px; } .hero p { max-width: 225px; font-size: 11px; } .heroActions { flex-direction: column; gap: 5px; } .heroActions .button { padding: 7px 9px; min-height: 33px; font-size: 10px; } .heroActions .icon { width: 13px; height: 13px; } .eyebrow { font-size: 8px; } .modeBar { grid-template-columns: 1fr 1fr; margin-bottom: 16px; } .modeButton { padding: 10px 12px; } .modeButton > .icon { display: block; width: 16px; height: 16px; } .modeButton small { font-size: 9px; } .controlColumn { grid-template-columns: 1fr; } .controlColumn > :first-child { grid-row: auto; } .actionGrid { grid-template-columns: repeat(3, 1fr); } .controls { padding: 17px; } .controlRow { grid-template-columns: 125px 1fr; gap: 23px; } .submitRow { grid-template-columns: auto 1fr; } .cardHead { padding: 16px 17px; } .scoreboard { padding: 20px 17px 16px; } .scoreSide { gap: 8px; } .scoreName { font-size: 11px; max-width: 75px; } .scoreNumber { font-size: 32px; } .scoreCenter b { font-size: 10px; } .scoreCenter { font-size: 9px; } .courtHeader { font-size: 9px; padding: 9px 15px; } .courtFoot { padding: 11px 12px 15px; gap: 7px; } .courtMetric > span { font-size: 9px; } .courtMetric strong { font-size: 18px; } .dribbleDot { width: 15px; height: 15px; } .legend { font-size: 9px; gap: 10px; } .playerCards { gap: 8px; } .playerCard { padding: 12px; } .playerHeading strong { font-size: 11px; } .roleBadge { font-size: 9px; padding: 2px 5px; } .meterRow { gap: 5px; grid-template-columns: 32px 1fr 22px; font-size: 9px; } .playerMeta { font-size: 9px; } .modalBackdrop { padding: 10px; } .modalBody { padding: 17px; } .modalHeader { padding: 18px; } .settingsGrid { grid-template-columns: 1fr 1fr; gap: 12px; } .profileGrid { grid-template-columns: 1fr; } .statsGrid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 1020px) { .mainGrid { grid-template-columns: minmax(0, 1.15fr) minmax(320px, 1fr); gap: 15px; } .page { padding: 25px 20px 50px; } .scoreboard { padding: 20px 17px 17px; gap: 10px; } .scoreSide { gap: 8px; } .scoreNumber { font-size: 31px; } .scoreName { max-width: 85px; } .modeButton { padding: 10px; gap: 7px; } .modeButton small { font-size: 9px; } .playerCard { padding: 13px; } }
+@media (max-width: 800px) { .mainGrid { grid-template-columns: 1fr; } .heroActions .button { font-size: 11px; padding: 8px 10px; } .hero { gap: 12px; } .hero p { font-size: 12px; } .bottomGrid { grid-template-columns: 1fr; } .court { max-height: 470px; } .controlColumn { grid-template-columns: 1fr 1fr; align-items: start; } .controlColumn > :first-child { grid-row: span 2; } .actionGrid { grid-template-columns: repeat(2, 1fr); } .controls { padding: 14px; } .submitRow { grid-template-columns: 1fr; } .modeBar { gap: 4px; } .modeButton { padding: 9px 7px; } .modeButton > .icon { display: none; } .modeButton strong { font-size: 11px; } }
+@media (max-width: 580px) { .page { padding: 20px 14px 40px; } .hero { align-items: flex-start; } .hero h1 { font-size: 29px; } .hero p { max-width: 225px; font-size: 11px; } .heroActions { flex-direction: column; gap: 5px; } .heroActions .button { padding: 7px 9px; min-height: 33px; font-size: 10px; } .heroActions .icon { width: 13px; height: 13px; } .eyebrow { font-size: 8px; } .modeBar { grid-template-columns: 1fr 1fr; margin-bottom: 16px; } .modeButton { padding: 10px 12px; } .modeButton > .icon { display: block; width: 16px; height: 16px; } .modeButton small { font-size: 9px; } .controlColumn { grid-template-columns: 1fr; } .controlColumn > :first-child { grid-row: auto; } .actionGrid { grid-template-columns: repeat(3, 1fr); } .controls { padding: 17px; } .submitRow { grid-template-columns: auto 1fr; } .cardHead { padding: 16px 17px; } .scoreboard { padding: 20px 17px 16px; } .scoreSide { gap: 8px; } .scoreName { font-size: 11px; max-width: 75px; } .scoreNumber { font-size: 32px; } .scoreCenter b { font-size: 10px; } .scoreCenter { font-size: 9px; } .courtHeader { font-size: 9px; padding: 9px 15px; } .courtFoot { padding: 11px 12px 15px; gap: 7px; } .courtMetric > span { font-size: 9px; } .courtMetric strong { font-size: 18px; } .dribbleDot { width: 15px; height: 15px; } .legend { font-size: 9px; gap: 10px; } .playerCards { gap: 8px; } .playerCard { padding: 12px; } .playerHeading strong { font-size: 11px; } .roleBadge { font-size: 9px; padding: 2px 5px; } .meterRow { gap: 5px; grid-template-columns: 32px 1fr 22px; font-size: 9px; } .playerMeta { font-size: 9px; } .modalBackdrop { padding: 10px; } .modalBody { padding: 17px; } .modalHeader { padding: 18px; } .settingsGrid { grid-template-columns: 1fr 1fr; gap: 12px; } .profileGrid { grid-template-columns: 1fr; } .statsGrid { grid-template-columns: repeat(3, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .page *, .page *::before, .page *::after { transition: none !important; animation: none !important; } }
+
+/* 두 방향 선택은 터치 화면에서도 충분히 큰 하나의 조작부로 제공한다. */
+.laneControl { padding-top: 14px; border-top: 1px solid #edf1f6; }
+.laneControl .inlineChoices button { min-height: 44px; font-size: 12px; }

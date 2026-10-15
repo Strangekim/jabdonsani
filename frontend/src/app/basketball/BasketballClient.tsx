@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactNode } from 'react';
-import { ACTIONS, ACTION_LIST, ATTRIBUTE_LABELS, cancelQueue, commandDribbleCost, chooseAIAction, createGame, exportReplay, getObservation, queueActions, replayGame, runAIDecision, submitAction, submitQueuedAction, validateAction, type ActionCommand, type ActionDefinition, type ActionId, type Difficulty, type GameEvent, type GameState, type PlayerId, type ReplayData, type Vec2 } from '@/lib/basketball';
+import { ACTIONS, ATTRIBUTE_LABELS, cancelQueue, commandDribbleCost, chooseAIAction, createGame, exportReplay, getObservation, queueActions, replayGame, runAIDecision, submitAction, submitQueuedAction, validateAction, type ActionCommand, type ActionId, type Difficulty, type GameEvent, type GameState, type PlayerId, type ReplayData } from '@/lib/basketball';
+import { actionLabel, compactActions, compactCommand, usesLane } from '@/lib/basketball/compact';
 import type { StatisticsReport } from '@/lib/basketball/statistics';
 import { Court, PlayerCard } from './Court';
 import Settings from './Settings';
@@ -15,29 +16,14 @@ const MODES: { id: Mode; title: string; subtitle: string; icon: IconName }[] = [
     { id: 'hotseat', title: '로컬 2인 대전', subtitle: '선택은 비밀, 결과는 동시', icon: 'people' },
     { id: 'auto', title: 'AI 자동 대전', subtitle: '관전하고 분석하기', icon: 'chart' },
 ];
-const CATEGORIES: Record<ActionDefinition['category'], string> = { dribble: '드리블', movement: '이동', footwork: '풋워크', shot: '슛', defense: '수비', recovery: '회복', ball: '볼 경합' };
-const DIRECTIONS: { label: string; symbol: string; value: Vec2 }[] = [
-    { label: '왼쪽 앞', symbol: '↖', value: { x: -1, y: -1 } }, { label: '골대 방향', symbol: '↑', value: { x: 0, y: -1 } }, { label: '오른쪽 앞', symbol: '↗', value: { x: 1, y: -1 } },
-    { label: '왼쪽', symbol: '←', value: { x: -1, y: 0 } }, { label: '행동 기본 방향', symbol: '·', value: { x: 0, y: 0 } }, { label: '오른쪽', symbol: '→', value: { x: 1, y: 0 } },
-    { label: '왼쪽 뒤', symbol: '↙', value: { x: -1, y: 1 } }, { label: '뒤쪽', symbol: '↓', value: { x: 0, y: 1 } }, { label: '오른쪽 뒤', symbol: '↘', value: { x: 1, y: 1 } },
-];
 const SITUATIONS: Record<GameState['situation']['kind'], { title: string; hint: string }> = {
     face_up: { title: '정면 대치', hint: '공간을 만들거나 상대의 움직임을 읽어 보세요.' },
     advantage: { title: '공격 우위', hint: '공격은 열린 길로 마무리하고, 수비는 추격하거나 물러서서 다시 막을 수 있어요.' },
-    pickup: { title: '드리블 종료', hint: '다시 드리블할 수 없어요. 현재 상태에서 허용된 슛과 풋워크를 확인하세요.' },
+    pickup: { title: '드리블 종료', hint: '다시 드리블할 수 없어요. 슛으로 이번 공격을 마무리하세요.' },
     contested: { title: '공간 경합', hint: '진로를 바꾸거나 간격을 다시 만들며 다음 기회를 노려 보세요.' },
     loose_ball: { title: '루즈볼 경합', hint: '공이 자유로워졌어요. 두 선수 모두 공 회복을 선택할 수 있어요.' },
     rebound: { title: '리바운드 경합', hint: '빗나간 공을 잡을 기회예요. 두 선수의 리바운드 선택을 함께 판정합니다.' },
 };
-/** 추천은 공개 상황과 합법 행동만 사용하며 상대의 제출 내용은 읽지 않는다. */
-function responseActions(kind: GameState['situation']['kind'], offense: boolean): ActionId[] {
-    if (kind === 'loose_ball') return ['RecoverBall'];
-    if (kind === 'rebound') return ['Rebound'];
-    if (kind === 'pickup') return offense ? ['JumpShot', 'StandingShot', 'Pivot', 'PumpFake'] : ['ContestShot', 'BlockAttempt', 'StealAttempt'];
-    if (kind === 'advantage') return offense ? ['Layup', 'Floater', 'PullUpJumper', 'SpeedDribble'] : ['Sprint', 'CloseOut', 'RetreatStep', 'ContestShot'];
-    if (kind === 'contested') return offense ? ['ProtectedDribble', 'RetreatDribble', 'Pivot', 'JumpShot'] : ['HoldPosition', 'BodyUp', 'CutOffDrivingLane'];
-    return offense ? ['NormalDribble', 'Crossover', 'JumpShot'] : ['HoldPosition', 'CutOffDrivingLane', 'StealAttempt'];
-}
 const other = (id: PlayerId): PlayerId => id === 'p1' ? 'p2' : 'p1';
 const percent = (value: number | null) => value === null ? '—' : `${(value * 100).toFixed(1)}%`;
 function Icon({ name }: { name: IconName }) {
@@ -73,15 +59,9 @@ export default function BasketballClient() {
     const [hotseatPlayer, setHotseatPlayer] = useState<PlayerId>('p1');
     const [handoff, setHandoff] = useState(false);
     const [selected, setSelected] = useState<ActionId>('NormalDribble');
-    const [category, setCategory] = useState<ActionDefinition['category']>('dribble');
     const [selectionDecision, setSelectionDecision] = useState(-1);
     const [draftQueue, setDraftQueue] = useState<ActionCommand[]>([]);
-    const [direction, setDirection] = useState(4);
-    const [speed, setSpeed] = useState(.7);
-    const [hand, setHand] = useState<'left' | 'right'>(() => game.players[0].ballHand);
-    const [prediction, setPrediction] = useState(1);
-    const [gap, setGap] = useState(1.4);
-    const [release, setRelease] = useState(0);
+    const [side, setSide] = useState<'left' | 'right'>('left');
     const [message, setMessage] = useState('');
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [autoRunning, setAutoRunning] = useState(false);
@@ -95,16 +75,10 @@ export default function BasketballClient() {
     const activeId: PlayerId = mode === 'defense' ? 'p2' : mode === 'hotseat' ? hotseatPlayer : 'p1';
     const observation = getObservation(game, activeId);
     const isOffense = game.offenseId === activeId;
-    const roleActions = ACTION_LIST.filter(action => action.role === 'both' || action.role === (isOffense ? 'offense' : 'defense') || observation.legalActions.some(legal => legal.id === action.id));
-    const categoryOrder: ActionDefinition['category'][] = isOffense ? ['dribble', 'shot', 'footwork', 'movement', 'recovery', 'ball', 'defense'] : ['defense', 'recovery', 'movement', 'ball'];
-    const categories = categoryOrder.filter(value => roleActions.some(action => action.category === value));
-    const responses = responseActions(observation.situation.kind, isOffense).flatMap(id => observation.legalActions.find(action => action.id === id) ?? []);
-    // 다음 이벤트 턴은 현재 상황에서 가능한 행동으로 시작하되 사용자의 수동 선택은 유지한다.
-    const suggested = selectionDecision !== game.decisionId ? responses[0] ?? observation.legalActions[0] : undefined;
-    const activeCategory = suggested?.category ?? (categories.includes(category) ? category : categories[0]);
-    const filteredActions = roleActions.filter(action => action.category === activeCategory);
-    const picked = suggested ?? filteredActions.find(action => action.id === selected) ?? filteredActions.find(action => observation.legalActions.some(legal => legal.id === action.id)) ?? filteredActions[0];
-    const command: ActionCommand = { actionId: picked.id, direction: direction === 4 ? undefined : DIRECTIONS[direction].value, speed, hand: isOffense ? hand : undefined, anticipatedDirection: !isOffense ? DIRECTIONS[prediction].value : undefined, desiredGap: !isOffense ? gap : undefined, releaseTiming: picked.category === 'shot' ? release : undefined };
+    const choices = compactActions(observation);
+    // 새 이벤트에서는 현재 상황의 첫 선택으로 시작하고 수동 선택은 해당 턴에 유지한다.
+    const picked = (selectionDecision === game.decisionId ? choices.find(action => action.id === selected) : undefined) ?? choices[0] ?? ACTIONS.JumpShot;
+    const command = compactCommand(observation, picked.id, side);
     const validateChoice = (candidate: ActionCommand) => {
         if (!draftQueue.length) return validateAction(game, activeId, candidate);
         const planned = queueActions(game, activeId, [...draftQueue, candidate]);
@@ -135,11 +109,11 @@ export default function BasketballClient() {
         worker.current?.terminate(); worker.current = null;
         setStatistics(null); setStatsProgress(null); setStatsError('');
     };
-    const resetControls = (nextState = game, nextPlayerId: PlayerId = activeId) => { setSelected('NormalDribble'); setCategory('dribble'); setDirection(4); setSpeed(.7); setHand(nextState.players[nextPlayerId === 'p1' ? 0 : 1].ballHand); setPrediction(1); setGap(1.4); setRelease(0); setSelectionDecision(-1); setDraftQueue([]); };
+    const resetControls = () => { setSelected('NormalDribble'); setSide('left'); setSelectionDecision(-1); setDraftQueue([]); };
     const startGame = (nextMode = mode, config = game.config, seed = game.seed, players = game.initialPlayers) => {
         const next = createGame({ ...config, initialOffenseId: 'p1' }, seed, players);
         invalidateStatistics();
-        setGame(next); setMode(nextMode); setAutoRunning(false); setReplayAt(null); setReplayPlaying(false); setMessage(''); setHotseatPlayer('p1'); setHandoff(nextMode === 'hotseat'); resetControls(next, nextMode === 'defense' ? 'p2' : 'p1');
+        setGame(next); setMode(nextMode); setAutoRunning(false); setReplayAt(null); setReplayPlaying(false); setMessage(''); setHotseatPlayer('p1'); setHandoff(nextMode === 'hotseat'); resetControls();
     };
     const changeMode = (nextMode: Mode) => {
         if (nextMode === mode) return;
@@ -165,7 +139,7 @@ export default function BasketballClient() {
                 if (result.error) { setMessage(result.error); return; }
                 setGame(result.state);
                 const nextId: PlayerId = result.state.submissions.p1 ? 'p2' : 'p1';
-                setHotseatPlayer(nextId); setHandoff(result.state.status === 'playing'); resetControls(result.state, nextId); return;
+                setHotseatPlayer(nextId); setHandoff(result.state.status === 'playing'); resetControls(); return;
             }
             // 상대 AI는 제출 전의 공개 관찰만으로 선택한다.
             const aiId = other(activeId);
@@ -181,7 +155,7 @@ export default function BasketballClient() {
                 if (result.error) { setMessage(result.error); return; }
                 next = result.state;
             }
-            setGame(next); setDraftQueue([]); if (next.offenseId !== game.offenseId) resetControls(next, activeId);
+            setGame(next); setDraftQueue([]); if (next.offenseId !== game.offenseId) resetControls();
         } catch (error) { setMessage(error instanceof Error ? error.message : '명령을 처리할 수 없습니다.'); }
     };
     const addQueue = () => {
@@ -219,7 +193,6 @@ export default function BasketballClient() {
         } catch (error) { setStatsError(error instanceof Error ? error.message : '통계 작업 시작 실패'); setStatsProgress(null); }
     };
     const cancelStatistics = () => { worker.current?.terminate(); worker.current = null; setStatsProgress(null); setStatsError('검증을 중지했습니다. 표시된 결과는 중지 시점까지의 표본입니다.'); };
-    const chooseCategory = (value: ActionDefinition['category']) => { setCategory(value); setSelectionDecision(game.decisionId); setSelected(roleActions.find(a => a.category === value && observation.legalActions.some(l => l.id === a.id))?.id ?? roleActions.find(a => a.category === value)!.id); };
     return <main className={styles.page}>
         <header className={styles.hero}><div><div className={styles.eyebrow}><span className={styles.dot} /> 1 ON 1 · TURN-BASED BASKETBALL</div><h1>한 수 앞의 농구</h1><p>한 번의 선택, 하나의 승부. 결과를 읽고 다음 플레이를 선택하세요.</p></div><div className={styles.heroActions}><button className={styles.button} onClick={() => { setAutoRunning(false); setSettingsOpen(true); }}><Icon name="settings" />경기 설정</button><button className={styles.button} onClick={restart}><Icon name="restart" />다시 시작</button></div></header>
         <div className={styles.modeBar} aria-label="대전 모드">{MODES.map(item => <button key={item.id} className={`${styles.modeButton} ${mode === item.id ? styles.modeActive : ''}`} aria-pressed={mode === item.id} onClick={() => changeMode(item.id)}><Icon name={item.icon} /><span><strong>{item.title}</strong><small>{item.subtitle}</small></span></button>)}</div>
@@ -242,21 +215,30 @@ export default function BasketballClient() {
                     : handoff && mode === 'hotseat' ? <div className={styles.handoff}><Icon name="lock" /><h3>{game.players.find(p => p.playerId === hotseatPlayer)!.name} 차례</h3><p>이전 선택은 숨겨졌습니다.<br />다음 플레이어에게 화면을 넘긴 뒤 눌러 주세요.</p><button className={styles.primaryButton} onClick={() => setHandoff(false)}>준비됐어요 · 내 선택 보기</button></div>
                     : mode === 'auto' ? <div className={styles.autoPanel}><Icon name="chart" /><h3>두 AI의 수 싸움</h3><p>같은 능력치, 같은 규칙, 공개된 정보만으로<br />공격과 수비가 독립적으로 판단합니다.</p><div className={styles.autoButtons}><button className={styles.primaryButton} onClick={() => setAutoRunning(!autoRunning)}><Icon name={autoRunning ? 'pause' : 'play'} />{autoRunning ? '일시 정지' : '자동 대전 시작'}</button><button className={styles.button} disabled={autoRunning} onClick={() => setGame(runAIDecision(game, difficulty))}>한 턴</button></div></div>
                     : <div className={styles.controls}><div className={styles.turnInfo}><Icon name={isOffense ? 'ball' : 'shield'} /><div><strong>{observation.players.find(p => p.playerId === activeId)!.name} · {isOffense ? '공격' : '수비'} 차례</strong><small>{observation.ownSubmitted ? '예약한 명령이 잠겼습니다. 상대 선택 후 실행됩니다.' : '결과를 확인하고 다음 플레이를 선택하세요 · 상대 선택은 비공개'}</small></div></div>
-                        {!observation.ownSubmitted && <>{responses.length > 0 && <div className={styles.responses} aria-label="상황별 가능한 대응"><div className={styles.sectionLabel}>지금 가능한 대응<small>{SITUATIONS[observation.situation.kind].title}</small></div><div className={styles.responseChoices}>{responses.map(action => <button key={action.id} className={styles.button} aria-label={`상황 대응: ${action.name}`} disabled={draftQueue.length > 0} onClick={() => { setCategory(action.category); setSelected(action.id); setSelectionDecision(game.decisionId); }}>{action.name}</button>)}</div></div>}<div className={styles.sectionLabel}>01. 어떤 플레이를 할까요?<small>상태에 맞는 행동만 선택 가능</small></div><div className={styles.categories}>{categories.map(value => <button key={value} className={`${styles.category} ${activeCategory === value ? styles.categoryActive : ''}`} aria-pressed={activeCategory === value} onClick={() => chooseCategory(value)}>{CATEGORIES[value]}</button>)}</div><div className={styles.actionGrid}>{filteredActions.map(action => { const candidate = { ...command, actionId: action.id }; const legal = validateChoice(candidate); const cost = commandDribbleCost(candidate, game, activeId); return <button key={action.id} className={`${styles.action} ${picked.id === action.id ? styles.actionSelected : ''}`} disabled={!legal.valid} title={legal.valid ? action.description : legal.error} aria-pressed={picked.id === action.id} onClick={() => { setSelected(action.id); setSelectionDecision(game.decisionId); }}><strong>{action.name}</strong><small>{action.duration.toFixed(2)}초 · {cost ? `드리블 −${cost}` : `기본 체력 −${action.staminaCost}`} </small></button>; })}</div><p className={styles.actionDescription}>{picked.description}<br />주요 능력: {picked.primaryAttributes.map(key => ATTRIBUTE_LABELS[key]).join(' · ')}</p>
-                            {<><div className={styles.controlRow}><div><div className={styles.sectionLabel}>02. 이동 방향<small>{direction === 4 ? '기본' : DIRECTIONS[direction].symbol}</small></div><div className={styles.directionGrid}>{DIRECTIONS.map((item, index) => <button key={item.label} className={`${styles.direction} ${direction === index ? styles.directionActive : ''}`} aria-label={item.label} title={item.label} aria-pressed={direction === index} onClick={() => setDirection(index)}>{item.symbol}</button>)}</div></div><div className={styles.fields}><label><span className={styles.sectionLabel}>목표 속도<small>{Math.round(speed * 100)}%</small></span><input aria-label="목표 속도" type="range" min="0" max="1" step=".05" value={speed} onChange={e => setSpeed(Number(e.target.value))} /></label>{isOffense && <div><div className={styles.sectionLabel}>공을 다루는 손</div><div className={styles.inlineChoices}><button className={hand === 'left' ? styles.choiceActive : ''} aria-pressed={hand === 'left'} onClick={() => setHand('left')}>왼손</button><button className={hand === 'right' ? styles.choiceActive : ''} aria-pressed={hand === 'right'} onClick={() => setHand('right')}>오른손</button></div></div>}</div></div>
-                            {!isOffense && <div className={styles.defenseControls}><label className={styles.settingField}>예상 돌파 방향<select className={styles.select} value={prediction} onChange={e => setPrediction(Number(e.target.value))}>{DIRECTIONS.map((item, index) => <option key={item.label} value={index}>{item.symbol} {item.label}</option>)}</select></label><label className={styles.settingField}>유지 간격 · {gap.toFixed(1)}m<input aria-label="수비 유지 간격" type="range" min=".5" max="4" step=".1" value={gap} onChange={e => setGap(Number(e.target.value))} /></label></div>}
-                            {picked.category === 'shot' && <div className={styles.fields} style={{ marginTop: 16 }}><label>릴리스 타이밍 · {release === 0 ? '정박' : release < 0 ? '빠르게' : '늦게'}<input aria-label="슛 릴리스 타이밍" type="range" min="-1" max="1" step=".1" value={release} onChange={e => setRelease(Number(e.target.value))} /></label></div>}</>}
+                        {!observation.ownSubmitted && <>
+                            <div className={styles.sectionLabel}>어떤 플레이를 할까요?<small>{SITUATIONS[observation.situation.kind].title}</small></div>
+                            <div className={styles.actionGrid} aria-label="상황별 가능한 대응">{choices.map(action => {
+                                const candidate = compactCommand(observation, action.id, side);
+                                const legal = validateChoice(candidate);
+                                const cost = commandDribbleCost(candidate, game, activeId);
+                                return <button key={action.id} className={`${styles.action} ${picked.id === action.id ? styles.actionSelected : ''}`} disabled={!legal.valid} title={legal.valid ? action.description : legal.error} aria-pressed={picked.id === action.id} onClick={() => { setSelected(action.id); setSelectionDecision(game.decisionId); }}><strong>{actionLabel(action.id)}</strong><small>{cost ? '드리블 1회' : action.category === 'shot' ? '골대로 자동 조준' : action.description}</small></button>;
+                            })}</div>
+                            <p className={styles.actionDescription}>{picked.description}<br />주요 능력: {picked.primaryAttributes.map(key => ATTRIBUTE_LABELS[key]).join(' · ')}</p>
+                            {usesLane(picked.id, observation) && <div className={styles.laneControl}>
+                                <div className={styles.sectionLabel}>{isOffense ? '돌파할 쪽' : '막을 돌파 방향'}<small>공격·수비 모두 화면 기준</small></div>
+                                <div className={styles.inlineChoices} aria-label={isOffense ? '돌파 방향' : '예상 돌파 방향'}>{(['left', 'right'] as const).map(value => <button key={value} className={side === value ? styles.choiceActive : ''} aria-pressed={side === value} onClick={() => setSide(value)}>{value === 'left' ? '← 왼쪽' : '오른쪽 →'}</button>)}</div>
+                            </div>}
                         </>}
-                        <div className={styles.queue}><div className={styles.sectionLabel}>예약 행동 <small>{observation.ownQueue.length + draftQueue.length} / {game.config.maxQueueLength}</small>{(observation.ownQueue.length > 0 || draftQueue.length > 0) && <button className={styles.textButton} onClick={clearQueue}>예약 취소</button>}</div>{(observation.ownQueue.length > 0 || draftQueue.length > 0) ? <div className={styles.queueItems}>{[...observation.ownQueue, ...draftQueue].map((item, index) => <span className={styles.queueItem} key={index}>{index + 1}. {ACTIONS[item.actionId].name}</span>)}</div> : <p className={styles.queueEmpty}>선택을 예약에 추가하면 목록 순서대로 제출합니다. 한 턴에 하나씩 실행하며 상황이 바뀌면 다시 검증해요.</p>}<div className={styles.submitRow}><button className={styles.button} disabled={!validation.valid || observation.ownSubmitted} onClick={addQueue}>+ 예약에 추가</button><button className={styles.primaryButton} disabled={!observation.ownSubmitted && !draftQueue.length && !validation.valid} onClick={submit}>{observation.ownSubmitted ? '예약 명령 진행' : draftQueue.length ? `예약 ${draftQueue.length}개 제출` : mode === 'hotseat' ? '선택 잠그기' : '명령 제출'}<Icon name="arrow" /></button></div>{!validation.valid && !observation.ownSubmitted && <p className={styles.diagnostic} role="status">{validation.error}</p>}</div>
+                        <div className={styles.queue}><div className={styles.sectionLabel}>예약 행동 <small>{observation.ownQueue.length + draftQueue.length} / {game.config.maxQueueLength}</small>{(observation.ownQueue.length > 0 || draftQueue.length > 0) && <button className={styles.textButton} onClick={clearQueue}>예약 취소</button>}</div>{(observation.ownQueue.length > 0 || draftQueue.length > 0) ? <div className={styles.queueItems}>{[...observation.ownQueue, ...draftQueue].map((item, index) => <span className={styles.queueItem} key={index}>{index + 1}. {actionLabel(item.actionId)}</span>)}</div> : <p className={styles.queueEmpty}>선택을 예약에 추가하면 목록 순서대로 제출합니다. 한 턴에 하나씩 실행하며 상황이 바뀌면 다시 검증해요.</p>}<div className={styles.submitRow}><button className={styles.button} disabled={!validation.valid || observation.ownSubmitted} onClick={addQueue}>+ 예약에 추가</button><button className={styles.primaryButton} disabled={!observation.ownSubmitted && !draftQueue.length && !validation.valid} onClick={submit}>{observation.ownSubmitted ? '예약 명령 진행' : draftQueue.length ? `예약 ${draftQueue.length}개 제출` : mode === 'hotseat' ? '선택 잠그기' : '명령 제출'}<Icon name="arrow" /></button></div>{!validation.valid && !observation.ownSubmitted && <p className={styles.diagnostic} role="status">{validation.error}</p>}</div>
                     </div>}
             </section>
             <section className={styles.card}><div className={styles.cardHead}><h2>플레이 로그</h2><span>판정 근거 · 확률 공개</span></div><div className={styles.logList} aria-label="경기 이벤트 기록">{events.length ? events.map(event => <div className={styles.logItem} key={event.id}><time className={styles.logTime}>{event.time.toFixed(1)}s</time><div><p className={`${styles.logText} ${['score', 'steal', 'block', 'game_over'].includes(event.type) ? styles.logImportant : ''}`}>{event.message}</p><EventDetails event={event} /></div></div>) : <p className={styles.emptyLog}>첫 번째 플레이를 선택해 주세요.</p>}</div></section>
         </div></div>
         <div className={styles.bottomGrid}><section className={styles.card}><div className={styles.cardHead}><h2>처음이라면, 이것만 기억하세요</h2><span>PLAYBOOK</span></div><div className={styles.help}>
             {[
-                ['한 번의 공격, 세 개의 드리블 행동', '3회 제한은 이 게임만의 특별 규칙입니다. 공이 튀는 횟수가 아니라 일반 드리블, 크로스오버 같은 행동 한 단위를 셉니다. 예약과 복합 기술도 각각 계산하며, 라이브 드리블 중 걷기·스프린트도 한 단위를 사용해요.'],
+                ['한 번의 공격, 세 개의 드리블 행동', '3회 제한은 이 게임만의 특별 규칙입니다. 공이 튀는 횟수가 아니라 돌파·크로스오버·후퇴를 한 번 선택할 때마다 1회를 사용해요. 방향은 화면 기준 왼쪽·오른쪽만 고르면 됩니다.'],
                 ['한 번의 선택으로 하나의 플레이를 마무리하세요', '공격과 수비가 모두 확정하면 돌파·저지·슛 같은 상호작용이 한 번에 끝납니다. 공개된 결과와 남은 우위를 보고 다음 선택을 해요. 점선은 입력 방향 참고선이며 실제 이동 결과와 다를 수 있습니다.'],
-                ['공을 잡은 다음에는 풋워크가 중요해요', '공을 잡으면 드리블을 다시 시작할 수 없습니다. 자발적 개더 뒤에는 풋워크를, 수비 압박으로 강제로 잡았다면 슛을 선택하세요. 정상 소유권 전환 후 역할이 바뀌고 드리블 횟수가 초기화됩니다.'],
+                ['후퇴와 슛은 방향을 고르지 않아도 돼요', '후퇴는 골대 반대쪽으로, 슛은 골대를 향해 자동으로 진행합니다. 속도와 손, 타이밍은 행동에 맞게 정해집니다. 공을 잡았다면 슛으로 마무리하세요. 정상 소유권 전환 후 역할이 바뀌고 드리블 횟수가 초기화됩니다.'],
                 ['같은 시드와 명령은 같은 결과를 만듭니다', '버전 2 리플레이에는 설정과 실제 이벤트 턴 명령이 저장됩니다. 이전 버전 1 파일은 지원하지 않습니다. 로컬 대전 중에는 완료된 선택만 저장해 비밀을 지킵니다. 로컬 2인은 한 화면을 번갈아 사용하며 온라인 멀티플레이는 제공하지 않습니다. 게임과 통계는 브라우저 안에서만 실행됩니다.'],
             ].map(([title, description], index) => <div className={styles.helpItem} key={title}><span className={styles.helpNumber}>0{index + 1}</span><div><strong>{title}</strong><p>{description}</p></div></div>)}
         </div></section><section className={styles.card}><div className={styles.cardHead}><h2><Icon name="chart" />시뮬레이션 랩</h2><span>LOCAL · SEEDED</span></div><div className={styles.statsBody}><p>현재 규칙과 선수 능력치로 최소 10,000포제션 · 100경기를 자동 검증합니다. 별도 작업 스레드에서 계산하므로 플레이를 계속할 수 있어요.</p><div className={styles.statsGrid}>{[

@@ -1,0 +1,688 @@
+{
+  "version": 1,
+  "seed": 20261013,
+  "initialOffenseId": "p1",
+  "requestedPossessions": 10000,
+  "completedPossessions": 10003,
+  "completedGames": 434,
+  "decisions": 62329,
+  "simulatedSeconds": 50871.40094842397,
+  "averagePossessionSeconds": 5.085614410519241,
+  "averageDecisionPoints": 6.231030690792762,
+  "averageDribbles": 1.9092272318304508,
+  "averageGameSeconds": 117.21520955858058,
+  "averageGamePossessions": 23.048387096774192,
+  "averageGameDecisions": 143.6152073732719,
+  "turnoverRate": 0.07327801659502149,
+  "shooting": {
+    "attempts": 17488,
+    "successes": 8432,
+    "rate": 0.48215919487648673
+  },
+  "steals": {
+    "attempts": 489,
+    "successes": 161,
+    "rate": 0.3292433537832311
+  },
+  "blocks": {
+    "attempts": 4,
+    "successes": 0,
+    "rate": 0
+  },
+  "breakthrough": {
+    "attempts": 21758,
+    "successes": 13608,
+    "rate": 0.6254251309863039
+  },
+  "foulsPerPossession": 0.018794361691492553,
+  "fouls": 188,
+  "averageStaminaSpent": {
+    "p1": 14.053121252753447,
+    "p2": 14.018297393002204,
+    "both": 28.071418645755656
+  },
+  "techniques": {
+    "NormalDribble": {
+      "attempts": 13064,
+      "successes": 12239,
+      "rate": 0.9368493570116351
+    },
+    "Crossover": {
+      "attempts": 6034,
+      "successes": 5613,
+      "rate": 0.9302287040106065
+    }
+  },
+  "playerWins": {
+    "p1": {
+      "appearances": 434,
+      "wins": 265,
+      "winRate": 0.6105990783410138,
+      "confidence95": {
+        "low": 0.5639438469818606,
+        "high": 0.6553135282880999
+      }
+    },
+    "p2": {
+      "appearances": 434,
+      "wins": 169,
+      "winRate": 0.38940092165898615,
+      "confidence95": {
+        "low": 0.3446864717119,
+        "high": 0.4360561530181392
+      }
+    }
+  },
+  "attributeWinRates": {
+    "Speed": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Acceleration": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Agility": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Deceleration": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Footwork": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "BallHandling": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "BallControl": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "DribbleSpeed": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "DribbleProtection": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "CloseShot": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "MidRangeShot": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "LongRangeShot": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Layup": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Dunk": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "ShotCreation": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "PerimeterDefense": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "LateralQuickness": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Steal": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Block": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "ShotContest": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "DefensiveAwareness": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Reaction": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Strength": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Balance": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Vertical": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Endurance": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "BodyControl": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Composure": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "Anticipation": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    },
+    "DecisionMaking": {
+      "40–69": {
+        "appearances": 868,
+        "wins": 434,
+        "winRate": 0.5,
+        "confidence95": {
+          "low": 0.4668099977458472,
+          "high": 0.5331900022541528
+        }
+      }
+    }
+  },
+  "ratingCombinations": {
+    "공격 40–69 / 수비 40–69": {
+      "decisions": 62329,
+      "possessions": 10003,
+      "points": 8691,
+      "turnovers": 733,
+      "shots": 17488,
+      "madeShots": 8432,
+      "drives": 13608
+    }
+  },
+  "actionCombinations": {
+    "NormalDribble / CutOffDrivingLane": {
+      "decisions": 7100,
+      "possessions": 88,
+      "points": 0,
+      "turnovers": 88,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 3652
+    },
+    "NormalDribble / RetreatStep": {
+      "decisions": 4419,
+      "possessions": 6,
+      "points": 0,
+      "turnovers": 6,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 4060
+    },
+    "Crossover / RetreatStep": {
+      "decisions": 2911,
+      "possessions": 1,
+      "points": 0,
+      "turnovers": 1,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 2687
+    },
+    "JumpShot / CloseOut": {
+      "decisions": 5512,
+      "possessions": 3161,
+      "points": 3143,
+      "turnovers": 64,
+      "shots": 5448,
+      "madeShots": 3031,
+      "drives": 0
+    },
+    "Layup / RetreatStep": {
+      "decisions": 212,
+      "possessions": 173,
+      "points": 173,
+      "turnovers": 0,
+      "shots": 212,
+      "madeShots": 173,
+      "drives": 212
+    },
+    "JumpShot / ContestShot": {
+      "decisions": 8774,
+      "possessions": 3905,
+      "points": 3885,
+      "turnovers": 134,
+      "shots": 8640,
+      "madeShots": 3771,
+      "drives": 0
+    },
+    "Crossover / CutOffDrivingLane": {
+      "decisions": 2560,
+      "possessions": 33,
+      "points": 0,
+      "turnovers": 33,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 1315
+    },
+    "Crossover / CloseOut": {
+      "decisions": 323,
+      "possessions": 0,
+      "points": 0,
+      "turnovers": 0,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 288
+    },
+    "Rebound / Rebound": {
+      "decisions": 23873,
+      "possessions": 763,
+      "points": 0,
+      "turnovers": 0,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 0
+    },
+    "RecoverBall / RecoverBall": {
+      "decisions": 1521,
+      "possessions": 320,
+      "points": 0,
+      "turnovers": 320,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 0
+    },
+    "Layup / ContestShot": {
+      "decisions": 1208,
+      "possessions": 492,
+      "points": 472,
+      "turnovers": 20,
+      "shots": 1188,
+      "madeShots": 472,
+      "drives": 41
+    },
+    "Crossover / ContestShot": {
+      "decisions": 224,
+      "possessions": 2,
+      "points": 0,
+      "turnovers": 2,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 116
+    },
+    "Crossover / StealAttempt": {
+      "decisions": 16,
+      "possessions": 5,
+      "points": 0,
+      "turnovers": 5,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 5
+    },
+    "Layup / CloseOut": {
+      "decisions": 861,
+      "possessions": 452,
+      "points": 451,
+      "turnovers": 7,
+      "shots": 854,
+      "madeShots": 439,
+      "drives": 182
+    },
+    "JumpShot / HoldPosition": {
+      "decisions": 619,
+      "possessions": 302,
+      "points": 292,
+      "turnovers": 26,
+      "shots": 593,
+      "madeShots": 276,
+      "drives": 0
+    },
+    "RecoverBalance / CloseOut": {
+      "decisions": 19,
+      "possessions": 0,
+      "points": 0,
+      "turnovers": 0,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 0
+    },
+    "NormalDribble / ContestShot": {
+      "decisions": 872,
+      "possessions": 10,
+      "points": 0,
+      "turnovers": 10,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 466
+    },
+    "NormalDribble / StealAttempt": {
+      "decisions": 64,
+      "possessions": 16,
+      "points": 0,
+      "turnovers": 16,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 28
+    },
+    "JumpShot / RetreatStep": {
+      "decisions": 145,
+      "possessions": 107,
+      "points": 107,
+      "turnovers": 0,
+      "shots": 145,
+      "madeShots": 107,
+      "drives": 0
+    },
+    "NormalDribble / CloseOut": {
+      "decisions": 609,
+      "possessions": 0,
+      "points": 0,
+      "turnovers": 0,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 555
+    },
+    "Layup / HoldPosition": {
+      "decisions": 138,
+      "possessions": 62,
+      "points": 61,
+      "turnovers": 1,
+      "shots": 137,
+      "madeShots": 61,
+      "drives": 1
+    },
+    "Floater / CloseOut": {
+      "decisions": 199,
+      "possessions": 67,
+      "points": 69,
+      "turnovers": 0,
+      "shots": 199,
+      "madeShots": 64,
+      "drives": 0
+    },
+    "Floater / ContestShot": {
+      "decisions": 51,
+      "possessions": 22,
+      "points": 22,
+      "turnovers": 0,
+      "shots": 51,
+      "madeShots": 22,
+      "drives": 0
+    },
+    "RecoverBalance / ContestShot": {
+      "decisions": 76,
+      "possessions": 0,
+      "points": 0,
+      "turnovers": 0,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 0
+    },
+    "Floater / RetreatStep": {
+      "decisions": 12,
+      "possessions": 9,
+      "points": 9,
+      "turnovers": 0,
+      "shots": 12,
+      "madeShots": 9,
+      "drives": 0
+    },
+    "JumpShot / BlockAttempt": {
+      "decisions": 4,
+      "possessions": 3,
+      "points": 3,
+      "turnovers": 0,
+      "shots": 4,
+      "madeShots": 3,
+      "drives": 0
+    },
+    "RecoverBalance / HoldPosition": {
+      "decisions": 2,
+      "possessions": 0,
+      "points": 0,
+      "turnovers": 0,
+      "shots": 0,
+      "madeShots": 0,
+      "drives": 0
+    },
+    "JumpShot / CutOffDrivingLane": {
+      "decisions": 3,
+      "possessions": 2,
+      "points": 2,
+      "turnovers": 0,
+      "shots": 3,
+      "madeShots": 2,
+      "drives": 0
+    },
+    "Floater / HoldPosition": {
+      "decisions": 2,
+      "possessions": 2,
+      "points": 2,
+      "turnovers": 0,
+      "shots": 2,
+      "madeShots": 2,
+      "drives": 0
+    }
+  },
+  "anomalies": [
+    "기본 AI 표본에서 미관측 드리블: SpeedDribble, ProtectedDribble, BetweenTheLegs, BehindTheBack, Hesitation, InAndOut, SpinMove, RetreatDribble. 별도 기술 대결 실험이 필요합니다.",
+    "P1 승률 61.06% (윌슨 95% 구간 56.39~65.53%). 모든 경기의 선공은 P1이며 능력치·선공 효과와 ID 편향은 구분해야 합니다."
+  ],
+  "wallClockSeconds": 32.915768548,
+  "note": "경기 시작부터 종료까지 진행한 전체 경기만 포함한다. 기술 성공은 볼 제어 성공이며 돌파 성공과 별도다."
+}
