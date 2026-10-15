@@ -12,7 +12,7 @@ export const getPlayer = (s:Pick<GameState,'players'>,id:PlayerId):PlayerState =
 const copy = <T>(value:T):T => structuredClone(value);
 /** 과거 이벤트/입력은 불변으로 공유하고 변경하는 현재 상태만 깊게 복제한다. */
 function cloneState(s:GameState):GameState {
-  return {...s,players:copy(s.players),score:{...s.score},submissions:copy(s.submissions),queues:copy(s.queues),ongoingActions:copy(s.ongoingActions),ball:copy(s.ball),stats:copy(s.stats),events:[...s.events],history:[...s.history],operations:[...s.operations]};
+  return {...s,players:copy(s.players),score:{...s.score},submissions:copy(s.submissions),queues:copy(s.queues),ongoingActions:copy(s.ongoingActions),ball:copy(s.ball),situation:copy(s.situation),stats:copy(s.stats),events:[...s.events],history:[...s.history],operations:[...s.operations]};
 }
 const pair = () => ({p1:0,p2:0});
 const validId = (id:unknown):id is PlayerId => id==='p1'||id==='p2';
@@ -41,14 +41,15 @@ function validateConfig(c:GameConfig):void {
 function makePlayer(id:PlayerId,setup:PlayerSetup):PlayerState {
   const attributes={...DEFAULT_ATTRIBUTES,...setup.attributes};
   for(const key of ATTRIBUTE_KEYS){if(!Number.isFinite(attributes[key]))throw new Error(`능력치 ${key}가 유효하지 않습니다.`);attributes[key]=clamp(attributes[key],0,100);}
-  return {playerId:id,name:(setup.name??(id==='p1'?'플레이어 1':'플레이어 2')).slice(0,40),attributes,dominantHand:setup.dominantHand??'right',position:{x:0,y:0},velocity:{x:0,y:0},facingDirection:{x:0,y:-1},movementDirection:{x:0,y:0},stamina:100,burstEnergy:100,fatigue:0,bodyBalance:100,ballPossession:false,ballHand:setup.dominantHand??'right',dribbleState:'ready',dribblesUsed:0,ballControl:100,footworkState:'planted',pivotFoot:null,pivotPosition:null,gatheredSteps:0,actionState:null,actionProgress:0,recoveryTime:0,defensiveStance:'upright',defensiveCommitment:{x:0,y:0},reactionDelay:0,fouls:0};
+  return {playerId:id,name:(setup.name??(id==='p1'?'플레이어 1':'플레이어 2')).slice(0,40),attributes,dominantHand:setup.dominantHand??'right',position:{x:0,y:0},velocity:{x:0,y:0},facingDirection:{x:0,y:-1},movementDirection:{x:0,y:0},stamina:100,burstEnergy:100,fatigue:0,bodyBalance:100,ballPossession:false,ballHand:setup.dominantHand??'right',dribbleState:'ready',dribblesUsed:0,ballControl:100,footworkState:'planted',pivotFoot:null,pivotPosition:null,gatheredSteps:0,actionState:null,actionProgress:0,recoveryTime:0,defensiveStance:'upright',defensiveCommitment:{x:0,y:0},reactionDelay:0,forcedPickup:false,beaten:0,fouls:0};
 }
 function setCheckBall(s:GameState):void {
   const attack=getPlayer(s,s.offenseId),defend=getPlayer(s,otherPlayer(s.offenseId));
   attack.position={x:s.config.hoop.x,y:Math.min(s.config.courtLength-1,s.config.hoop.y+7.2)};
   defend.position={x:s.config.hoop.x,y:attack.position.y-1.65};
-  for(const p of s.players){p.velocity={x:0,y:0};p.movementDirection={x:0,y:0};p.facingDirection=normalize(subtract(s.config.hoop,p.position));p.ballPossession=p.playerId===s.offenseId;p.dribbleState='ready';p.dribblesUsed=0;p.gatheredSteps=0;p.footworkState='planted';p.pivotFoot=null;p.pivotPosition=null;p.actionState=null;p.actionProgress=0;p.recoveryTime=0;p.defensiveStance='upright';p.defensiveCommitment={x:0,y:0};p.bodyBalance=Math.max(85,p.bodyBalance);p.ballControl=100;p.stamina=clamp(p.stamina+4,0,100);p.burstEnergy=clamp(p.burstEnergy+14,0,100);}
+  for(const p of s.players){p.velocity={x:0,y:0};p.movementDirection={x:0,y:0};p.facingDirection=normalize(subtract(s.config.hoop,p.position));p.ballPossession=p.playerId===s.offenseId;p.dribbleState='ready';p.forcedPickup=false;p.beaten=0;p.reactionDelay=0;p.dribblesUsed=0;p.gatheredSteps=0;p.footworkState='planted';p.pivotFoot=null;p.pivotPosition=null;p.actionState=null;p.actionProgress=0;p.recoveryTime=0;p.defensiveStance='upright';p.defensiveCommitment={x:0,y:0};p.bodyBalance=Math.max(85,p.bodyBalance);p.ballControl=100;p.stamina=clamp(p.stamina+4,0,100);p.burstEnergy=clamp(p.burstEnergy+14,0,100);}
   s.ball={status:'held',ownerId:s.offenseId,position:{...attack.position},lastTouchId:s.offenseId};
+  s.situation={kind:'face_up',advantage:0,lastOutcome:'체크볼: 공격과 수비를 동시에 선택하세요.'};
   s.shotClock=s.config.shotClock;s.possessionStartedAt=s.time;
   emit(s,'check_ball','체크볼: 새로운 공격을 시작합니다.',{playerId:s.offenseId,position:{...attack.position}});
 }
@@ -59,14 +60,13 @@ export function createGame(overrides:ConfigOverrides={},seed=1,players:[PlayerSe
   const config:GameConfig={...DEFAULT_CONFIG,...overrides,hoop:{...(overrides.hoop??DEFAULT_CONFIG.hoop)}};validateConfig(config);
   if(!Number.isFinite(seed))throw new Error('시드는 유한한 숫자여야 합니다.');
   const initialPlayers=copy(players),normalizedSeed=seed>>>0;
-  const s:GameState={version:1,config,seed:normalizedSeed,rngState:avalanche(normalizedSeed),initialPlayers,players:[makePlayer('p1',players[0]),makePlayer('p2',players[1])],offenseId:config.initialOffenseId,score:pair(),shotClock:config.shotClock,decisionId:1,possession:1,possessionStartedAt:0,time:0,submissions:{},queues:{p1:[],p2:[]},ongoingActions:{},operations:[],events:[],history:[],status:'playing',winner:null,ball:{status:'held',ownerId:config.initialOffenseId,position:{x:0,y:0},lastTouchId:config.initialOffenseId},decisionReason:'체크볼',stats:{possessions:1,completedPossessions:0,totalPossessionTime:0,totalDecisions:0,totalDribbles:0,shots:pair(),madeShots:pair(),turnovers:pair(),steals:pair(),stealAttempts:pair(),blocks:pair(),blockAttempts:pair(),fouls:pair(),rebounds:pair(),drives:pair(),dribbleAttempts:{},dribbleSuccesses:{},staminaSpent:pair()}};
+  const s:GameState={version:2,config,seed:normalizedSeed,rngState:avalanche(normalizedSeed),initialPlayers,players:[makePlayer('p1',players[0]),makePlayer('p2',players[1])],offenseId:config.initialOffenseId,score:pair(),shotClock:config.shotClock,decisionId:1,possession:1,possessionStartedAt:0,time:0,submissions:{},queues:{p1:[],p2:[]},ongoingActions:{},operations:[],events:[],history:[],status:'playing',winner:null,ball:{status:'held',ownerId:config.initialOffenseId,position:{x:0,y:0},lastTouchId:config.initialOffenseId},situation:{kind:'face_up',advantage:0,lastOutcome:'체크볼'},decisionReason:'체크볼',stats:{possessions:1,completedPossessions:0,totalPossessionTime:0,totalDecisions:0,totalDribbles:0,shots:pair(),madeShots:pair(),turnovers:pair(),steals:pair(),stealAttempts:pair(),blocks:pair(),blockAttempts:pair(),fouls:pair(),rebounds:pair(),drives:pair(),dribbleAttempts:{},dribbleSuccesses:{},staminaSpent:pair()}};
   setCheckBall(s);return s;
 }
 export function commandDribbleCost(command:ActionCommand,state?:Pick<GameState,'players'|'offenseId'>,id?:PlayerId):number {
   if(state&&id===state.offenseId&&getPlayer(state,id).dribbleState==='live'&&['Walk','Sprint'].includes(command.actionId))return 1;
   return [command.actionId,...(command.combo??[])].reduce((sum,key)=>sum+(ACTIONS[key]?.dribbleCost??0),0);
 }
-function unstartedDribbles(r:Runtime|undefined):number { if(!r)return 0;const future=r.units.slice(r.index+1).reduce((n,id)=>n+ACTIONS[id].dribbleCost,0);return future+(r.unitPending?ACTIONS[r.units[r.index]].dribbleCost:!r.executionStarted?r.unitDribbleCost:0); }
 function validateShape(command:ActionCommand):ActionValidation {
   if(!command||typeof command!=='object'||!Object.hasOwn(ACTIONS,command.actionId))return failure('알 수 없는 행동입니다.','UNKNOWN_ACTION');
   if(command.combo!==undefined&&(!Array.isArray(command.combo)||command.combo.length>2||command.combo.some(id=>!Object.hasOwn(ACTIONS,id)||ACTIONS[id].category!=='dribble')||ACTIONS[command.actionId].category!=='dribble'))return failure('복합 명령은 최대 세 개의 드리블 행동으로 구성합니다.','INVALID_COMBO');
@@ -81,14 +81,14 @@ export function validateAction(s:GameState,id:PlayerId,command:ActionCommand):Ac
   if(!validId(id))return failure('알 수 없는 플레이어입니다.','INVALID_PLAYER');
   if(s.status!=='playing')return failure('경기가 끝났습니다.','GAME_OVER');
   const shape=validateShape(command);if(!shape.valid)return shape;
-  const p=getPlayer(s,id),a=ACTIONS[command.actionId],offense=id===s.offenseId,ongoing=s.ongoingActions[id];
-  if(command.actionId==='ContinueAction')return ongoing?{valid:true}:failure('이어갈 행동이 없습니다.','NO_ONGOING_ACTION');
-  if(ongoing&&!ongoing.interruptible)return failure('행동 중간 잠금 구간입니다. 현재 행동을 계속하세요.','ACTION_LOCKED');
+  const p=getPlayer(s,id),a=ACTIONS[command.actionId],offense=id===s.offenseId;
+  if(command.actionId==='ContinueAction')return failure('각 턴에서 새 행동을 선택하세요.','NO_ONGOING_ACTION');
   if(s.ball.status==='loose'||s.ball.status==='rebound'){
     if(!['Rebound','RecoverBall','RecoverBalance','HoldPosition','Walk','Sprint','Stop','BodyUp'].includes(a.id))return failure('공을 회수하거나 리바운드를 준비하세요.','LOOSE_BALL_ACTION');
     if(a.id==='Rebound'&&s.ball.status!=='rebound')return failure('현재는 리바운드 상황이 아닙니다.','NO_REBOUND');
     return {valid:true};
   }
+  if(offense&&p.forcedPickup&&a.category!=='shot')return failure('수비에 막혀 공을 두 손으로 잡았습니다. 슛만 선택할 수 있습니다.','FORCED_PICKUP');
   if(a.category==='ball')return failure('회수할 공이 없습니다.','NO_LOOSE_BALL');
   if(a.role!=='both'&&a.role!==(offense?'offense':'defense'))return failure('현재 역할에서 사용할 수 없는 행동입니다.','WRONG_ROLE');
   if(a.role==='offense'&&(!p.ballPossession||s.ball.ownerId!==id))return failure('공을 소유해야 합니다.','NO_POSSESSION');
@@ -115,18 +115,16 @@ export function validateAction(s:GameState,id:PlayerId,command:ActionCommand):Ac
 export function getLegalActions(s:GameState,id:PlayerId):ActionDefinition[] { if(!validId(id))return [];return ACTION_LIST.filter(a=>validateAction(s,id,{actionId:a.id}).valid).map(copy); }
 export function getObservation(s:GameState,id:PlayerId,eventLimit=600):PlayerObservation {
   if(!validId(id))throw new Error('알 수 없는 플레이어입니다.');
-  return copy({config:s.config,players:s.players,playerId:id,offenseId:s.offenseId,score:s.score,shotClock:s.shotClock,decisionId:s.decisionId,possession:s.possession,time:s.time,status:s.status,winner:s.winner,ball:s.ball,events:eventLimit===0?[]:s.events.slice(-Math.max(0,Math.floor(eventLimit))),ownQueue:s.queues[id],ownSubmitted:!!s.submissions[id],legalActions:getLegalActions(s,id),decisionReason:s.decisionReason});
+  return copy({config:s.config,players:s.players,playerId:id,offenseId:s.offenseId,score:s.score,shotClock:s.shotClock,decisionId:s.decisionId,possession:s.possession,time:s.time,status:s.status,winner:s.winner,ball:s.ball,events:eventLimit===0?[]:s.events.slice(-Math.max(0,Math.floor(eventLimit))),ownQueue:s.queues[id],ownSubmitted:!!s.submissions[id],legalActions:getLegalActions(s,id),situation:s.situation,decisionReason:s.decisionReason});
 }
 export function queueActions(s:GameState,id:PlayerId,commands:ActionCommand[]):EngineResult {
   if(!validId(id)||!Array.isArray(commands))return {state:s,error:'예약 명령 형식이 잘못되었습니다.',code:'INVALID_QUEUE'};
   if(s.status!=='playing')return {state:s,error:'경기가 끝났습니다.',code:'GAME_OVER'};
   if(s.queues[id].length+commands.length>s.config.maxQueueLength)return {state:s,error:`예약은 최대 ${s.config.maxQueueLength}개입니다.`,code:'QUEUE_LIMIT'};
-  const next=cloneState(s); const active=next.ongoingActions[id]; next.ongoingActions={}; const p=getPlayer(next,id);
-  if(active&&(!s.submissions[id]||s.submissions[id]?.actionId==='ContinueAction')){p.dribblesUsed+=unstartedDribbles(active);if(p.dribblesUsed>=s.config.maxDribbles)p.dribbleState='ended';}
+  const next=cloneState(s); const p=getPlayer(next,id);
   const planned=[...(s.submissions[id]?[s.submissions[id]!]:[]),...s.queues[id],...commands];
   // 예약 순서의 풋워크/드리블 상태를 미리 진행해 숨은 복합 명령도 예산에 포함한다.
   for(const cmd of planned){
-    if(cmd.actionId==='ContinueAction')continue;
     const valid=validateAction(next,id,cmd);if(!valid.valid)return {state:s,error:valid.error,code:valid.code};
     const liveMove=id===s.offenseId&&p.dribbleState==='live'&&['Walk','Sprint'].includes(cmd.actionId);
     p.dribblesUsed+=liveMove?1:commandDribbleCost(cmd);
@@ -155,19 +153,19 @@ function finishPossession(s:GameState,nextId:PlayerId,reason:string):void {
   emit(s,'possession_change',reason,{playerId:nextId,data:{duration:rounded(s.time-s.possessionStartedAt),dribbles:getPlayer(s,s.offenseId).dribblesUsed}});
   s.queues={p1:[],p2:[]};s.submissions={};s.ongoingActions={};
   if(endMatchIfNeeded(s))return;
-  s.offenseId=nextId;s.possession++;s.stats.possessions++;setCheckBall(s);
+  s.offenseId=nextId;s.possession++;s.stats.possessions++;setCheckBall(s);s.situation.lastOutcome=reason;
 }
 function turnover(s:GameState,id:PlayerId,reason:string):void { s.stats.turnovers[id]++;emit(s,'turnover',reason,{playerId:id});finishPossession(s,otherPlayer(id),reason); }
 function gather(p:PlayerState):void { if(p.dribbleState==='live')p.dribbleState='ended';p.footworkState='gathered';p.pivotFoot=p.ballHand==='right'?'left':'right';p.pivotPosition??={...p.position}; }
 type Runtime = ScheduledAction;
 function beginUnit(s:GameState,p:PlayerState,r:Runtime):void {
-  const a=ACTIONS[r.units[r.index]];p.actionState=a.id;p.actionProgress=0;r.elapsed=0;r.recoveryDelay=p.recoveryTime;r.executionStarted=false;r.unitDribbleCost=a.dribbleCost||(p.ballPossession&&p.dribbleState==='live'&&['Walk','Sprint'].includes(a.id)?1:0);r.duration=actionDuration(p,{...r.command,actionId:a.id,combo:undefined})-r.recoveryDelay;r.controlChecked=false;r.fakeChecked=false;r.unitPending=false;r.nextWindow=0;r.interruptible=false;r.startPosition={...p.position};
+  const a=ACTIONS[r.units[r.index]];p.actionState=a.id;p.actionProgress=0;r.elapsed=0;r.recoveryDelay=p.recoveryTime;r.executionStarted=false;r.unitDribbleCost=a.dribbleCost||(p.ballPossession&&p.dribbleState==='live'&&['Walk','Sprint'].includes(a.id)?1:0);r.duration=(actionDuration(p,{...r.command,actionId:a.id,combo:undefined})-r.recoveryDelay)*(r.unitDribbleCost?1.3:1);r.controlChecked=false;r.fakeChecked=false;r.unitPending=false;r.nextWindow=0;r.interruptible=false;r.startPosition={...p.position};
   if(r.recoveryDelay<=0)startExecution(s,p,r);
 }
 function startExecution(s:GameState,p:PlayerState,r:Runtime):void {
   const a=ACTIONS[r.units[r.index]];r.executionStarted=true;r.startPosition={...p.position};
-  p.reactionDelay=p.playerId===s.offenseId?0:reactionDelay(p);p.defensiveStance=JUMP_DEFENSE.includes(a.id)?'airborne':a.role==='defense'?'low':'upright';
-  p.defensiveCommitment=normalize(r.command.anticipatedDirection??r.command.direction??{x:0,y:0});
+  p.reactionDelay=p.playerId===s.offenseId?0:Math.max(p.reactionDelay,reactionDelay(p));p.defensiveStance=JUMP_DEFENSE.includes(a.id)?'airborne':a.role==='defense'?'low':'upright';
+  if(p.beaten<0.2)p.defensiveCommitment=normalize(r.command.anticipatedDirection??r.command.direction??{x:0,y:0});
   if(r.command.hand)p.ballHand=r.command.hand;
   const liveMove=p.ballPossession&&p.dribbleState==='live'&&['Walk','Sprint'].includes(a.id);
   if(a.dribbleCost||liveMove){
@@ -186,12 +184,13 @@ function startExecution(s:GameState,p:PlayerState,r:Runtime):void {
 function directionFor(s:GameState,p:PlayerState,r:Runtime):Vec2 {
   const id=r.units[r.index],op=getPlayer(s,otherPlayer(p.playerId)),hoop=s.config.hoop;
   if(id==='Rebound'||id==='RecoverBall')return normalize(subtract(s.ball.position,p.position));
+  if(p.ballPossession&&r.unitDribbleCost){const toward=normalize(subtract(hoop,r.startPosition)),selected=normalize(r.command.direction??(id==='RetreatDribble'?{x:-toward.x,y:-toward.y}:toward));return id==='RetreatDribble'||dot(selected,toward)<-0.35?selected:normalize({x:selected.x*0.65+toward.x,y:selected.y*0.65+toward.y});}
   if(r.command.direction&&length(r.command.direction)>0)return normalize(r.command.direction);
   if(['StepBack','StepBackShot','RetreatDribble'].includes(id))return normalize(subtract(p.position,hoop));
   if(id==='SideStep')return {x:p.ballHand==='right'?1:-1,y:0};
   if(id==='DefensiveSlideLeft')return {x:-1,y:0};
   if(id==='DefensiveSlideRight')return {x:1,y:0};
-  if(id==='RetreatStep')return normalize(subtract(p.position,op.position));
+  if(id==='RetreatStep')return normalize(subtract(hoop,p.position));
   if(id==='ShadeLeft'||id==='ShadeRight')return normalize({x:op.position.x+(id==='ShadeLeft'?-0.85:0.85)-p.position.x,y:op.position.y-(r.command.desiredGap??1.3)-p.position.y});
   if(id==='HoldPosition'||id==='CutOffDrivingLane'||id==='AnticipateDirection'){
     const target=normalize(subtract(hoop,op.position)),gap=r.command.desiredGap??1.4,anticipated=r.command.anticipatedDirection??{x:0,y:0};
@@ -204,7 +203,7 @@ function directionFor(s:GameState,p:PlayerState,r:Runtime):Vec2 {
 function proposedMove(s:GameState,p:PlayerState,r:Runtime,dt:number):{position:Vec2;velocity:Vec2;direction:Vec2;turn:number} {
   const a=ACTIONS[r.units[r.index]],direction=directionFor(s,p,r),oldDirection=normalize(p.velocity);
   let targetSpeed=r.completed||!r.executionStarted?0:movementSpeed(p,a)*(r.command.speed??0.8);
-  if(p.playerId!==s.offenseId&&r.elapsed-r.recoveryDelay<p.reactionDelay)targetSpeed=0;
+  if(p.playerId!==s.offenseId&&p.reactionDelay>0)targetSpeed=0;
   if(['HoldPosition','CutOffDrivingLane'].includes(a.id)){
     const attack=getPlayer(s,s.offenseId),target=normalize(subtract(s.config.hoop,attack.position)),gap=r.command.desiredGap??1.4;
     if(distance(p.position,{x:attack.position.x+target.x*gap,y:attack.position.y+target.y*gap})<0.18)targetSpeed=0;
@@ -238,12 +237,13 @@ function updateResources(s:GameState,p:PlayerState,r:Runtime,turn:number,dt:numb
   const disturbance=turn*(8-0.045*p.attributes.Balance-0.022*p.attributes.Footwork)*dt*length(p.velocity);
   p.bodyBalance=clamp(p.bodyBalance+recovery+(active?a.balanceModifier*dt/r.duration:0)-disturbance,0,100);
   p.recoveryTime=Math.max(0,p.recoveryTime-dt);
+  p.reactionDelay=Math.max(0,p.reactionDelay-dt);
 }
 function resolveMovement(s:GameState,runtimes:Record<PlayerId,Runtime>,dt:number):void {
   // 후보 위치를 모두 계산한 뒤 한 번에 적용하므로 제출 순서에 따른 우선권이 없다.
   const moves={p1:proposedMove(s,getPlayer(s,'p1'),runtimes.p1,dt),p2:proposedMove(s,getPlayer(s,'p2'),runtimes.p2,dt)};
   const attack=getPlayer(s,s.offenseId),defend=getPlayer(s,otherPlayer(s.offenseId)),aMove=moves[attack.playerId],dMove=moves[defend.playerId],ar=runtimes[attack.playerId],dr=runtimes[defend.playerId];
-  if(s.ball.ownerId===attack.playerId){
+  if(s.ball.ownerId===attack.playerId&&!ar.unitDribbleCost){
     const relativeStart=subtract(attack.position,defend.position),relativeEnd=subtract(aMove.position,dMove.position),relativeDelta=subtract(relativeEnd,relativeStart);
     const closestT=clamp(-dot(relativeStart,relativeDelta)/Math.max(1e-9,dot(relativeDelta,relativeDelta)));
     const sweptGap=length({x:relativeStart.x+relativeDelta.x*closestT,y:relativeStart.y+relativeDelta.y*closestT});
@@ -277,7 +277,7 @@ function resolveMovement(s:GameState,runtimes:Record<PlayerId,Runtime>,dt:number
     updateResources(s,p,runtimes[p.playerId],move.turn,dt);
   }
   if(s.ball.ownerId){s.ball.position={...getPlayer(s,s.ball.ownerId).position};}
-  if(s.ball.ownerId===attack.playerId&&!ar.driveLogged&&ACTIONS[ar.units[ar.index]].movementProfile>0){
+  if(s.ball.ownerId===attack.playerId&&!ar.unitDribbleCost&&!ar.driveLogged&&ACTIONS[ar.units[ar.index]].movementProfile>0){
     const toward=normalize(subtract(s.config.hoop,attack.position)),behind=dot(subtract(defend.position,attack.position),toward)<-0.35;
     if(behind&&distance(attack.position,s.config.hoop)<distance(ar.startPosition,s.config.hoop)-0.4){ar.driveLogged=true;s.stats.drives[attack.playerId]++;emit(s,'drive_advantage','공간을 확보해 수비수 앞쪽으로 돌파했습니다.',{playerId:attack.playerId,position:{...attack.position}});}
   }
@@ -297,14 +297,14 @@ function defensiveFoul(s:GameState,attacker:PlayerState,defender:PlayerState,sho
     finishPossession(s,defender.playerId,'파울 자유투 후 공격권 전환');
   }else{
     // 비슈팅 파울은 같은 포제션이다. 드리블 제한과 종료 상태를 초기화하지 않는다.
-    s.shotClock=Math.max(s.shotClock,Math.min(6,s.config.shotClock));attacker.velocity={x:0,y:0};defender.velocity={x:0,y:0};s.queues={p1:[],p2:[]};s.decisionReason='수비 파울';
+    s.shotClock=Math.max(s.shotClock,Math.min(6,s.config.shotClock));attacker.velocity={x:0,y:0};defender.velocity={x:0,y:0};s.queues={p1:[],p2:[]};s.decisionReason='수비 파울';defender.beaten=0;defender.reactionDelay=0;
     const toward=normalize(subtract(s.config.hoop,attacker.position));defender.position={x:clamp(attacker.position.x+toward.x*1.4,0.3,s.config.courtWidth-0.3),y:clamp(attacker.position.y+toward.y*1.4,0.3,s.config.courtLength-0.3)};
   }
 }
 function resolveDribbleAndDefense(s:GameState,runtimes:Record<PlayerId,Runtime>):boolean {
   const attacker=getPlayer(s,s.offenseId),defender=getPlayer(s,otherPlayer(s.offenseId)),ar=runtimes[attacker.playerId],dr=runtimes[defender.playerId];
   const a=ACTIONS[ar.units[ar.index]],d=ACTIONS[dr.units[dr.index]],gap=distance(attacker.position,defender.position);
-  if((a.dribbleCost||(['Walk','Sprint'].includes(a.id)&&attacker.dribbleState==='live'))&&!ar.controlChecked&&attacker.actionProgress>=a.interruptWindows[0]){
+  if((a.dribbleCost||(['Walk','Sprint'].includes(a.id)&&attacker.dribbleState==='live'))&&!ar.controlChecked&&attacker.actionProgress>=0.35){
     ar.controlChecked=true;attacker.ballControl=dribbleControlScore(attacker,defender,a);
     const weakHand=attacker.ballHand!==attacker.dominantHand?(100-attacker.attributes.BallHandling)/900:0;
     const lossProbability=clamp((75-attacker.ballControl)/650+weakHand+Math.max(0,30-attacker.bodyBalance)/450,0.002,0.32);
@@ -356,43 +356,97 @@ function resolveShot(s:GameState,attacker:PlayerState,defender:PlayerState,comma
 }
 function resolveAvailableBall(s:GameState,runtimes:Record<PlayerId,Runtime>):void {
   const rebound=s.ball.status==='rebound';
+  const contenders=s.players.filter(p=>['Rebound','RecoverBall'].includes(runtimes[p.playerId].command.actionId)&&distance(p.position,s.ball.position)<1.4);
+  if(!contenders.length){emit(s,'loose_ball','아직 공을 확보하지 못했습니다. 경합을 이어갑니다.',{position:{...s.ball.position}});return;}
   const scores=s.players.map(p=>{
     const command=runtimes[p.playerId].command,a=p.attributes,gap=distance(p.position,s.ball.position),active=command.actionId==='Rebound'||command.actionId==='RecoverBall';
     const skill=rebound?0.34*a.Vertical+0.24*a.Strength+0.22*a.Anticipation+0.2*a.BodyControl:0.38*a.BallControl+0.28*a.Reaction+0.2*a.Agility+0.14*a.DecisionMaking;
     return (skill*performanceFactor(p)+0.15*p.bodyBalance-gap*30+(active?20:0)+(command.actionId==='BodyUp'?8:0));
   });
   // 두 선수의 동시 위치와 능력을 평가한 뒤 작은 불확실성만 더한다.
+  for(let i=0;i<s.players.length;i++)if(!contenders.includes(s.players[i]))scores[i]-=1000;
   const offenseIndex=s.offenseId==='p1'?0:1,winChance=1/(1+Math.exp(-(scores[offenseIndex]-scores[1-offenseIndex])/15)),winner=random(s)<winChance?s.offenseId:otherPlayer(s.offenseId),p=getPlayer(s,winner);
   if(rebound){s.stats.rebounds[winner]++;emit(s,'rebound',`${p.name} 리바운드`,{playerId:winner,position:{...s.ball.position},data:{offensive:winner===s.offenseId,probability:winner===s.offenseId?winChance:1-winChance}});}
   else emit(s,'ball_recovered',`${p.name} 루즈볼 회수`,{playerId:winner,data:{samePossession:winner===s.offenseId,dribblesUsed:p.dribblesUsed}});
   if(winner!==s.offenseId){if(!rebound)s.stats.turnovers[s.offenseId]++;finishPossession(s,winner,rebound?'수비 리바운드로 공격권 전환':'루즈볼 탈취로 공격권 전환');return;}
-  p.ballPossession=true;gather(p);p.dribbleState='ended';p.ballControl=clamp(0.7*p.attributes.BallControl+30,0,100);s.ball={status:'held',ownerId:winner,lastTouchId:winner,position:{...p.position}};
+  p.ballPossession=true;if(rebound)p.forcedPickup=false;gather(p);p.dribbleState='ended';p.ballControl=clamp(0.7*p.attributes.BallControl+30,0,100);s.ball={status:'held',ownerId:winner,lastTouchId:winner,position:{...p.position}};
   if(rebound)s.shotClock=Math.max(s.shotClock,s.config.offensiveReboundClock);
   // 같은 공격자의 회수는 드리블 예산을 되살리지 않는다.
   s.queues={p1:[],p2:[]};
 }
+/** 한 번의 돌파 경합을 방향 예측·능력치·이전 우위로 판정한다. 시간 적분은 턴 경계가 아니다. */
+function resolveDriveEvent(s:GameState,runtimes:Record<PlayerId,Runtime>,before:{attack:PlayerState;defend:PlayerState}):string {
+  const attacker=getPlayer(s,s.offenseId),defender=getPlayer(s,otherPlayer(s.offenseId));
+  const ar=runtimes[attacker.playerId],dr=runtimes[defender.playerId],a=ACTIONS[ar.command.actionId];
+  const toward=normalize(subtract(s.config.hoop,before.attack.position));
+  const selected=normalize(ar.command.direction??(a.id==='RetreatDribble'?{x:-toward.x,y:-toward.y}:toward));
+  const retreat=a.id==='RetreatDribble'||dot(selected,toward)<-0.35;
+  // 좌우 입력은 골대로 향하는 해당 쪽 돌파 경로다. 후퇴 입력은 그대로 유지한다.
+  const direction=retreat?selected:normalize({x:selected.x*0.65+toward.x,y:selected.y*0.65+toward.y});
+  const expected=dr.command.anticipatedDirection??dr.command.direction??(dr.command.actionId==='ShadeLeft'||dr.command.actionId==='DefensiveSlideLeft'?{x:-1,y:0}:dr.command.actionId==='ShadeRight'||dr.command.actionId==='DefensiveSlideRight'?{x:1,y:0}:undefined);
+  const prediction=expected?dot(normalize(expected),selected):0;
+  const attackSkill=(a.movementProfile-0.64)*12+(a.ballControlModifier/8)+(0.26*before.attack.attributes.BallHandling+0.23*before.attack.attributes.DribbleSpeed+0.19*before.attack.attributes.Acceleration+0.17*before.attack.attributes.Agility+0.15*before.attack.attributes.BodyControl)*performanceFactor(before.attack);
+  const defenseSkill=(0.3*before.defend.attributes.PerimeterDefense+0.24*before.defend.attributes.LateralQuickness+0.2*before.defend.attributes.Anticipation+0.14*before.defend.attributes.Reaction+0.12*before.defend.attributes.Strength)*performanceFactor(before.defend);
+  const recovery=['RetreatStep','Sprint','CutOffDrivingLane'].includes(dr.command.actionId)?(0.18+0.003*before.defend.attributes.Speed+0.002*before.defend.attributes.DefensiveAwareness)*performanceFactor(before.defend):0.08;
+  const residual=clamp(before.defend.beaten-recovery);
+  const defenseTravel=movementSpeed(before.defend,ACTIONS[dr.command.actionId])*(dr.command.speed??0.8)*Math.max(0,dr.elapsed-before.defend.recoveryTime-before.defend.reactionDelay);
+  const stopPoint={x:before.attack.position.x+direction.x*0.6+toward.x*0.9,y:before.attack.position.y+direction.y*0.6+toward.y*0.9};
+  const advance=distance(attacker.position,before.attack.position);
+  if(advance<0.05)return '제자리 드리블 · 다음 경합';
+  const canReach=distance(before.defend.position,stopPoint)<=defenseTravel+0.45;
+  const stopChance=canReach?clamp(0.42+(defenseSkill-attackSkill)/140+prediction*0.34-residual*0.55-(retreat?0.3:0),0.025,0.94):0;
+  const moveDefender=(target:Vec2)=>{const delta=subtract(target,before.defend.position),ratio=Math.min(1,defenseTravel/Math.max(1e-9,length(delta)));defender.position={x:clamp(before.defend.position.x+delta.x*ratio,0.3,s.config.courtWidth-0.3),y:clamp(before.defend.position.y+delta.y*ratio,0.3,s.config.courtLength-0.3)};};
+  const stopped=random(s)<stopChance;
+  if(stopped&&!retreat){
+    defender.beaten=0;defender.reactionDelay=0;
+    attacker.position={x:clamp(before.attack.position.x+direction.x*Math.min(0.6,advance),0.3,s.config.courtWidth-0.3),y:clamp(before.attack.position.y+direction.y*Math.min(0.6,advance),0.3,s.config.courtLength-0.3)};
+    moveDefender(stopPoint);
+    attacker.velocity={x:0,y:0};defender.velocity={x:0,y:0};
+    emit(s,'lane_blocked','예측한 돌파 경로를 막았습니다.',{playerId:defender.playerId,targetId:attacker.playerId,data:{probability:stopChance,prediction}});
+    // 경로 차단은 스틸 보장이 아니다. 공 제어가 무너지면 별도 회수 경합을 연다.
+    const disruption=clamp((defenseSkill-before.attack.attributes.BallControl+30)/180,0.04,0.48);
+    if(random(s)<disruption){
+      const secured=clamp((defender.attributes.Steal+defender.attributes.BallControl+defender.attributes.Reaction)/600,0.05,0.45);
+      s.stats.stealAttempts[defender.playerId]++;emit(s,'steal_attempt','차단 후 노출된 공을 회수하려 합니다.',{playerId:defender.playerId,targetId:attacker.playerId,data:{probability:secured}});
+      if(random(s)<secured){s.stats.steals[defender.playerId]++;emit(s,'steal','차단 뒤 노출된 공을 확보했습니다.',{playerId:defender.playerId,targetId:attacker.playerId});turnover(s,attacker.playerId,'돌파 차단 후 공 탈취');return '돌파 차단 · 턴오버';}
+      looseBall(s,attacker,'돌파가 막혀 공이 빠졌습니다. 아직 어느 쪽도 확보하지 못했습니다.');
+      s.ball.lastTouchId=defender.playerId;
+      return '돌파 차단 · 루즈볼 경합';
+    }
+    gather(attacker);attacker.dribbleState='ended';attacker.forcedPickup=true;s.ball.status='held';s.ball.position={...attacker.position};
+    return '돌파 차단 · 두 손으로 공을 잡았습니다. 슛만 선택하세요.';
+  }
+  // 공격 위치는 실제 속도·기술·가속도로 적분한 도착점을 유지한다.
+  // 수비 복귀는 다음 돌파에 실제 영향을 준다. 반대 예측은 새 추격 상태를 만든다.
+  let beat=retreat?Math.max(0,before.defend.beaten-0.25):clamp(0.48-prediction*0.35+(attackSkill-defenseSkill)/150+residual*0.55,0.12,1);
+  const rimDirection=normalize(subtract(s.config.hoop,attacker.position));
+  let trailing=beat>0.45;
+  if(!retreat)moveDefender({x:attacker.position.x+rimDirection.x*(trailing?-(0.8+beat):0.95),y:attacker.position.y+rimDirection.y*(trailing?-(0.8+beat):0.95)});
+  if(!retreat&&dot(subtract(defender.position,attacker.position),rimDirection)>0.25)beat=Math.min(beat,distance(defender.position,attacker.position)>2?0.35:0.2);
+  defender.beaten=beat;trailing=beat>0.45;
+  defender.reactionDelay=Math.max(defender.reactionDelay,beat*0.35);defender.recoveryTime=Math.max(defender.recoveryTime,beat*0.2);
+  s.ball.position={...attacker.position};
+  const open=distance(attacker.position,defender.position)>2;
+  if(!retreat){s.stats.drives[attacker.playerId]++;emit(s,'drive_advantage',trailing?'수비를 제치고 슛 공간을 확보했습니다.':open?'돌파 후 열린 공간을 확보했습니다.':'돌파 후 수비가 다시 따라붙었습니다.',{playerId:attacker.playerId,position:{...attacker.position},data:{advantage:beat,prediction,stopProbability:stopChance}});}
+  return retreat?'후퇴 드리블 · 간격 확보':trailing?'돌파 성공 · 오픈 슛 또는 추가 돌파':open?'공간 확보 · 슛 또는 추가 돌파':'돌파 후 수비 복귀 · 다음 경합';
+}
 function resolvePair(s:GameState,commands:Record<PlayerId,ActionCommand>):void {
+  const attackBefore=getPlayer(s,s.offenseId),defendBefore=getPlayer(s,otherPlayer(s.offenseId));
+  const driveStart=commandDribbleCost(commands[s.offenseId],s,s.offenseId)>0?{attack:copy(attackBefore),defend:copy(defendBefore)}:null;
   const oldPossession=s.possession,wasAvailable=s.ball.status==='loose'||s.ball.status==='rebound';
   s.history.push({decisionId:s.decisionId,commands:copy(commands)});s.stats.totalDecisions++;s.submissions={};
   const runtime=(cmd:ActionCommand):Runtime=>({command:cmd,units:[cmd.actionId,...(cmd.combo??[])],index:0,elapsed:0,duration:0,completed:false,startPosition:{x:0,y:0},maxTravel:1000,controlChecked:false,stealChecked:false,fakeChecked:false,blockedLane:false,driveLogged:false,nextWindow:0,interruptible:false,unitPending:false,recoveryDelay:0,executionStarted:false,unitDribbleCost:0});
   const runtimes={} as Record<PlayerId,Runtime>;
-  for(const id of IDS){
-    const previous=s.ongoingActions[id];
-    if(commands[id].actionId==='ContinueAction'&&previous){runtimes[id]=copy(previous);runtimes[id].interruptible=false;if(runtimes[id].unitPending)beginUnit(s,getPlayer(s,id),runtimes[id]);}
-    else{
-      if(previous)emit(s,'action_end','중단 가능 시점에서 현재 행동을 교체했습니다.',{playerId:id,actionId:previous.units[previous.index],data:{interrupted:true}});
-      runtimes[id]=runtime(commands[id]);beginUnit(s,getPlayer(s,id),runtimes[id]);
-    }
-  }
+  for(const id of IDS){runtimes[id]=runtime(commands[id]);beginUnit(s,getPlayer(s,id),runtimes[id]);}
+  if(driveStart){const attack=runtimes[s.offenseId],defense=runtimes[otherPlayer(s.offenseId)];defense.duration=Math.max(defense.duration,attack.duration*attack.units.length+attack.recoveryDelay-defense.recoveryDelay);}
   s.ongoingActions={};
   let stop=false,elapsed=0,eventReason='행동 종료';
   while(!stop&&elapsed<8&&s.status==='playing'&&s.possession===oldPossession){
     for(const id of IDS){const r=runtimes[id];if(!r.executionStarted&&r.elapsed+1e-9>=r.recoveryDelay)startExecution(s,getPlayer(s,id),r);}
-    // 가장 이른 인터럽트/릴리스/종료 시각까지 정확히 적분한다. 짧은 행동이 긴 행동을 삭제하지 않는다.
+    // 내부 적분은 릴리스/종료까지만 진행한다. 두 행동의 경합이 끝나야 새 턴을 연다.
     let dt=s.config.tickDuration;
     for(const id of IDS){const r=runtimes[id];if(r.completed)continue;const a=ACTIONS[r.units[r.index]];
-      const nextWindow=a.interruptWindows[r.nextWindow];
-      const boundary=!r.executionStarted?r.recoveryDelay:r.recoveryDelay+(nextWindow===undefined?r.duration:r.duration*nextWindow);
+      const boundary=!r.executionStarted?r.recoveryDelay:r.recoveryDelay+r.duration;
       dt=Math.min(dt,Math.max(0.000001,boundary-r.elapsed));
       if(a.category==='shot'&&r.elapsed<r.recoveryDelay+r.duration*0.72)dt=Math.min(dt,r.recoveryDelay+r.duration*0.72-r.elapsed);
     }
@@ -419,17 +473,25 @@ function resolvePair(s:GameState,commands:Record<PlayerId,ActionCommand>):void {
       if(r.elapsed+1e-8>=r.recoveryDelay+r.duration){
         completedAny=true;emit(s,'action_end',`${p.name}: ${a.name} 종료`,{playerId:id,actionId:a.id,position:{...p.position}});
         if(p.ballPossession&&p.dribbleState==='live'&&p.dribblesUsed>=s.config.maxDribbles){gather(p);p.dribbleState='ended';s.ball.status='held';}
-        if(r.index+1<r.units.length){r.index++;r.unitPending=true;r.interruptible=true;}
+        if(r.index+1<r.units.length){r.index++;beginUnit(s,p,r);}
         else{r.completed=true;p.actionProgress=1;p.recoveryTime=Math.max(p.recoveryTime,a.recoveryDuration);if(JUMP_DEFENSE.includes(a.id)){p.defensiveStance='upright';p.actionState='RecoverBalance';}}
-        stop=true;eventReason='행동 완료';
-      }else if(a.interruptWindows[r.nextWindow]!==undefined&&r.elapsed+1e-8>=r.recoveryDelay+r.duration*a.interruptWindows[r.nextWindow]){
-        r.nextWindow++;r.interruptible=true;stop=true;eventReason=a.category==='shot'?'슛 준비 · 수비 대응':a.dribbleCost?'드리블 제어 · 방향 대응':'중단 가능 시점';
+        eventReason='행동 완료';
       }
+
     }
-    if(wasAvailable&&completedAny){resolveAvailableBall(s,runtimes);eventReason='공 회수';stop=true;}
+    if(wasAvailable&&completedAny&&IDS.every(id=>runtimes[id].completed)){resolveAvailableBall(s,runtimes);eventReason=s.ball.ownerId?'공 회수':'공 미확보 · 경합 계속';stop=true;}
+    if(IDS.every(id=>runtimes[id].completed))stop=true;
   }
   const disrupted=s.possession!==oldPossession||s.status!=='playing'||wasAvailable&&(s.ball.status==='held'||s.ball.status==='dribbling')||!wasAvailable&&(s.ball.status==='loose'||s.ball.status==='rebound')||eventReason==='파울'||eventReason==='슛 릴리스';
-  if(!disrupted){for(const id of IDS)if(!runtimes[id].completed)s.ongoingActions[id]=runtimes[id];}
+  // 다음 선택은 새 이벤트다. 미완료 애니메이션 명령은 노출하지 않는다.
+  s.ongoingActions={};
+  if(!disrupted&&driveStart){eventReason=resolveDriveEvent(s,runtimes,driveStart);}
+  else if(!disrupted&&!wasAvailable){
+    const defender=getPlayer(s,otherPlayer(s.offenseId));
+    const recovery=commands[defender.playerId].actionId==='RetreatStep'?0.55:commands[defender.playerId].actionId==='Sprint'?0.4:0.18;
+    defender.beaten=clamp(defender.beaten-recovery*elapsed);
+    eventReason=defender.beaten>0.2?'공격 우위 유지 · 다음 행동 선택':'자세 정비 · 다음 경합';
+  }
   if(s.status==='playing'&&s.possession===oldPossession){
     for(const p of s.players){
       if(p.bodyBalance<25)emit(s,'balance_loss',`${p.name}의 균형이 무너졌습니다.`,{playerId:p.playerId,data:{balance:p.bodyBalance}});
@@ -437,12 +499,19 @@ function resolvePair(s:GameState,commands:Record<PlayerId,ActionCommand>):void {
     }
     if(s.ball.status==='held'||s.ball.status==='dribbling')s.ball.position={...getPlayer(s,s.offenseId).position};
   }
+  if(s.possession===oldPossession){
+    if(s.ball.status==='loose')eventReason='공 미확보 · 루즈볼 경합';
+    if(s.ball.status==='rebound')eventReason='슛 실패 · 리바운드 경합';
+    const defender=getPlayer(s,otherPlayer(s.offenseId));
+    const kind=s.ball.status==='loose'?'loose_ball':s.ball.status==='rebound'?'rebound':getPlayer(s,s.offenseId).forcedPickup?'pickup':defender.beaten>0.2?'advantage':'contested';
+    s.situation={kind,advantage:defender.beaten,lastOutcome:eventReason};
+  }
   s.decisionId++;
   s.decisionReason=s.status==='finished'?'경기 종료':s.possession!==oldPossession?'공격권 전환':s.ball.status==='rebound'?'리바운드 경합':s.ball.status==='loose'?'루즈볼 경합':eventReason;
   if(s.status==='playing')emit(s,'decision_point',s.decisionReason);
 }
 function primeQueues(s:GameState):void {
-  for(const id of IDS){if(s.submissions[id]||!s.queues[id].length)continue;if(s.ongoingActions[id]){s.submissions[id]={actionId:'ContinueAction'};continue;}const cmd=s.queues[id][0],valid=validateAction(s,id,cmd);
+  for(const id of IDS){if(s.submissions[id]||!s.queues[id].length)continue;const cmd=s.queues[id][0],valid=validateAction(s,id,cmd);
     if(valid.valid){s.submissions[id]=s.queues[id].shift()!;}else{s.queues[id]=[];emit(s,'queue_cancelled','상황이 바뀌어 실행 불가능한 예약을 취소했습니다.',{playerId:id});}}
 }
 export function submitAction(s:GameState,id:PlayerId,decisionId:number,command:ActionCommand):EngineResult {
@@ -450,7 +519,7 @@ export function submitAction(s:GameState,id:PlayerId,decisionId:number,command:A
   if(decisionId!==s.decisionId)return {state:s,error:'이미 지난 의사결정입니다. 현재 상태에서 다시 선택하세요.',code:'STALE_DECISION'};
   if(s.submissions[id])return {state:s,error:'이미 확정한 명령은 바꿀 수 없습니다.',code:'ALREADY_SUBMITTED'};
   const valid=validateAction(s,id,command);if(!valid.valid)return {state:s,error:valid.error,code:valid.code};
-  const budget=cloneState(s),bp=getPlayer(budget,id);let reserved=commandDribbleCost(command,s,id)+(command.actionId==='ContinueAction'?unstartedDribbles(s.ongoingActions[id]):0);
+  const budget=cloneState(s),bp=getPlayer(budget,id);let reserved=commandDribbleCost(command,s,id);
   if(commandDribbleCost(command,s,id)>0)bp.dribbleState='live';
   for(const queued of s.queues[id]){reserved+=commandDribbleCost(queued,budget,id);if(commandDribbleCost(queued,budget,id)>0)bp.dribbleState='live';}
   if(id===s.offenseId&&getPlayer(s,id).dribblesUsed+reserved>s.config.maxDribbles)return {state:s,error:'현재 명령과 예약이 남은 드리블 횟수를 초과합니다.',code:'DRIBBLE_LIMIT'};
@@ -464,16 +533,15 @@ export function submitAction(s:GameState,id:PlayerId,decisionId:number,command:A
 export function submitQueuedAction(s:GameState,id:PlayerId,decisionId=s.decisionId):EngineResult {
   if(!validId(id)||!s.queues[id].length)return {state:s,error:'예약한 명령이 없습니다.',code:'EMPTY_QUEUE'};
   if(s.submissions[id])return {state:s,error:'이미 확정한 명령이 있습니다.',code:'ALREADY_SUBMITTED'};
-  if(s.ongoingActions[id])return submitAction(s,id,decisionId,{actionId:'ContinueAction'});
   const prepared=cloneState(s),cmd=prepared.queues[id].shift()!,before=prepared.operations.length;
   const result=submitAction(prepared,id,decisionId,cmd);
   if(result.error)return {state:s,error:result.error,code:result.code};
   result.state.operations[before]={type:'queued',playerId:id,decisionId};return result;
 }
-export function exportReplay(s:GameState):ReplayData { return copy({version:1,config:s.config,seed:s.seed,players:s.initialPlayers,decisions:s.history,operations:s.operations}); }
+export function exportReplay(s:GameState):ReplayData { return copy({version:2,config:s.config,seed:s.seed,players:s.initialPlayers,decisions:s.history,operations:s.operations}); }
 /** 외부 리플레이도 제출 검증을 우회하지 않으며 파일 입력은 크기와 형태를 제한한다. */
 export function replayGame(replay:ReplayData):GameState {
-  if(!replay||replay.version!==1||!Array.isArray(replay.players)||replay.players.length!==2||!Array.isArray(replay.decisions)||replay.decisions.length>100000)throw new Error('지원하지 않는 리플레이 형식입니다.');
+  if(!replay||replay.version!==2||!Array.isArray(replay.players)||replay.players.length!==2||!Array.isArray(replay.decisions)||replay.decisions.length>100000)throw new Error('이벤트 턴 리플레이 v2만 지원합니다. 이전 v1 리플레이는 시간 분할 규칙이 달라 재생할 수 없습니다.');
   let s=createGame(replay.config,replay.seed,replay.players);
   if(replay.operations!==undefined){
     if(!Array.isArray(replay.operations)||replay.operations.length>250000)throw new Error('리플레이 입력 수가 유효하지 않습니다.');
@@ -493,6 +561,7 @@ export function replayGame(replay:ReplayData):GameState {
 }
 /** 리플레이 타임라인은 각 동시 명령 직후의 완전한 상태를 다시 계산한다. */
 export function replayFrames(replay:ReplayData):GameState[] {
+  replayGame(replay); // 버전 및 명령 기록 검증 후에만 타임라인 생성
   const frames:GameState[]=[];let s=createGame(replay.config,replay.seed,replay.players);frames.push(s);
   for(const entry of replay.decisions){for(const id of IDS){const result=submitAction(s,id,entry.decisionId,entry.commands[id]);if(result.error)throw new Error(result.error);s=result.state;}frames.push(s);}return frames;
 }

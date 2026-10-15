@@ -38,12 +38,10 @@ test('PerimeterDefense 증가 → 같은 경로에서 실제 돌파 저지 증�
   assert.ok(result.high > result.low, JSON.stringify(result));
 });
 test('LateralQuickness 증가 → 같은 경과시간의 방향 전환 대응 향상', () => {
-  const result = experiment('LateralQuickness', 1, { actionId: 'ProtectBall' }, { actionId: 'DefensiveSlideRight', direction: { x: 1, y: 0 }, speed: 1 }, state => {
-    const start = state.events.find(event => event.type === 'action_start' && event.playerId === 'p1');
-    const sharedTime = Number(start?.data?.duration) * 0.7;
-    const sample = state.events.find(event => event.type === 'movement' && event.playerId === 'p2' && Math.abs(event.time - sharedTime) < 1e-6);
-    assert.ok(sample?.position, '공격 동작 중단 창에서 동일한 시간의 수비 위치를 측정');
-    return sample.position.x;
+  const result = experiment('LateralQuickness', 1, { actionId: 'ProtectBall' }, { actionId: 'CloseOut', direction: { x: 1, y: 0 }, speed: 1 }, state => {
+    const start = state.events.find(event => event.type === 'action_start' && event.playerId === 'p2');
+    assert.ok(Math.abs(state.time - Number(start?.data?.duration)) < 1e-5, 'LateralQuickness가 길이를 바꾸지 않는 수비 행동으로 경과 시간을 고정한다');
+    return state.players[1].position.x;
   }, state => { state.players[1].velocity = { x: -1, y: 0 }; });
   assert.ok(result.high > result.low, JSON.stringify(result));
 });

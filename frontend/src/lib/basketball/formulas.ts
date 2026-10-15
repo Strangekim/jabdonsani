@@ -14,7 +14,8 @@ export function actionEfficiency(p:PlayerState,a:ActionDefinition):number { retu
 export function movementSpeed(p:PlayerState,a:ActionDefinition):number {
   const lateral=a.role==='defense' ? (0.62+0.38*p.attributes.LateralQuickness/100) : 1;
   const dribble=a.dribbleCost ? (0.65+0.35*p.attributes.DribbleSpeed/100) : 1;
-  return (2.4+0.044*p.attributes.Speed)*performanceFactor(p)*(0.65+0.35*p.bodyBalance/100)*a.movementProfile*lateral*dribble;
+  const profile=a.id==='RetreatStep'&&p.beaten>0.2?1:a.movementProfile;
+  return (2.4+0.044*p.attributes.Speed)*performanceFactor(p)*(0.65+0.35*p.bodyBalance/100)*profile*lateral*dribble;
 }
 export function balanceRecovery(p:PlayerState):number { return (3+0.07*p.attributes.Balance+0.035*p.attributes.BodyControl)*performanceFactor(p); }
 export function reactionDelay(p:PlayerState):number { return (0.43-0.0022*p.attributes.Reaction-0.001*p.attributes.DefensiveAwareness)*(1.35-0.35*performanceFactor(p))+(100-p.bodyBalance)/550; }
@@ -29,14 +30,14 @@ export function stealProbability(attacker:PlayerState,defender:PlayerState,gap:n
 }
 export function contestStrength(attacker:PlayerState,defender:PlayerState,command:ActionCommand,config:GameConfig):number {
   const gap=distance(attacker.position,defender.position);
-  const active=defender.recoveryTime>0?0.25:defender.actionState==='ContestShot'?0.78:defender.actionState==='JumpContest'?1.15:defender.actionState==='BlockAttempt'?1.05:0.25;
+  const active=defender.recoveryTime>0?0.25:defender.actionState==='ContestShot'?0.78:defender.actionState==='JumpContest'?1.15:defender.actionState==='BlockAttempt'?1.05:['Sprint','CloseOut'].includes(defender.actionState??'')?0.6:0.25;
   const airborne=defender.actionState==='JumpContest'||defender.actionState==='BlockAttempt';
   const timing=clamp(1-Math.abs((command.releaseTiming??0)*0.3+defender.reactionDelay-(airborne?0.17:0.08)),0.3,1);
   const toHoop=normalize(subtract(config.hoop,attacker.position)), toDef=normalize(subtract(defender.position,attacker.position));
-  const angle=0.45+0.55*clamp((dot(toHoop,toDef)+1)/2);
+  const angle=0.08+0.92*clamp((dot(toHoop,toDef)+1)/2);
   const reach=airborne?2.25+0.006*defender.attributes.Vertical:2.2;
   const closing=clamp(dot(defender.velocity,normalize(subtract(attacker.position,defender.position))),0,5)*0.025;
-  return clamp((clamp((reach-gap)/reach)+closing)*active*timing*angle*(0.3+0.007*defender.attributes.ShotContest)*performanceFactor(defender)*(0.6+0.4*defender.bodyBalance/100));
+  return clamp((clamp((reach-gap)/reach)+closing)*(1-0.88*defender.beaten)*active*timing*angle*(0.3+0.007*defender.attributes.ShotContest)*performanceFactor(defender)*(0.6+0.4*defender.bodyBalance/100));
 }
 export function shotProbability(attacker:PlayerState,defender:PlayerState,command:ActionCommand,config:GameConfig):number {
   const d=distance(attacker.position,config.hoop), a=attacker.attributes, id=command.actionId;
@@ -58,7 +59,7 @@ export function blockProbability(attacker:PlayerState,defender:PlayerState,comma
   const defense=(0.58*a.Block+0.25*a.Vertical+0.17*a.Reaction)*performanceFactor(defender);
   const reverse=command.actionId==='ReverseLayup'?0.62:1;
   const rimAngle=dot(normalize(subtract(config.hoop,attacker.position)),normalize(subtract(defender.position,attacker.position)));
-  return clamp(logistic((defense-offense-19)/19)*reach*timing*(0.5+0.5*defender.bodyBalance/100)*(defender.actionState==='JumpContest'?0.55:1)*reverse*(0.65+0.35*clamp(rimAngle)),0,0.72);
+  return clamp(logistic((defense-offense-19)/19)*reach*timing*(0.5+0.5*defender.bodyBalance/100)*(defender.actionState==='JumpContest'?0.55:1)*reverse*(0.08+0.92*clamp(rimAngle))*(1-0.95*defender.beaten),0,0.72);
 }
 /** 저숙련 페이크/예측도 대칭적인 능력치 경합이며 슛 확률 자체에 보너스를 더하지 않는다. */
 export function fakeAdvantage(attacker:PlayerState,defender:PlayerState,definition:ActionDefinition):number {

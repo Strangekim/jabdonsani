@@ -56,6 +56,16 @@
 .legend span { display: flex; align-items: center; gap: 6px; }
 .dash { width: 16px; border-top: 2px dashed #fbbf24; }
 .playerCards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+/* 완료된 상호작용과 다음에 가능한 대응은 비공개 선택과 분리해서 표시한다. */
+.situation { border: 1px solid #c9dcfa; border-radius: 12px; padding: 17px 19px; background: #eff6ff; }
+.situationHeading { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.situationHeading span { font-size: 10px; font-weight: 700; color: #61749a; }
+.situationHeading h2 { font-size: 14px; color: #1e40af; }
+.situation p { margin-top: 9px; font-size: 13px; line-height: 1.7; color: #243d64; overflow-wrap: anywhere; }
+.situation small { display: block; margin-top: 6px; color: #61749a; font-size: 11px; line-height: 1.7; }
+.responses { margin-bottom: 18px; }
+.responseChoices { display: flex; gap: 6px; flex-wrap: wrap; }
+.responseChoices .button { font-size: 11px; min-height: 34px; padding: 7px 10px; }
 .playerCard { border-radius: 12px; border: 1px solid var(--line); padding: 17px; background: white; }
 .playerHeading { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 14px; }
 .playerHeading strong { font-size: 13px; display: flex; align-items: center; gap: 7px; }

@@ -38,7 +38,7 @@ export function Court({ game, activeId, command, action, preview }: { game: Game
             <path d={`M ${hoopX - 62} ${y(config.courtLength)} A 62 62 0 0 1 ${hoopX + 62} ${y(config.courtLength)}`} />
         </g>
         <rect x={hoopX - 83} y="28" width="166" height={5.8 * scale} fill="#60a5fa" opacity=".035" />
-        <text x={hoopX} y={y(10.9)} textAnchor="middle" fill="#587286" fontSize="10" letterSpacing="4" opacity=".65">MICRO TURN COURT</text>
+        <text x={hoopX} y={y(10.9)} textAnchor="middle" fill="#587286" fontSize="10" letterSpacing="4" opacity=".65">EVENT TURN COURT</text>
         <text x={hoopX} y={y(11.45)} textAnchor="middle" fill="#536c80" fontSize="7" letterSpacing="2">READ THE SPACE. MAKE YOUR MOVE.</text>
         <g stroke="#f4c771" fill="none"><path d={`M ${hoopX - 23} ${hoopY - 12} H ${hoopX + 23}`} strokeWidth="3" /><path d={`M ${hoopX} ${hoopY - 12} V ${hoopY - 6}`} strokeWidth="2" /><circle cx={hoopX} cy={hoopY} r="7" strokeWidth="2" /></g>
         <text x="43" y={height + 48} fill="#526e84" fontSize="7">0 m</text><text x={width + 28} y={height + 48} textAnchor="end" fill="#526e84" fontSize="7">{config.courtWidth} m</text>
@@ -65,6 +65,6 @@ export function PlayerCard({ player, offense }: { player: PlayerState; offense: 
     return <section className={styles.playerCard} aria-label={`${player.name} 선수 상태`}>
         <div className={styles.playerHeading}><strong><i className={`${styles.playerDot} ${player.playerId === 'p2' ? styles.blueDot : ''}`} />{player.name}</strong><span className={`${styles.roleBadge} ${!offense ? styles.defenseBadge : ''}`}>{offense ? '공격' : '수비'}</span></div>
         {meters.map(m => <div className={styles.meterRow} key={m.name}><span>{m.name}</span><div className={styles.meter} role="meter" aria-label={`${player.name} ${m.name}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(m.value)}><i style={{ width: `${Math.max(0, Math.min(100, m.value))}%`, background: m.color }} /></div><b>{Math.round(m.value)}</b></div>)}
-        <div className={styles.playerMeta}>{offense ? `${player.ballHand === 'left' ? '왼손' : '오른손'} · ${player.dribbleState === 'ended' ? '드리블 종료' : player.dribbleState === 'live' ? '라이브 드리블' : '드리블 시작 가능'} · ${player.gatheredSteps}/2 스텝` : `${player.defensiveStance === 'low' ? '낮은 자세' : player.defensiveStance === 'airborne' ? '점프 중' : '기본 자세'} · 반응 ${player.reactionDelay.toFixed(2)}초`}<br />이동 {Math.hypot(player.velocity.x, player.velocity.y).toFixed(1)} m/s · 파울 {player.fouls}회{player.actionState && <><br />{ACTIONS[player.actionState].name} · {Math.round(player.actionProgress * 100)}% · 회복 {player.recoveryTime.toFixed(2)}초</>}</div>
+        <div className={styles.playerMeta}>{offense ? `${player.ballHand === 'left' ? '왼손' : '오른손'} · ${player.forcedPickup ? '압박으로 공을 잡음 · 다시 드리블 불가' : player.dribbleState === 'ended' ? '드리블 종료' : player.dribbleState === 'live' ? '라이브 드리블' : '드리블 시작 가능'} · ${player.gatheredSteps}/2 스텝` : `${player.defensiveStance === 'low' ? '낮은 자세' : player.defensiveStance === 'airborne' ? '점프 중' : '기본 자세'} · 반응 ${player.reactionDelay.toFixed(2)}초`}<br />이동 {Math.hypot(player.velocity.x, player.velocity.y).toFixed(1)} m/s · 파울 {player.fouls}회{player.actionState && <><br />최근 행동: {ACTIONS[player.actionState].name}</>}</div>
     </section>;
 }

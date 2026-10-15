@@ -35,6 +35,7 @@ export interface PlayerState {
   footworkState: 'planted' | 'moving' | 'gathered'; pivotFoot: 'left' | 'right' | null; pivotPosition: Vec2 | null; gatheredSteps: number;
   actionState: ActionId | null; actionProgress: number; recoveryTime: number;
   defensiveStance: 'upright' | 'low' | 'airborne'; defensiveCommitment: Vec2; reactionDelay: number;
+  forcedPickup: boolean; beaten: number; // 수비가 뒤처진 정도. 다음 이벤트에도 유지된다.
   fouls: number;
 }
 export interface GameConfig {
@@ -66,14 +67,15 @@ export interface ScheduledAction {
   blockedLane: boolean; driveLogged: boolean; nextWindow: number; interruptible: boolean; unitPending: boolean; recoveryDelay: number; executionStarted: boolean; unitDribbleCost: number;
 }
 export type ReplayOperation = { type: 'submit'; playerId: PlayerId; decisionId: number; command: ActionCommand } | { type: 'queue'; playerId: PlayerId; commands: ActionCommand[] } | { type: 'cancel'; playerId: PlayerId } | { type: 'queued'; playerId: PlayerId; decisionId: number };
+export interface EventSituation { kind: 'face_up' | 'advantage' | 'pickup' | 'contested' | 'loose_ball' | 'rebound'; advantage: number; lastOutcome: string; }
 export interface GameState {
-  version: 1; config: GameConfig; seed: number; rngState: number; initialPlayers: [PlayerSetup, PlayerSetup];
+  version: 2; config: GameConfig; seed: number; rngState: number; initialPlayers: [PlayerSetup, PlayerSetup];
   players: [PlayerState, PlayerState]; offenseId: PlayerId; score: Record<PlayerId, number>;
   shotClock: number; decisionId: number; possession: number; possessionStartedAt: number; time: number;
   submissions: Partial<Record<PlayerId, ActionCommand>>; queues: Record<PlayerId, ActionCommand[]>;
   ongoingActions: Partial<Record<PlayerId, ScheduledAction>>; operations: ReplayOperation[];
   events: GameEvent[]; history: DecisionRecord[]; status: 'playing' | 'finished'; winner: PlayerId | null;
-  ball: BallState; stats: GameStats; decisionReason: string;
+  ball: BallState; stats: GameStats; situation: EventSituation; decisionReason: string;
 }
 /** 상대의 미공개 제출, 큐, 시드, 미래 난수 및 내부 AI 점수는 관찰 계약에서 제거한다. */
 export interface PlayerObservation {
@@ -81,8 +83,8 @@ export interface PlayerObservation {
   score: Record<PlayerId, number>; shotClock: number; decisionId: number; possession: number; time: number;
   status: 'playing' | 'finished'; winner: PlayerId | null; ball: BallState;
   events: GameEvent[]; ownQueue: ActionCommand[]; ownSubmitted: boolean; legalActions: ActionDefinition[];
-  decisionReason: string;
+  situation: EventSituation; decisionReason: string;
 }
 export interface ActionValidation { valid: boolean; error?: string; code?: string; }
 export interface EngineResult { state: GameState; error?: string; code?: string; resolved?: boolean; }
-export interface ReplayData { version: 1; config: GameConfig; seed: number; players: [PlayerSetup, PlayerSetup]; decisions: DecisionRecord[]; operations?: ReplayOperation[]; }
+export interface ReplayData { version: 2; config: GameConfig; seed: number; players: [PlayerSetup, PlayerSetup]; decisions: DecisionRecord[]; operations?: ReplayOperation[]; }

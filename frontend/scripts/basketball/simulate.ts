@@ -11,7 +11,8 @@ import type { ActionCommand, AttributeKey, GameState, PlayerSetup } from '../../
 
 const possessionTarget = Number(process.argv[2] ?? 10000);
 const gameTarget = Number(process.argv[3] ?? 100);
-const outputDirectory = join(process.cwd(), 'docs', 'basketball', 'results');
+// 이전 규칙의 통계와 이벤트 턴 통계를 섞지 않는다.
+const outputDirectory = process.env.BASKETBALL_RESULTS_DIR ?? join(process.cwd(), 'docs', 'basketball', 'results', 'event-turn-v2');
 mkdirSync(outputDirectory, { recursive: true });
 const write = (name: string, data: unknown) => writeFileSync(join(outputDirectory, name), `${JSON.stringify(data, null, 2)}\n`);
 const started = performance.now();
@@ -92,7 +93,7 @@ const near = (state: GameState) => { state.players[1].position = { x: 7.5, y: 6.
 compare('볼 핸들링 → 제어', 'BallHandling', 0, { actionId: 'Crossover', speed: 0 }, hold, state => state.players[0].ballControl);
 compare('스틸 → 성공', 'Steal', 1, { actionId: 'SpeedDribble', speed: 0 }, { actionId: 'StealAttempt', speed: 0 }, state => state.stats.steals.p2, state => { near(state); state.players[0].attributes.BallControl = 50; state.players[0].attributes.DribbleProtection = 45; state.players[0].attributes.Composure = 50; });
 compare('대인 수비 → 전진 제한', 'PerimeterDefense', 1, { actionId: 'SpeedDribble', direction: { x: 0, y: -1 }, speed: 1 }, { actionId: 'CutOffDrivingLane', anticipatedDirection: { x: 0, y: -1 }, speed: 0 }, state => state.players[0].position.y, near);
-compare('횡이동 → 방향 대응', 'LateralQuickness', 1, { actionId: 'ProtectBall' }, { actionId: 'DefensiveSlideRight', direction: { x: 1, y: 0 }, speed: 1 }, state => { const start = state.events.find(event => event.type === 'action_start' && event.playerId === 'p1'); const sharedTime = Number(start?.data?.duration) * 0.7; const sample = state.events.find(event => event.type === 'movement' && event.playerId === 'p2' && Math.abs(event.time - sharedTime) < 1e-6); if (!sample?.position) throw new Error('같은 시간의 방향 전환 측정값 없음'); return sample.position.x; }, state => { state.players[1].velocity = { x: -1, y: 0 }; });
+compare('횡이동 → 방향 대응', 'LateralQuickness', 1, { actionId: 'ProtectBall' }, { actionId: 'CloseOut', direction: { x: 1, y: 0 }, speed: 1 }, state => state.players[1].position.x, state => { state.players[1].velocity = { x: -1, y: 0 }; });
 compare('중거리 슛 → 성공', 'MidRangeShot', 0, { actionId: 'StandingShot' }, hold, state => state.stats.madeShots.p1);
 compare('컨테스트 → 피슛 성공', 'ShotContest', 1, { actionId: 'StandingShot' }, { actionId: 'ContestShot', speed: 0 }, state => state.stats.madeShots.p1, near);
 compare('지구력 → 체력 소비', 'Endurance', 0, { actionId: 'SpeedDribble', direction: { x: 0, y: 1 }, speed: 1 }, { actionId: 'DefensiveSlideRight', speed: 1 }, state => state.stats.staminaSpent.p1);

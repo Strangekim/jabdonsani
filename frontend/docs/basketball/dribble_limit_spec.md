@@ -2,7 +2,7 @@
 
 ## 세는 단위
 
-드리블 1회는 엔진의 하나의 드리블 행동이다. NormalDribble, SpeedDribble, ProtectedDribble, Crossover, BetweenTheLegs, BehindTheBack, Hesitation, InAndOut, SpinMove, RetreatDribble는 각각 1회를 사용한다. 볼 바운스 횟수는 세지 않는다. 라이브 드리블 상태에서 새로 시작하는 Walk/Sprint는 드리블을 계속하는 이동 행동으로 1단위를 소모한다. 공을 잡은 뒤 허용되는 Walk 개더 스텝은 0단위다. ContinueAction은 진행 중인 단위를 이어가므로 0단위다.
+드리블 1회는 엔진의 하나의 드리블 행동이다. NormalDribble, SpeedDribble, ProtectedDribble, Crossover, BetweenTheLegs, BehindTheBack, Hesitation, InAndOut, SpinMove, RetreatDribble는 각각 1회를 사용한다. 볼 바운스 횟수는 세지 않는다. 라이브 드리블 상태에서 새로 시작하는 Walk/Sprint는 드리블을 계속하는 이동 행동으로 1단위를 소모한다. 공을 잡은 뒤 허용되는 Walk 개더 스텝은 0단위다. 한 행동은 이벤트 턴 안에서 한 번만 실행·소비되며 계속하기 명령은 없다.
 
 ActionCommand의 combo는 추가 드리블 행동 ID 목록이다. 기본 행동 비용과 모든 추가 행동 비용을 합산한다. 복합기술 이름으로 여러 드리블을 한 번처럼 처리하지 않는다.
 
@@ -19,9 +19,11 @@ ActionCommand의 combo는 추가 드리블 행동 ID 목록이다. 기본 행동
 
 - ready: 체크볼 후 아직 드리블을 시작하지 않음
 - live: 현재 포제션에서 드리블을 시작했고 아직 잡지 않음
-- ended: Gather 등으로 공을 잡아 드리블 종료
+- ended: Gather 또는 수비 압박으로 공을 잡아 드리블 종료
 
 남은 드리블이 있어도 ended에서 드리블을 다시 제출하면 더블 드리블로 거부한다. 3회 소진 뒤 가능한 슛/페이크/볼 보호/피벗/허용 풋워크와 움직임 전제조건은 별도 규칙으로 검사한다.
+
+수비가 진로를 막아 `forcedPickup`이 되면 남은 드리블 횟수와 관계없이 슛만 허용한다. 자발적 Gather의 일반 풋워크 허용과 구별한다.
 
 ## 포제션과 카운트
 

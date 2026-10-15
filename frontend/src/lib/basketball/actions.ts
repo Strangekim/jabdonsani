@@ -5,7 +5,6 @@ function define(id:ActionId,name:string,role:Role,category:ActionDefinition['cat
   return {id,name,role,category,description,prerequisites:role === 'offense' ? ['공 소유','공격 역할'] : role === 'defense' ? ['수비 역할'] : [],primaryAttributes,secondaryAttributes:['Balance','Endurance','BodyControl'],opposingAttributes:dribble ? ['PerimeterDefense','LateralQuickness','Reaction','Anticipation'] : category==='shot' ? ['ShotContest','Block','Reaction','Vertical'] : role==='defense' ? ['BallControl','DribbleProtection','Agility','Composure'] : ['Strength','Footwork'],duration,staminaCost,burstCost,movementProfile,balanceModifier,ballControlModifier,dribbleCost:dribble?1:0,interruptWindows:[0.35,0.7],recoveryDuration:category==='shot'?0.25:0.12,difficulty:Math.min(1,0.2+burstCost/18)};
 }
 export const ACTION_LIST: ActionDefinition[] = [
-  define('ContinueAction','현재 행동 계속','both','recovery',['Endurance'],0.1,0,0,0,0,0,'이미 시작된 행동의 남은 구간 실행. 추가 드리블 비용 없음'),
   define('NormalDribble','일반 드리블','offense','dribble',['BallHandling','BallControl','DribbleSpeed'],0.7,2.1,1,0.64,0,0,'방향을 정해 한 단위 전진'),
   define('SpeedDribble','스피드 드리블','offense','dribble',['DribbleSpeed','Speed','BallHandling'],0.8,4.5,7,1,-5,-10,'공을 노출하며 빠르게 전진'),
   define('ProtectedDribble','보호 드리블','offense','dribble',['DribbleProtection','BallControl','Strength'],0.8,2.3,1,0.42,2,16,'몸으로 공을 가리고 천천히 이동'),

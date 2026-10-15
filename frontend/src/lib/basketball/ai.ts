@@ -11,7 +11,6 @@ export function chooseAIAction(o:PlayerObservation,difficulty:Difficulty='normal
   const me=getPlayer(o,o.playerId),opponent=getPlayer(o,otherPlayer(o.playerId)),offense=o.offenseId===o.playerId;
   const legal=new Set(o.legalActions.map(a=>a.id)),hoop=o.config.hoop,d=distance(me.position,hoop),gap=distance(me.position,opponent.position);
   if(!o.legalActions.length)return {actionId:'RecoverBalance'};
-  if(legal.has('ContinueAction'))return {actionId:'ContinueAction'};
   if(o.ball.status==='loose'||o.ball.status==='rebound')return {actionId:legal.has(o.ball.status==='rebound'?'Rebound':'RecoverBall')?(o.ball.status==='rebound'?'Rebound':'RecoverBall'):o.legalActions[0].id,direction:normalize(subtract(o.ball.position,me.position)),speed:0.95};
   const quality=(difficulty==='hard'?0.92:difficulty==='easy'?0.42:0.73)*(0.6+me.attributes.DecisionMaking/250);
   const scores=new Map<ActionId,number>();
@@ -34,6 +33,7 @@ export function chooseAIAction(o:PlayerObservation,difficulty:Difficulty='normal
     direction=normalize({x:hoop.x-me.position.x+(gap<2?side*2.5:0),y:hoop.y-me.position.y});
   }else{
     const remaining=o.config.maxDribbles-opponent.dribblesUsed,rim=distance(opponent.position,hoop),shotLikely=remaining===0||opponent.dribbleState==='ended'||o.shotClock<2.5;
+    if(me.beaten>0.45){set('CloseOut',shotLikely?65:42);set('Sprint',shotLikely?57:35);set('RetreatStep',shotLikely?20:65);}
     set('HoldPosition',29);set('CutOffDrivingLane',shotLikely?24:45);set('AnticipateDirection',shotLikely?17:33);set('ShadeLeft',opponent.ballHand==='left'?38:28);set('ShadeRight',opponent.ballHand==='right'?38:28);
     set('CloseOut',gap>2?49:17);set('ForwardStep',gap>1.8?40:15);set('RetreatStep',gap<0.8&&!shotLikely?32:12);set('ContestShot',shotLikely?53:gap<1.9?35:15);set('JumpContest',shotLikely&&gap<2.2?52:14);
     set('BlockAttempt',shotLikely&&rim<3&&gap<2?51+(me.attributes.Block-60)/6:12);set('StealAttempt',gap<1.4&&!shotLikely?39+(me.attributes.Steal-opponent.attributes.BallControl)/8:10);set('ReachIn',gap>1.3&&gap<1.8&&!shotLikely?34:9);set('BodyUp',gap<1&&!shotLikely?38:13);set('RecoverBalance',me.bodyBalance<45?54:me.stamina<18?44:0);

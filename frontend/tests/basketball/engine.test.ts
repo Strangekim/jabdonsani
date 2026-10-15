@@ -31,7 +31,7 @@ test('첫 제출은 시간·난수·선수·결과를 진행시키지 않는다'
   const result = submitAction(state, 'p1', state.decisionId, dribble());
   assert.equal(result.error, undefined);
   assert.equal(result.resolved, false);
-  for (const key of ['time', 'rngState', 'shotClock', 'decisionId', 'players', 'events', 'stats']) assert.deepEqual(result.state[key as keyof GameState], state[key as keyof GameState], key);
+  for (const key of ['time', 'rngState', 'shotClock', 'decisionId', 'players', 'ball', 'score', 'situation', 'events', 'stats', 'history']) assert.deepEqual(result.state[key as keyof GameState], state[key as keyof GameState], key);
   assert.deepEqual(state.submissions, {}, '입력 상태를 변경하지 않는다');
 });
 test('양측 제출 순서가 최종 상태와 이벤트에 영향을 주지 않는다', () => {
@@ -184,7 +184,9 @@ test('재생은 기록된 명령을 다시 실행해 상태와 이벤트를 정�
   for (let turn = 0; turn < 1000 && original.status !== 'finished'; turn++) original = runAIDecision(original);
   assert.equal(original.status, 'finished');
   const data = exportReplay(original);
+  assert.equal(data.version, 2);
   assert.ok(data.decisions.length > 1);
+  assert.ok(data.decisions.every(decision => Object.values(decision.commands).every(command => String(command.actionId) !== 'ContinueAction')));
   assert.ok(!('events' in data) && !('state' in data), '완성된 결과 복사가 아닌 명령 재실행');
   const replayed = replayGame(JSON.parse(JSON.stringify(data)));
   assert.deepEqual(replayed, original);
@@ -204,7 +206,8 @@ test('다양한 틱 간격과 역할 교체에서도 동일 검증과 경기 진
       const offense = getLegalActions(state, state.offenseId);
       const defender = state.offenseId === 'p1' ? 'p2' : 'p1';
       if (state.ball.ownerId) {
-        assert.ok(offense.some(action => action.id === 'JumpShot' || action.id === 'ContinueAction'));
+        assert.ok(offense.some(action => action.id === 'JumpShot'));
+        assert.ok(!offense.some(action => String(action.id) === 'ContinueAction'));
         assert.ok(!getLegalActions(state, defender).some(action => action.id === 'NormalDribble'));
       }
       state = runAIDecision(state); assertStateBounds(state);
@@ -213,10 +216,10 @@ test('다양한 틱 간격과 역할 교체에서도 동일 검증과 경기 진
   }
 });
 
-test('라이브 드리블 중 걷기/달리기는 자동 개더하지 않는다', () => {
+test('차단 없는 라이브 드리블 걷기/달리기는 자동 개더하지 않는다', () => {
   for (const actionId of ['Walk', 'Sprint'] as ActionId[]) {
     const state = fixture(); state.players[0].dribbleState = 'live'; state.players[0].dribblesUsed = 1; state.ball.status = 'dribbling';
-    const after = pair(state, { actionId, direction: { x: 1, y: 0 }, speed: 1 });
+    const after = pair(state, { actionId, direction: { x: 0, y: 1 }, speed: 1 });
     assert.equal(after.players[0].dribbleState, 'live', actionId);
     assert.equal(after.players[0].gatheredSteps, 0, actionId);
     assert.equal(after.players[0].dribblesUsed, 2, actionId);
@@ -255,6 +258,7 @@ test('종료된 경기는 추가 명령을 거부하며 새 경기는 완전히 
 test('잘못된 재생 자료와 불법 명령 가져오기는 명시적으로 거부된다', () => {
   const replay = exportReplay(createGame());
   assert.throws(() => replayGame({ ...replay, version: 999 } as unknown as typeof replay));
+  assert.throws(() => replayGame({ ...replay, version: 1 } as unknown as typeof replay), /1|이전|legacy|지원|version|버전/i, '이전 마이크로 턴 재생 형식을 명시적으로 거부한다');
   assert.throws(() => replayGame({ ...replay, operations: undefined, decisions: [{ decisionId: 1, commands: { p1: { actionId: 'UnknownAction' }, p2: { actionId: 'HoldPosition' } } }] } as unknown as typeof replay));
   assert.throws(() => replayGame({ ...replay, operations: undefined, decisions: [{ decisionId: 999, commands: { p1: { actionId: 'NormalDribble' }, p2: { actionId: 'HoldPosition' } } }] }));
 });
@@ -295,27 +299,45 @@ test('10개 드리블·8개 슛·17개 수비가 실제 시간/이동/자원/상
 });
 
 
-test('실제 중단 창에서 새 결정점을 만들고 ContinueAction은 드리블을 재소비하지 않는다', () => {
+test('한 번의 양측 제출은 복합 동작과 수비 대응 전체를 끝낸다', () => {
   const state = fixture(99);
-  const first = decisionPair(state, { actionId: 'Crossover', direction: { x: 1, y: 0 }, speed: 0.5 }, { actionId: 'HoldPosition', speed: 0 });
-  assert.ok(first.ongoingActions.p1 || first.ongoingActions.p2);
-  assert.ok(first.players.some(player => player.actionProgress > 0 && player.actionProgress < 1));
-  assert.equal(first.stats.totalDribbles, 1);
-  const next = decisionPair(first, { actionId: 'ContinueAction' }, first.ongoingActions.p2 ? { actionId: 'ContinueAction' } : { actionId: 'RecoverBalance' });
-  assert.equal(next.stats.totalDribbles, 1);
-  assert.ok(next.time > first.time);
-  assert.ok(next.history.length > first.history.length);
+  const first = pair(state, { actionId: 'Hesitation', combo: ['Crossover', 'BehindTheBack'], direction: { x: 1, y: 0 }, speed: 0 }, { actionId: 'HoldPosition', speed: 0 });
+  assert.equal(first.decisionId, state.decisionId + 1);
+  assert.equal(first.stats.totalDribbles, 3);
+  assert.equal(first.players[0].dribblesUsed, 3);
+  assert.deepEqual(first.submissions, {});
+  assert.deepEqual(first.ongoingActions, {});
+  assert.ok(first.time > state.time);
+  assert.ok(first.players.every(player => player.actionProgress === 1));
+  const starts = first.events.filter(event => event.type === 'action_start' && event.playerId === 'p1');
+  const ends = first.events.filter(event => event.type === 'action_end' && event.playerId === 'p1');
+  assert.deepEqual(starts.map(event => event.actionId), ['Hesitation', 'Crossover', 'BehindTheBack']);
+  assert.deepEqual(ends.map(event => event.actionId), ['Hesitation', 'Crossover', 'BehindTheBack']);
 });
-test('interruptWindows 설정은 로그 외 실제 결정점 시간도 바꾼다', () => {
+test('ContinueAction은 카탈로그와 공개 선택지에서 제거되고 입력도 거부된다', () => {
+  const state = fixture();
+  assert.ok(!ACTION_LIST.some(action => String(action.id) === 'ContinueAction'));
+  for (const id of ['p1', 'p2'] as const) {
+    assert.ok(!getObservation(state, id).legalActions.some(action => String(action.id) === 'ContinueAction'));
+    const legacyCommand = { actionId: 'ContinueAction' } as unknown as ActionCommand;
+    assert.equal(validateAction(state, id, legacyCommand).valid, false);
+    assert.deepEqual(submitAction(state, id, state.decisionId, legacyCommand).state, state);
+  }
+});
+test('내부 중단 창은 추가 사용자 결정이나 상호작용 길이를 만들지 않는다', () => {
   const original = [...ACTIONS.NormalDribble.interruptWindows];
   const originalDefense = [...ACTIONS.HoldPosition.interruptWindows];
   try {
     ACTIONS.HoldPosition.interruptWindows = [0.95];
     ACTIONS.NormalDribble.interruptWindows = [0.2, 0.7];
-    const earlier = decisionPair(fixture(24), { actionId: 'NormalDribble', speed: 0 }, { actionId: 'HoldPosition', speed: 0 });
+    const earlier = pair(fixture(24), { actionId: 'NormalDribble', speed: 0 }, { actionId: 'HoldPosition', speed: 0 });
     ACTIONS.NormalDribble.interruptWindows = [0.6, 0.9];
-    const later = decisionPair(fixture(24), { actionId: 'NormalDribble', speed: 0 }, { actionId: 'HoldPosition', speed: 0 });
-    assert.ok(later.time > earlier.time, `${earlier.time} → ${later.time}`);
+    const later = pair(fixture(24), { actionId: 'NormalDribble', speed: 0 }, { actionId: 'HoldPosition', speed: 0 });
+    assert.equal(later.time, earlier.time);
+    assert.equal(later.history.length, 1);
+    assert.equal(earlier.history.length, 1);
+    assert.deepEqual(later.players, earlier.players);
+    assert.deepEqual(later.stats, earlier.stats);
   } finally {
     ACTIONS.NormalDribble.interruptWindows = original; ACTIONS.HoldPosition.interruptWindows = originalDefense;
   }
@@ -385,6 +407,7 @@ test('공개 유효 명령에서 고른 무작위 양역할 경합도 상태 불
   for (let turn = 0; turn < 1500 && state.status === 'playing'; turn++) {
     const choices = (id: 'p1' | 'p2') => {
       const legal = getLegalActions(state, id);
+      assert.ok(legal.length > 0, JSON.stringify({ id, turn, ball: state.ball, situation: state.situation, players: state.players, events: state.events.slice(-8) }));
       const action = legal[nextInt() % legal.length];
       return { actionId: action.id, speed: (nextInt() % 11) / 10 };
     };

@@ -29,7 +29,7 @@ function selectAction(id: ActionId) {
 }
 
 function timeText() { return screen.getByText(/포제션 \d+ · 경기 [\d.]+초/).textContent; }
-function decisionText() { return screen.getByText(/^(DECISION POINT|REPLAY|FINAL) \d+$/).textContent; }
+function decisionText() { return screen.getByText(/^(EVENT TURN|REPLAY|FINAL) \d+$/).textContent; }
 function log() { return screen.getByLabelText('경기 이벤트 기록'); }
 function submit() { clickButton(/^(명령 제출|예약 명령 진행|예약 \d+개 제출|선택 잠그기)$/); }
 function readBlob(blob: Blob): Promise<string> {
@@ -46,7 +46,6 @@ async function exportedReplay(): Promise<ReplayData> {
   return JSON.parse(await readBlob(downloaded!));
 }
 function command(actionId: ActionId, offense: boolean, hand: 'left' | 'right'): ActionCommand {
-  if (actionId === 'ContinueAction') return { actionId };
   return {
     actionId, speed: .7,
     ...(offense ? { hand } : { anticipatedDirection: { x: 0, y: -1 }, desiredGap: 1.4 }),
@@ -71,7 +70,7 @@ describe('BasketballClient: 실제 엔진 연결과 상호작용', () => {
     expect(screen.getByRole('img', { name: /하프코트. 공격 플레이어 1, 수비 플레이어 2/ })).toHaveAttribute('viewBox');
     expect(screen.getByText('플레이어 1 · 공격 차례')).toBeInTheDocument();
     expect(screen.getByText('남은 드리블 3 / 3')).toBeInTheDocument();
-    expect(screen.getByRole('slider', { name: '리플레이 결정점' })).toBeDisabled();
+    expect(screen.getByRole('slider', { name: '리플레이 이벤트 턴' })).toBeDisabled();
     submit();
     const replay = await exportedReplay();
     expect(replay.decisions).toHaveLength(1);
@@ -95,10 +94,13 @@ describe('BasketballClient: 실제 엔진 연결과 상호작용', () => {
     const beforeTime = timeText();
     const beforeDecision = decisionText();
     const beforeLog = log().textContent;
+    const beforeSituation = screen.getByRole('region', { name: '현재 플레이 상황' }).textContent;
     submit();
     expect(timeText()).toBe(beforeTime);
     expect(decisionText()).toBe(beforeDecision);
     expect(log().textContent).toBe(beforeLog);
+    expect(screen.getByRole('region', { name: '현재 플레이 상황' }).textContent).toBe(beforeSituation);
+    expect(screen.queryByLabelText('상황별 가능한 대응')).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { name: '플레이어 2 차례' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^크로스오버 / })).not.toBeInTheDocument();
     expect(screen.queryByRole('slider', { name: '목표 속도' })).not.toBeInTheDocument();
@@ -140,11 +142,11 @@ describe('BasketballClient: 실제 엔진 연결과 상호작용', () => {
     let decisions = 0;
     while (game.status === 'playing' && decisions < 400) {
       const legal = getObservation(game, 'p2').legalActions.map(action => action.id);
-      const priorities: ActionId[] = ['ContinueAction', 'Rebound', 'RecoverBall', 'HoldPosition', 'JumpShot', 'RecoverBalance'];
+      const priorities: ActionId[] = ['Rebound', 'RecoverBall', 'HoldPosition', 'JumpShot', 'RecoverBalance'];
       const action = priorities.find(id => legal.includes(id)) ?? legal[0];
       expect(action).toBeDefined();
       selectAction(action);
-      if (game.offenseId === 'p2' && action !== 'ContinueAction') expect(screen.getByRole('button', { name: '왼손' })).toHaveAttribute('aria-pressed', 'true');
+      if (game.offenseId === 'p2') expect(screen.getByRole('button', { name: '왼손' })).toHaveAttribute('aria-pressed', 'true');
       submit();
       game = resolveHumanDefense(game, action);
       roleChanged ||= game.offenseId === 'p2';
@@ -165,11 +167,11 @@ describe('BasketballClient: 실제 엔진 연결과 상호작용', () => {
     expect(screen.getByRole('heading', { name: '벤치에서 관전하기' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: '명령 제출' })).not.toBeInTheDocument();
     clickButton('한 턴');
-    expect(decisionText()).toBe('DECISION POINT 2');
+    expect(decisionText()).toBe('EVENT TURN 2');
     clickButton('자동 대전 시작');
     expect(screen.getByRole('button', { name: '한 턴' })).toBeDisabled();
     act(() => { vi.advanceTimersByTime(1400); });
-    expect(decisionText()).toBe('DECISION POINT 4');
+    expect(decisionText()).toBe('EVENT TURN 4');
     clickButton('일시 정지');
     const paused = timeText();
     act(() => { vi.advanceTimersByTime(2100); });
@@ -179,6 +181,7 @@ describe('BasketballClient: 실제 엔진 연결과 상호작용', () => {
 
   it('예약 목록을 취소하고 선택한 마지막 행동 대신 첫 예약부터 정확히 실행한다', async () => {
     render(<BasketballClient />);
+    clickButton('뒤쪽');
     clickButton('+ 예약에 추가');
     selectAction('Crossover');
     clickButton('+ 예약에 추가');
@@ -209,6 +212,7 @@ describe('BasketballClient: 실제 엔진 연결과 상호작용', () => {
     { label: 'Hesitation → Crossover → Sprint', actions: ['Hesitation', 'Crossover', 'Sprint'] as ActionId[] },
   ])('첫 드리블 이후에만 합법인 이동 예약을 전체 순서로 검증한다: $label', async ({ actions }) => {
     render(<BasketballClient />);
+    clickButton('뒤쪽');
     for (const action of actions) {
       selectAction(action);
       clickButton('+ 예약에 추가');
@@ -217,7 +221,9 @@ describe('BasketballClient: 실제 엔진 연결과 상호작용', () => {
     const replay = await exportedReplay();
     expect(replay.decisions).toHaveLength(1);
     expect(replay.decisions[0].commands.p1.actionId).toBe('Hesitation');
-    expect(replayGame(replay).queues.p1.map(action => action.actionId)).toEqual(actions.slice(1));
+    const restored = replayGame(replay);
+    const waiting = [restored.submissions.p1?.actionId, ...restored.queues.p1.map(action => action.actionId)].filter(Boolean);
+    expect(waiting).toEqual(actions.slice(1));
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
@@ -240,22 +246,86 @@ describe('BasketballClient: 실제 엔진 연결과 상호작용', () => {
     expect(replayGame(replay).players[0].dribblesUsed).toBe(1);
   });
 
-  it('진행 중 행동을 기본 선택으로 이어가며 드리블을 중복 차감하지 않는다', async () => {
+  it('한 쌍의 선택이 플레이를 끝내고 공개 결과와 합법 대응으로 다음 턴을 연다', async () => {
     render(<BasketballClient />);
+    const situation = screen.getByRole('region', { name: '현재 플레이 상황' });
+    expect(within(situation).getByRole('heading', { name: '정면 대치' })).toBeInTheDocument();
     submit();
     const first = replayGame(await exportedReplay());
-    expect(first.ongoingActions.p1).toBeDefined();
-    expect(screen.getByRole('button', { name: /^현재 행동 계속 / })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('button', { name: '+ 예약에 추가' })).toBeDisabled();
-    expect(screen.queryByRole('slider', { name: '목표 속도' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: '골대 방향' })).not.toBeInTheDocument();
+    expect(first.ongoingActions).toEqual({});
+    expect(first.history).toHaveLength(1);
+    expect(first.players[0].dribblesUsed).toBe(1);
+    expect(situation).toHaveTextContent(first.situation.lastOutcome);
+    expect(screen.queryByRole('button', { name: /^현재 행동 계속 / })).not.toBeInTheDocument();
+    expect(screen.queryByText(/중단 시점|진행 중인 행동/)).not.toBeInTheDocument();
+    const responses = screen.getByLabelText('상황별 가능한 대응');
+    for (const button of within(responses).getAllByRole('button')) {
+      const action = getObservation(first, 'p1').legalActions.find(candidate => `상황 대응: ${candidate.name}` === button.getAttribute('aria-label'));
+      expect(action).toBeDefined();
+      expect(button).toBeEnabled();
+    }
+    clickButton(within(responses).getAllByRole('button')[0].getAttribute('aria-label')!);
     submit();
-    const replay = await exportedReplay();
-    const next = replayGame(replay);
-    expect(replay.decisions.at(-1)!.commands.p1.actionId).toBe('ContinueAction');
-    expect(next.players[0].dribblesUsed).toBe(first.players[0].dribblesUsed);
-    expect(next.stats.totalDribbles).toBe(first.stats.totalDribbles);
-    expect(next.events.filter(event => event.type === 'action_start' && event.playerId === 'p1')).toHaveLength(1);
+    const next = replayGame(await exportedReplay());
+    expect(next.history).toHaveLength(2);
+    expect(next.ongoingActions).toEqual({});
+    expect(next.time).toBeGreaterThan(first.time);
+    expect(screen.getByRole('region', { name: '현재 플레이 상황' })).toHaveTextContent(next.situation.lastOutcome);
+  });
+
+  it('강제로 공을 잡으면 예약을 취소하고 슛만 가능한 상태와 대응을 보여 준다', async () => {
+    render(<BasketballClient />);
+    clickButton('+ 예약에 추가');
+    selectAction('Crossover');
+    clickButton('+ 예약에 추가');
+    submit();
+    const state = replayGame(await exportedReplay());
+    expect(state.players[0].forcedPickup).toBe(true);
+    expect(state.situation.kind).toBe('pickup');
+    expect(state.queues.p1).toEqual([]);
+    expect(state.submissions.p1).toBeUndefined();
+    expect(screen.getByRole('region', { name: '현재 플레이 상황' })).toHaveTextContent('공격은 슛만 선택할 수 있고');
+    expect(screen.getByRole('region', { name: '플레이어 1 선수 상태' })).toHaveTextContent('압박으로 공을 잡음');
+    const responses = screen.getByLabelText('상황별 가능한 대응');
+    expect(within(responses).getByRole('button', { name: '상황 대응: 점프슛' })).toBeEnabled();
+    expect(within(responses).queryByRole('button', { name: '상황 대응: 피벗' })).not.toBeInTheDocument();
+    clickButton('드리블');
+    expect(screen.getByRole('button', { name: /^일반 드리블 / })).toBeDisabled();
+    clickButton('풋워크');
+    expect(screen.getByRole('button', { name: /^피벗 / })).toBeDisabled();
+    clickButton('상황 대응: 점프슛');
+    submit();
+    const afterShot = replayGame(await exportedReplay());
+    expect(afterShot.history).toHaveLength(2);
+    expect(afterShot.history[1].commands.p1.actionId).toBe('JumpShot');
+    expect(afterShot.events.some(event => ['score', 'miss', 'block', 'foul'].includes(event.type))).toBe(true);
+  });
+
+  it('공격 우위가 인계 뒤에도 남고 뒤처진 수비가 추격과 후퇴를 고를 수 있다', async () => {
+    render(<BasketballClient />);
+    clickButton(/로컬 2인 대전/);
+    clickButton('준비됐어요 · 내 선택 보기');
+    selectAction('Crossover');
+    clickButton('왼쪽 앞');
+    submit();
+    clickButton('준비됐어요 · 내 선택 보기');
+    fireEvent.change(screen.getByRole('combobox', { name: '예상 돌파 방향' }), { target: { value: '5' } });
+    submit();
+    const state = replayGame(await exportedReplay());
+    expect(state.situation.kind).toBe('advantage');
+    expect(screen.getByRole('region', { name: '현재 플레이 상황' })).toHaveTextContent('공격 우위');
+    clickButton('준비됐어요 · 내 선택 보기');
+    selectAction('JumpShot');
+    submit();
+    const beforeDefense = timeText();
+    clickButton('준비됐어요 · 내 선택 보기');
+    for (const id of ['Sprint', 'CloseOut', 'RetreatStep'] as const) expect(screen.getByRole('button', { name: `상황 대응: ${ACTIONS[id].name}` })).toBeEnabled();
+    clickButton(`상황 대응: ${ACTIONS.RetreatStep.name}`);
+    expect(timeText()).toBe(beforeDefense);
+    submit();
+    const after = await exportedReplay();
+    expect(after.decisions).toHaveLength(2);
+    expect(after.decisions[1].commands.p2.actionId).toBe('RetreatStep');
   });
 
   it('다시 시작과 모드 변경의 확인 취소는 현재 경기를 보존한다', async () => {
@@ -328,7 +398,7 @@ describe('BasketballClient: 실제 엔진 연결과 상호작용', () => {
     submit();
     const before = await exportedReplay();
     const latest = timeText();
-    const slider = screen.getByRole('slider', { name: '리플레이 결정점' });
+    const slider = screen.getByRole('slider', { name: '리플레이 이벤트 턴' });
     expect(slider).toHaveAttribute('max', '2');
     fireEvent.change(slider, { target: { value: '0' } });
     expect(decisionText()).toBe('REPLAY 1');
@@ -352,7 +422,7 @@ describe('BasketballClient: 실제 엔진 연결과 상호작용', () => {
     clickButton('한 턴');
     clickButton('한 턴');
     const currentTime = timeText();
-    fireEvent.change(screen.getByRole('slider', { name: '리플레이 결정점' }), { target: { value: '0' } });
+    fireEvent.change(screen.getByRole('slider', { name: '리플레이 이벤트 턴' }), { target: { value: '0' } });
     clickButton('리플레이 재생');
     act(() => { vi.advanceTimersByTime(650); });
     expect(decisionText()).toBe('REPLAY 2');
@@ -364,7 +434,7 @@ describe('BasketballClient: 실제 엔진 연결과 상호작용', () => {
     expect(decisionText()).toBe('REPLAY 3');
     clickButton('현재 경기로 돌아가기');
     expect(timeText()).toBe(currentTime);
-    expect(screen.getByRole('slider', { name: '리플레이 결정점' })).toHaveAttribute('max', '2');
+    expect(screen.getByRole('slider', { name: '리플레이 이벤트 턴' })).toHaveAttribute('max', '2');
   });
 
   it('저장한 리플레이를 재검증해 불러오고 실제 경기로 돌아와 계속 진행한다', async () => {
@@ -381,11 +451,25 @@ describe('BasketballClient: 실제 엔진 연결과 상호작용', () => {
     expect(screen.getByRole('button', { name: /AI 자동 대전/ })).toHaveAttribute('aria-pressed', 'true');
     expect(await exportedReplay()).toEqual(original);
     clickButton('현재 경기로 돌아가기');
-    expect(decisionText()).toBe('DECISION POINT 3');
+    expect(decisionText()).toBe('EVENT TURN 3');
     clickButton('한 턴');
     const advanced = await exportedReplay();
     expect(advanced.decisions).toHaveLength(3);
     expect(advanced.decisions.slice(0, 2)).toEqual(original.decisions);
+  });
+
+  it('버전 1 리플레이를 새 규칙으로 해석하지 않고 명확한 이유와 함께 거부한다', async () => {
+    render(<BasketballClient />);
+    submit();
+    const before = await exportedReplay();
+    expect(before.version).toBe(2);
+    const legacy = { ...before, version: 1 };
+    const file = new File([JSON.stringify(legacy)], 'legacy-v1.json', { type: 'application/json' });
+    Object.defineProperty(file, 'text', { value: async () => JSON.stringify(legacy) });
+    fireEvent.change(screen.getByLabelText('리플레이 JSON 파일'), { target: { files: [file] } });
+    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('이전 마이크로 턴 규칙으로 기록되어 이벤트 턴에서 재생할 수 없습니다'));
+    expect(await exportedReplay()).toEqual(before);
+    expect(decisionText()).toBe('EVENT TURN 2');
   });
 
   it('5MB 초과 파일은 내용을 읽기 전에 거부한다', async () => {
@@ -440,7 +524,7 @@ describe('시뮬레이션 Worker 생명주기', () => {
     act(() => { first.onmessage?.({ data: { progress: .375 } } as MessageEvent); });
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '38');
     submit();
-    expect(decisionText()).toBe('DECISION POINT 2');
+    expect(decisionText()).toBe('EVENT TURN 2');
     clickButton('중지');
     expect(first.terminate).toHaveBeenCalled();
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
