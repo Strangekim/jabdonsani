@@ -108,7 +108,7 @@
         flex-shrink: 0;
     }
 }
-/* 네 번째 농구 탭도 좁은 화면에서 줄바꿈 없이 사용할 수 있게 한다. */
+/* 모든 탭을 좁은 화면에서도 한 줄로 유지한다. */
 .navLink {
     display: inline-block;
     white-space: nowrap;
@@ -127,5 +127,19 @@
 
     .navTabs {
         gap: 2px;
+    }
+
+    .headerLeft > nav {
+        min-width: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .headerLeft > nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .headerLeft > a {
+        flex-shrink: 0;
     }
 }

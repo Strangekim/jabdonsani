@@ -17,4 +17,5 @@ export const NAV_ITEMS: NavItem[] = [
     { label: '잡동사니', href: '/stuff' },
     { label: '농구', href: '/basketball' },
     { label: '블로그', href: '/blog' },
+    { label: 'ARL', href: '/arl' },
 ];

@@ -9,11 +9,49 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jabdonsani-production
+  cancel-in-progress: false
 
 jobs:
+  validate:
+    name: Validate site and ARL deployment receiver
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+      - name: Validate deployment receiver
+        working-directory: backend
+        run: |
+          npm ci --no-audit --no-fund
+          npx tsc --noEmit
+          npm run test:arl
+      - name: Validate website
+        working-directory: frontend
+        run: |
+          npm ci --no-audit --no-fund
+          npm run typecheck
+          npm run build
+
   deploy:
     name: 🚀 Deploy to Production
     runs-on: ubuntu-latest
+    needs: validate
+    timeout-minutes: 35
 
     steps:
       # 1) 배포 시작 알림 (로그용)
@@ -27,12 +65,17 @@ jobs:
 
       # 2) SSH로 OCI 서버 접속 → git pull → Docker 재빌드
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
+        env:
+          DEPLOY_SHA: ${{ github.sha }}
         with:
           host: ${{ secrets.OCI_HOST }}
           username: ${{ secrets.OCI_USERNAME }}
           key: ${{ secrets.OCI_SSH_KEY }}
+          envs: DEPLOY_SHA
+          command_timeout: 30m
           script: |
+            set -eu
             echo "========== 배포 시작 =========="
 
             # 프로젝트 디렉토리로 이동
@@ -41,12 +84,16 @@ jobs:
             # 최신 코드 가져오기
             echo "📥 Pulling latest code..."
             git fetch origin main
-            git reset --hard origin/main
+            git reset --hard "$DEPLOY_SHA"
 
             # Docker Compose로 재빌드 및 재시작
             echo "🐳 Rebuilding and restarting containers..."
-            sudo docker-compose down
             sudo docker-compose up -d --build
+
+            # API가 새 컨테이너에서 정상 응답하는지 검증한다.
+            echo "🔎 Checking ARL preview API..."
+            curl --fail --silent --show-error --retry 12 --retry-all-errors --retry-delay 5 \
+              https://jobdongsani.co.kr/api/arl-preview/status
 
             # DB 마이그레이션 실행 (컨테이너 기동 대기 후)
             echo "📦 Running migrations..."

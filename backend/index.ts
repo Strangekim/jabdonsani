@@ -13,6 +13,7 @@ import visitorsRouter from './visitors/router';
 import batchRouter from './batch/router';
 import gamesRouter from './games/router';
 import { initScheduler } from './batch/scheduler';
+import { createPreviewRouter } from './arl-preview/router';
 
 dotenv.config();
 
@@ -21,6 +22,9 @@ const PORT = Number(process.env.PORT) || 3001;
 
 // CORS 설정 (가장 먼저)
 app.use(corsConfig);
+
+// ARL has bounded binary uploads and GitHub OIDC auth; it does not use web sessions.
+app.use('/api/arl-preview', createPreviewRouter());
 
 // JSON 파싱
 app.use(express.json());

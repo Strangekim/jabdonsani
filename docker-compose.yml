@@ -34,11 +34,14 @@ services:
     environment:
       # 컨테이너 네트워크에서는 DB 호스트가 서비스명 'db'
       DB_HOST: db
+      ARL_PREVIEW_DIR: /app/arl-preview-data
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     volumes:
       # 업로드 파일 영속화 — VM 호스트 경로에 bind mount (nginx도 동일 경로 참조)
       - /var/jabdonsani/uploads:/app/uploads
+      # Built ARL previews survive website image rebuilds; private Rust source is not copied here.
+      - arl-preview:/app/arl-preview-data
     depends_on:
       db:
         condition: service_healthy
@@ -57,3 +60,4 @@ services:
 
 volumes:
   pgdata:
+  arl-preview:
