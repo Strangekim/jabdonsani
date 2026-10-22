@@ -90,7 +90,7 @@ export default function ArlPreview() {
                 <div>
                     <p className={styles.eyebrow}>ACOUSTIC REALITY LAB</p>
                     <h1 className={styles.title}>ARL 개발 미리보기</h1>
-                    <p className={styles.description}>브라우저에서 최신 3D 화면과 동작을 확인합니다.</p>
+                    <p className={styles.description}>브라우저에서 배포된 ARL의 BIM 공간과 음향 작업 화면을 확인합니다.</p>
                 </div>
                 <span className={styles.badge}>개발 중</span>
             </header>
@@ -132,7 +132,7 @@ export default function ArlPreview() {
                     <iframe
                         key={data.previewUrl}
                         src={data.previewUrl}
-                        title="Acoustic Reality Lab 3D 개발 미리보기"
+                        title="Acoustic Reality Lab BIM·음향 개발 미리보기"
                         className={styles.frame}
                         allow="fullscreen"
                         allowFullScreen
@@ -153,7 +153,7 @@ export default function ArlPreview() {
             </section>
 
             <footer className={styles.footer}>
-                <p>Windows 앱 개발을 위한 웹 미리보기입니다. 현재는 3D 화면 검증 단계이며 음향 계산은 아직 구현되지 않았습니다.</p>
+                <p>Windows 앱의 BIM·음향 작업 화면을 브라우저에서 확인하는 개발 미리보기입니다. 지원 기능과 계산 범위는 실행 중인 버전의 안내를 확인해 주세요.</p>
                 {data?.runUrl && (
                     <a href={data.runUrl} target="_blank" rel="noopener noreferrer">배포 기록 ↗</a>
                 )}
