@@ -8,6 +8,13 @@ import type { ToolCardInfo } from '@/types/tool';
 /** 잡동사니 도구 목록 */
 export const TOOL_LIST: ToolCardInfo[] = [
     {
+        id: 'mbti',
+        name: 'MBTI 검사',
+        description: '64문항으로 알아보는 나의 추정 MBTI 유형과 생각 습관.',
+        icon: 'psychology',
+        colorClass: 'mbtiTest',
+    },
+    {
         id: 'pdf-merge',
         name: 'PDF 병합',
         description: '여러 개의 PDF 파일을 하나의 문서로 합칩니다.',

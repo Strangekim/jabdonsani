@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f6f0">
+  <meta name="description" content="일상 속 짧은 64문항에 답하고 나의 네 글자 추정 유형과 8가지 기능 점수를 확인하세요. 자기이해를 위한 자체 제작 질문지입니다.">
+  <title>MBTI 검사 — 나의 추정 유형 알아보기</title>
+  <link rel="stylesheet" href="styles.css?v=2">
+  <script src="data.js?v=2" defer></script>
+  <script src="engine.js?v=2" defer></script>
+  <script src="app.js?v=2" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#app">본문으로 이동</a>
+  <header class="site-header">
+    <button class="brand" type="button" data-action="home" aria-label="MBTI 검사 시작 화면">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 36 36" fill="none"><path d="M8 10h20M8 18h20M8 26h20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="14" cy="10" r="3.5" fill="currentColor"/><circle cx="24" cy="18" r="3.5" fill="currentColor"/><circle cx="12" cy="26" r="3.5" fill="currentColor"/></svg></span>
+      <span class="brand-type"><strong>MBTI 검사</strong><span>MBTI TEST</span></span>
+    </button>
+    <div id="header-actions" class="header-actions"></div>
+  </header>
+  <main id="app" tabindex="-1">
+    <div class="shell initial-state"><span class="eyebrow">A MOMENT FOR YOURSELF</span><h1>나에게 자연스러운<br>판단의 순서.</h1><p class="muted">질문지를 준비하고 있습니다.</p></div>
+  </main>
+  <footer class="site-footer"><span class="footer-dot" aria-hidden="true"></span>나에게 자연스러운 판단의 순서를 살펴보세요.</footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="modal" class="modal" aria-label="안내"><div id="modal-body"></div></dialog>
+  <noscript><div class="noscript-note">질문지에 응답하려면 브라우저의 자바스크립트를 사용하도록 설정해 주세요.</div></noscript>
+</body>
+</html>

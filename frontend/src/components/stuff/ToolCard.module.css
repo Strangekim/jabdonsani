@@ -93,6 +93,10 @@
     background: linear-gradient(135deg, #6366f1, #8b5cf6);
 }
 
+.mbtiTest {
+    background: linear-gradient(135deg, #34472c, #4d6636);
+}
+
 /* 아이콘 */
 .cardIcon {
     font-size: 34px;
