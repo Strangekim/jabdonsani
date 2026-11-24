@@ -45,14 +45,14 @@ export function ground(radius){
   return out;
 }
 export const BUILDINGS = {
-  dome:{label:'돔',detail:'반지름 1 · 곡면',radius:1},
-  tower:{label:'타워',detail:'반지름 0.5 · 높이 3',radius:.5},
-  wall:{label:'장벽',detail:'길이 3 · 높이 2 · 두께 0.5',radius:Math.hypot(1.5,.25)},
-  arch:{label:'아치',detail:'너비 3 · 높이 3 · 깊이 1',radius:Math.hypot(1.5,.5)}
+  dome:{label:'돔',detail:'반지름 1.25 · 곡면',radius:1.25,scale:[1.25,1.25,1.25]},
+  tower:{label:'타워',detail:'반지름 0.65 · 높이 2.5',radius:.65,scale:[1.3,2.5/3,1.3]},
+  wall:{label:'장벽',detail:'길이 3 · 높이 2.4 · 두께 0.5',radius:Math.hypot(1.5,.25),scale:[1,1.2,1]},
+  arch:{label:'아치',detail:'너비 3 · 높이 3 · 깊이 1',radius:Math.hypot(1.5,.5),scale:[1,1,1]}
 };
 export function local(b,p){const c=Math.cos(b.rotation),s=Math.sin(b.rotation),x=p[0]-b.x,z=p[2]-b.z;return [c*x+s*z,p[1],-s*x+c*z];}
 export function footprint(b,p,solid=true){
-  const [x,,z]=local(b,p);
+  const pos=local(b,p),scale=BUILDINGS[b.kind].scale;const [x,,z]=pos.map((v,i)=>v/scale[i]);
   if(b.kind==='dome')return radial(x,z)<=1+EPS;
   if(b.kind==='tower')return radial(x,z)<=.5+EPS;
   if(b.kind==='wall')return Math.abs(x)<=1.5+EPS&&Math.abs(z)<=.25+EPS;
@@ -61,8 +61,9 @@ export function footprint(b,p,solid=true){
 export function buildingSurfaces(b){
   const out=[],c=Math.cos(b.rotation),s=Math.sin(b.rotation);
   const rotate=([x,y,z])=>[c*x-s*z,y,s*x+c*z];
-  const world=p=>add(rotate(p),[b.x,0,b.z]);
-  const push=(vs,normal)=>{const p=patch(vs.map(world),rotate(normal),'b:'+b.id+':'+out.length,b.id);if(p)out.push(p);};
+  const scale=BUILDINGS[b.kind].scale;
+  const world=p=>add(rotate(p.map((v,i)=>v*scale[i])),[b.x,0,b.z]);
+  const push=(vs,normal)=>{const p=patch(vs.map(world),rotate(normal.map((v,i)=>v/scale[i])),'b:'+b.id+':'+out.length,b.id);if(p)out.push(p);};
   const grid=(o,u,v,n)=>{const nu=Math.max(1,Math.ceil(len(u)/STEP)),nv=Math.max(1,Math.ceil(len(v)/STEP));for(let i=0;i<nu;i++)for(let j=0;j<nv;j++){const f=(a,d)=>add(o,add(mul(u,a/nu),mul(v,d/nv)));push([f(i,j),f(i+1,j),f(i+1,j+1),f(i,j+1)],n);}};
   const circle=(r,y,a)=>[r*Math.cos(a),y,r*Math.sin(a)];
   const disc=(r,y)=>{const nr=Math.ceil(r/STEP),nt=16;for(let j=0;j<nr;j++)for(let i=0;i<nt;i++){const a=i*2*Math.PI/nt,d=(i+1)*2*Math.PI/nt;push([circle(r*j/nr,y,a),circle(r*(j+1)/nr,y,a),circle(r*(j+1)/nr,y,d),circle(r*j/nr,y,d)],[0,1,0]);}};

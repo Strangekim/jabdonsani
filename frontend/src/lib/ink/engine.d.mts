@@ -17,13 +17,16 @@ export interface GamePort {
 }
 export const COLORS: string[];
 export const WEAPONS: Record<Weapon, { label: string; detail: string; cost: number }>;
-export const BUILDINGS: Record<BuildingKind, { label: string; detail: string; radius: number }>;
-export const RULES: { actions: number; threshold: number; gunThreshold: number; ghostUses: number; ink: number; brushRange: number; gunRange: number; bombRange: number; highBombRange: number; heightRangeFactor: number; bombMinHeight: number; bombMinNormalY: number; ghostRange: number; buildingUses: number };
+export const BUILDINGS: Record<BuildingKind, { label: string; detail: string; radius: number; scale: Vec3 }>;
+export const RULES: { actions: number; threshold: number; gunThreshold: number; ghostUses: number; ink: number; brushRange: number; gunRange: number; bombRange: number; highBombRange: number; heightRangeFactor: number; bombMinHeight: number; bombMinNormalY: number; roofControl: number; bombRadius: number; bombInk: number; highBombInk: number; heightRadiusFactor: number; maxHeightRadiusBonus: number; gunRadius: number; gunInk: number; airRadius: number; airInk: number; ghostRange: number; buildingUses: number };
 export type EngineState = Omit<GameView,'active'|'scores'|'neutral'|'total'|'surfaces'> & { rulesVersion: number; surfaces: (Surface & {traps: number[]})[] };
 export function gunRangeAt(surface?: Surface | null): number;
 export function bombRangeAt(surface?: Surface | null, arc?: 'low' | 'high'): number;
 export function isHighBombSurface(surface: Surface): boolean;
-export function canLaunchBomb(surface: Surface | null | undefined, player: number): boolean;
+export type BombControl = { total: number; areas: Record<number,number>; controller: number | null };
+export function getBombControl(surfaces: Surface[]): Map<string,BombControl>;
+export function bombRadiusAt(surface?: Surface | null): number;
+export function canLaunchBomb(surface: Surface | null | undefined, player: number, controls: Map<string,BombControl>): boolean;
 export function makeGame(config?: Partial<Config>): EngineState;
 export function active(state: EngineState): number;
 export function score(state: EngineState): {scores:number[];neutral:number;total:number};

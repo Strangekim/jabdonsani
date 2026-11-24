@@ -1,0 +1,4087 @@
+{
+  "description": "INK v0.4 결정론적 AI 밸런스 탐색. 단계별 엔진과 평가 함수가 달라질 수 있다. 동일 조건의 독립 무작위 표본이 아니다.",
+  "gameCount": 68,
+  "actionCount": 1944,
+  "stages": [
+    {
+      "stage": "base-weapon-screen",
+      "results": [
+        {
+          "variant": "A-current",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 4,
+              "brush": 4
+            },
+            {
+              "bomb": 5,
+              "brush": 3
+            }
+          ],
+          "usedHigh": [
+            0,
+            0
+          ],
+          "buildings": [],
+          "scores": [
+            18.466838799185474,
+            22.72340930093642
+          ],
+          "coverage": 0.6477298807888918,
+          "attacks": 12,
+          "paintCount": 16,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 1156
+        },
+        {
+          "variant": "A-current",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "builder",
+              "attack"
+            ]
+          },
+          "counts": [
+            {
+              "arch": 1,
+              "wall": 1,
+              "dome": 1,
+              "bomb": 3,
+              "brush": 2
+            },
+            {
+              "bomb": 3,
+              "brush": 3,
+              "air": 1,
+              "gun": 1
+            }
+          ],
+          "usedHigh": [
+            0,
+            1
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 1,
+              "area": 21.160044061846758,
+              "ownedArea": 4.293275637654087,
+              "enemyArea": 8.15549654304905
+            },
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-1",
+              "area": 15.5,
+              "ownedArea": 5,
+              "enemyArea": 3
+            },
+            {
+              "owner": 0,
+              "kind": "dome",
+              "round": 2,
+              "id": "structure-6",
+              "area": 6.083344719277172,
+              "ownedArea": 0,
+              "enemyArea": 0.29268100209889725
+            }
+          ],
+          "scores": [
+            14.293275637654085,
+            19.698177545147928
+          ],
+          "coverage": 0.3456696033418557,
+          "attacks": 7,
+          "paintCount": 13,
+          "firstContact": 3,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 2103
+        },
+        {
+          "variant": "A-current",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "attack",
+              "builder"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 4,
+              "brush": 4
+            },
+            {
+              "arch": 1,
+              "dome": 1,
+              "brush": 4,
+              "bomb": 2
+            }
+          ],
+          "usedHigh": [
+            0,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 1,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-2",
+              "area": 21.16004406184676,
+              "ownedArea": 8.408954451347029,
+              "enemyArea": 2.875000000000001
+            },
+            {
+              "owner": 1,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-3",
+              "area": 6.083344719277173,
+              "ownedArea": 0,
+              "enemyArea": 0
+            }
+          ],
+          "scores": [
+            22.374999999999993,
+            13.684459766236381
+          ],
+          "coverage": 0.4263098586115843,
+          "attacks": 9,
+          "paintCount": 14,
+          "firstContact": 2,
+          "winners": [
+            0
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 2110
+        },
+        {
+          "variant": "B-short-base",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 2,
+              "brush": 6
+            },
+            {
+              "bomb": 3,
+              "brush": 5
+            }
+          ],
+          "usedHigh": [
+            0,
+            0
+          ],
+          "buildings": [],
+          "scores": [
+            21,
+            22.28801276109709
+          ],
+          "coverage": 0.6807179038392456,
+          "attacks": 12,
+          "paintCount": 16,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 1057
+        },
+        {
+          "variant": "B-short-base",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "builder",
+              "attack"
+            ]
+          },
+          "counts": [
+            {
+              "arch": 1,
+              "wall": 1,
+              "dome": 1,
+              "brush": 3,
+              "bomb": 2
+            },
+            {
+              "bomb": 6,
+              "brush": 1,
+              "air": 1
+            }
+          ],
+          "usedHigh": [
+            1,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-0",
+              "area": 21.160044061846758,
+              "ownedArea": 1.6737586632756467,
+              "enemyArea": 3.2375
+            },
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-1",
+              "area": 15.5,
+              "ownedArea": 7,
+              "enemyArea": 0.5
+            },
+            {
+              "owner": 0,
+              "kind": "dome",
+              "round": 2,
+              "id": "structure-6",
+              "shots": 1,
+              "area": 6.083344719277172,
+              "ownedArea": 2.3743299121442023,
+              "enemyArea": 0
+            }
+          ],
+          "scores": [
+            16.54808857541984,
+            30.49461304873309
+          ],
+          "coverage": 0.4783917864028713,
+          "attacks": 6,
+          "paintCount": 13,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 2173
+        },
+        {
+          "variant": "B-short-base",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "attack",
+              "builder"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 4,
+              "brush": 4
+            },
+            {
+              "arch": 1,
+              "dome": 1,
+              "brush": 4,
+              "bomb": 2
+            }
+          ],
+          "usedHigh": [
+            0,
+            1
+          ],
+          "buildings": [
+            {
+              "owner": 1,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-2",
+              "area": 21.16004406184676,
+              "ownedArea": 10.152875639904968,
+              "enemyArea": 0.8
+            },
+            {
+              "owner": 1,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-3",
+              "shots": 1,
+              "area": 6.083344719277173,
+              "ownedArea": 0.7863611827089981,
+              "enemyArea": 1.4709527219378986
+            }
+          ],
+          "scores": [
+            26.020952721937892,
+            19.18923682261394
+          ],
+          "coverage": 0.5344935735999928,
+          "attacks": 8,
+          "paintCount": 14,
+          "firstContact": 2,
+          "winners": [
+            0
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 1949
+        },
+        {
+          "variant": "C-diverse",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ]
+          },
+          "counts": [
+            {
+              "brush": 2,
+              "gun": 6
+            },
+            {
+              "brush": 5,
+              "gun": 3
+            }
+          ],
+          "usedHigh": [
+            0,
+            0
+          ],
+          "buildings": [],
+          "scores": [
+            15.5,
+            16.211765974837007
+          ],
+          "coverage": 0.49867770508587006,
+          "attacks": 14,
+          "paintCount": 16,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 1020
+        },
+        {
+          "variant": "C-diverse",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "builder",
+              "attack"
+            ]
+          },
+          "counts": [
+            {
+              "arch": 1,
+              "wall": 1,
+              "brush": 5,
+              "bomb": 1
+            },
+            {
+              "air": 1,
+              "brush": 5,
+              "gun": 1,
+              "bomb": 1
+            }
+          ],
+          "usedHigh": [
+            0,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-0",
+              "area": 21.160044061846758,
+              "ownedArea": 0,
+              "enemyArea": 10.195802805757566
+            },
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-1",
+              "area": 15.5,
+              "ownedArea": 6.75,
+              "enemyArea": 2.75
+            }
+          ],
+          "scores": [
+            16.75,
+            21.69580280575755
+          ],
+          "coverage": 0.40256647453801264,
+          "attacks": 9,
+          "paintCount": 14,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 2115
+        },
+        {
+          "variant": "C-diverse",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "attack",
+              "builder"
+            ]
+          },
+          "counts": [
+            {
+              "gun": 2,
+              "brush": 2,
+              "air": 3,
+              "bomb": 1
+            },
+            {
+              "arch": 1,
+              "dome": 1,
+              "tower": 1,
+              "brush": 3,
+              "air": 2
+            }
+          ],
+          "usedHigh": [
+            1,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 1,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-2",
+              "area": 21.16004406184676,
+              "ownedArea": 8.353533380180037,
+              "enemyArea": 0.25
+            },
+            {
+              "owner": 1,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-3",
+              "shots": 1,
+              "area": 6.0833447192771715,
+              "ownedArea": 0,
+              "enemyArea": 2.867401183864565
+            },
+            {
+              "owner": 1,
+              "kind": "tower",
+              "round": 2,
+              "id": "structure-4",
+              "area": 10.082852488420912,
+              "ownedArea": 0.1294095225512604,
+              "enemyArea": 1.1646857029613435
+            }
+          ],
+          "scores": [
+            14.532086886825889,
+            9.232942902731295
+          ],
+          "coverage": 0.2543946907676945,
+          "attacks": 8,
+          "paintCount": 13,
+          "firstContact": 1,
+          "winners": [
+            0
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 2267
+        }
+      ]
+    },
+    {
+      "stage": "altitude-splash",
+      "results": [
+        {
+          "variant": "D-altitude-splash",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ]
+          },
+          "counts": [
+            {
+              "brush": 5,
+              "bomb": 2,
+              "gun": 1
+            },
+            {
+              "brush": 8
+            }
+          ],
+          "usedHigh": [
+            0,
+            0
+          ],
+          "buildings": [],
+          "scores": [
+            19.876508372778467,
+            23.966838799185474
+          ],
+          "coverage": 0.6894507158114971,
+          "attacks": 11,
+          "paintCount": 16,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 1293
+        },
+        {
+          "variant": "D-altitude-splash",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "builder",
+              "attack"
+            ]
+          },
+          "counts": [
+            {
+              "arch": 1,
+              "wall": 1,
+              "dome": 1,
+              "brush": 5
+            },
+            {
+              "brush": 5,
+              "gun": 1,
+              "air": 1,
+              "bomb": 1
+            }
+          ],
+          "usedHigh": [
+            0,
+            1
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-0",
+              "area": 21.160044061846758,
+              "ownedArea": 4.326395719061509,
+              "enemyArea": 4.8633370051539
+            },
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-1",
+              "area": 15.5,
+              "ownedArea": 2.5,
+              "enemyArea": 2.75
+            },
+            {
+              "owner": 0,
+              "kind": "dome",
+              "round": 2,
+              "id": "structure-6",
+              "shots": 1,
+              "area": 6.083344719277172,
+              "ownedArea": 2.574472652559524,
+              "enemyArea": 1.1137878974830704
+            }
+          ],
+          "scores": [
+            15.150868371621021,
+            19.727124902636962
+          ],
+          "coverage": 0.3546851038005213,
+          "attacks": 6,
+          "paintCount": 13,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 2654
+        },
+        {
+          "variant": "D-altitude-splash",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "attack",
+              "builder"
+            ]
+          },
+          "counts": [
+            {
+              "brush": 7,
+              "gun": 1
+            },
+            {
+              "arch": 1,
+              "dome": 1,
+              "brush": 5,
+              "tower": 1
+            }
+          ],
+          "usedHigh": [
+            0,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 1,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-2",
+              "area": 21.16004406184676,
+              "ownedArea": 3.6172755202631364,
+              "enemyArea": 6.508274463744576
+            },
+            {
+              "owner": 1,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-3",
+              "area": 6.083344719277173,
+              "ownedArea": 0,
+              "enemyArea": 0.2926810020988973
+            },
+            {
+              "owner": 1,
+              "kind": "tower",
+              "round": 2,
+              "id": "structure-5",
+              "area": 10.082852488420915,
+              "ownedArea": 1.2940952255126037,
+              "enemyArea": 0.6470476127563021
+            }
+          ],
+          "scores": [
+            17.698003078599758,
+            10.661370745775733
+          ],
+          "coverage": 0.30195904691809294,
+          "attacks": 9,
+          "paintCount": 13,
+          "firstContact": 1,
+          "winners": [
+            0
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 2348
+        },
+        {
+          "variant": "D-altitude-splash",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "tower",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "tower": 1,
+              "air": 1,
+              "bomb": 4,
+              "brush": 2
+            },
+            {
+              "brush": 5,
+              "bomb": 3
+            }
+          ],
+          "usedHigh": [
+            4,
+            3
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 7,
+              "area": 10.08285248842091,
+              "ownedArea": 0.9058666578588227,
+              "enemyArea": 5.0358811089217745
+            }
+          ],
+          "scores": [
+            20.66285820793614,
+            23.869082632188782
+          ],
+          "coverage": 0.6148734878557827,
+          "attacks": 8,
+          "paintCount": 15,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 1521
+        },
+        {
+          "variant": "E-strong-height",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ]
+          },
+          "counts": [
+            {
+              "brush": 5,
+              "bomb": 2,
+              "gun": 1
+            },
+            {
+              "brush": 8
+            }
+          ],
+          "usedHigh": [
+            0,
+            0
+          ],
+          "buildings": [],
+          "scores": [
+            19.876508372778467,
+            23.966838799185474
+          ],
+          "coverage": 0.6894507158114971,
+          "attacks": 11,
+          "paintCount": 16,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 1237
+        },
+        {
+          "variant": "E-strong-height",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "builder",
+              "attack"
+            ]
+          },
+          "counts": [
+            {
+              "arch": 1,
+              "wall": 1,
+              "dome": 1,
+              "brush": 5
+            },
+            {
+              "brush": 5,
+              "gun": 1,
+              "bomb": 2
+            }
+          ],
+          "usedHigh": [
+            0,
+            2
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-0",
+              "area": 21.160044061846758,
+              "ownedArea": 6.9212381145553055,
+              "enemyArea": 3.9233792142468724
+            },
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-1",
+              "area": 15.5,
+              "ownedArea": 1.25,
+              "enemyArea": 5
+            },
+            {
+              "owner": 0,
+              "kind": "dome",
+              "round": 2,
+              "id": "structure-6",
+              "shots": 2,
+              "area": 6.083344719277172,
+              "ownedArea": 2.03176545216391,
+              "enemyArea": 1.1709715376017333
+            }
+          ],
+          "scores": [
+            13.953003566719213,
+            22.77720653008121
+          ],
+          "coverage": 0.3735208696887322,
+          "attacks": 6,
+          "paintCount": 13,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 2643
+        },
+        {
+          "variant": "E-strong-height",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "attack",
+              "builder"
+            ]
+          },
+          "counts": [
+            {
+              "brush": 7,
+              "gun": 1
+            },
+            {
+              "arch": 1,
+              "dome": 1,
+              "brush": 5,
+              "tower": 1
+            }
+          ],
+          "usedHigh": [
+            0,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 1,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-2",
+              "area": 21.16004406184676,
+              "ownedArea": 3.6172755202631364,
+              "enemyArea": 6.508274463744576
+            },
+            {
+              "owner": 1,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-3",
+              "area": 6.083344719277173,
+              "ownedArea": 0,
+              "enemyArea": 0.2926810020988973
+            },
+            {
+              "owner": 1,
+              "kind": "tower",
+              "round": 2,
+              "id": "structure-5",
+              "area": 10.082852488420915,
+              "ownedArea": 1.2940952255126037,
+              "enemyArea": 0.6470476127563021
+            }
+          ],
+          "scores": [
+            17.698003078599758,
+            10.661370745775733
+          ],
+          "coverage": 0.30195904691809294,
+          "attacks": 9,
+          "paintCount": 13,
+          "firstContact": 1,
+          "winners": [
+            0
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 2375
+        },
+        {
+          "variant": "E-strong-height",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "tower",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "tower": 1,
+              "air": 2,
+              "bomb": 4,
+              "brush": 1
+            },
+            {
+              "brush": 5,
+              "bomb": 3
+            }
+          ],
+          "usedHigh": [
+            4,
+            3
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 7,
+              "area": 10.08285248842091,
+              "ownedArea": 0.6470476127563018,
+              "enemyArea": 5.0358811089217745
+            }
+          ],
+          "scores": [
+            21.661030712910943,
+            26.361757683524537
+          ],
+          "coverage": 0.663073264735651,
+          "attacks": 8,
+          "paintCount": 15,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 1716
+        }
+      ]
+    },
+    {
+      "stage": "old-building-opening",
+      "results": [
+        {
+          "variant": "A-current",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "dome",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "dome": 1,
+              "air": 1,
+              "bomb": 11,
+              "brush": 3
+            },
+            {
+              "bomb": 11,
+              "brush": 5
+            }
+          ],
+          "usedHigh": [
+            6,
+            8
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 14,
+              "area": 6.0833447192771715,
+              "ownedArea": 1.898879025967572,
+              "enemyArea": 3.7454441901612565
+            }
+          ],
+          "scores": [
+            35.384026373808716,
+            40.94352656317158
+          ],
+          "coverage": 0.5806084966818078,
+          "attacks": 22,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4380
+        },
+        {
+          "variant": "A-current",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "tower",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "tower": 1,
+              "air": 1,
+              "brush": 6,
+              "bomb": 8
+            },
+            {
+              "bomb": 9,
+              "brush": 7
+            }
+          ],
+          "usedHigh": [
+            4,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 4,
+              "area": 10.08285248842091,
+              "ownedArea": 4.00060492851169,
+              "enemyArea": 1.035276180410083
+            }
+          ],
+          "scores": [
+            47.198687301521964,
+            45.86158366197372
+          ],
+          "coverage": 0.6769948936209975,
+          "attacks": 18,
+          "paintCount": 31,
+          "firstContact": 3,
+          "winners": [
+            0
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4677
+        },
+        {
+          "variant": "A-current",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "air": 1,
+              "bomb": 13,
+              "brush": 1
+            },
+            {
+              "bomb": 13,
+              "brush": 3
+            }
+          ],
+          "usedHigh": [
+            6,
+            8
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 14,
+              "area": 15.5,
+              "ownedArea": 2.75,
+              "enemyArea": 8
+            }
+          ],
+          "scores": [
+            38.48514734784111,
+            45.636649819227586
+          ],
+          "coverage": 0.5908343868119911,
+          "attacks": 19,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4291
+        },
+        {
+          "variant": "A-current",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "arch",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "arch": 1,
+              "air": 1,
+              "brush": 4,
+              "bomb": 10
+            },
+            {
+              "bomb": 11,
+              "brush": 5
+            }
+          ],
+          "usedHigh": [
+            6,
+            7
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 13,
+              "area": 21.16004406184676,
+              "ownedArea": 7.286263954602507,
+              "enemyArea": 7.407496777830954
+            }
+          ],
+          "scores": [
+            40.75060481643215,
+            45.89123828901153
+          ],
+          "coverage": 0.5902515071766593,
+          "attacks": 20,
+          "paintCount": 31,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 5086
+        }
+      ]
+    },
+    {
+      "stage": "roof-majority",
+      "results": [
+        {
+          "variant": "M-roof-majority",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "dome",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "dome": 1,
+              "air": 1,
+              "bomb": 8,
+              "brush": 6
+            },
+            {
+              "bomb": 5,
+              "brush": 11
+            }
+          ],
+          "usedHigh": [
+            2,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 2,
+              "area": 6.0833447192771715,
+              "ownedArea": 2.0382065804720626,
+              "enemyArea": 3.0895159991497416
+            }
+          ],
+          "scores": [
+            40.8701828599532,
+            44.57466334699091
+          ],
+          "coverage": 0.6499619311309837,
+          "attacks": 20,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4939
+        },
+        {
+          "variant": "M-roof-majority",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "tower",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "tower": 1,
+              "air": 1,
+              "brush": 6,
+              "bomb": 8
+            },
+            {
+              "bomb": 9,
+              "brush": 7
+            }
+          ],
+          "usedHigh": [
+            4,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 4,
+              "area": 10.08285248842091,
+              "ownedArea": 4.00060492851169,
+              "enemyArea": 1.035276180410083
+            }
+          ],
+          "scores": [
+            47.448687301521964,
+            45.86158366197372
+          ],
+          "coverage": 0.678813593713453,
+          "attacks": 18,
+          "paintCount": 31,
+          "firstContact": 3,
+          "winners": [
+            0
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4497
+        },
+        {
+          "variant": "M-roof-majority",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "air": 1,
+              "bomb": 6,
+              "brush": 8
+            },
+            {
+              "bomb": 7,
+              "brush": 9
+            }
+          ],
+          "usedHigh": [
+            0,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "area": 15.5,
+              "ownedArea": 6,
+              "enemyArea": 7.5
+            }
+          ],
+          "scores": [
+            48.41635512354538,
+            52.95342009837624
+          ],
+          "coverage": 0.7119765744610097,
+          "attacks": 20,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4588
+        },
+        {
+          "variant": "M-roof-majority",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "arch",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "arch": 1,
+              "air": 1,
+              "brush": 3,
+              "bomb": 11
+            },
+            {
+              "bomb": 8,
+              "brush": 8
+            }
+          ],
+          "usedHigh": [
+            6,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 6,
+              "area": 21.16004406184676,
+              "ownedArea": 7.782022265705301,
+              "enemyArea": 9.854418318561748
+            }
+          ],
+          "scores": [
+            43.98010463871553,
+            49.32471301424399
+          ],
+          "coverage": 0.6356433251249995,
+          "attacks": 18,
+          "paintCount": 31,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4929
+        }
+      ]
+    },
+    {
+      "stage": "majority-moderate",
+      "results": [
+        {
+          "variant": "N-majority-moderate",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "dome",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "dome": 1,
+              "air": 1,
+              "bomb": 8,
+              "brush": 6
+            },
+            {
+              "bomb": 8,
+              "brush": 8
+            }
+          ],
+          "usedHigh": [
+            7,
+            4
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 11,
+              "area": 6.0833447192771715,
+              "ownedArea": 3.013936977675138,
+              "enemyArea": 2.0450242342558953
+            }
+          ],
+          "scores": [
+            42.19857253518707,
+            48.34973550163413
+          ],
+          "coverage": 0.6887829490583424,
+          "attacks": 21,
+          "paintCount": 31,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4623
+        },
+        {
+          "variant": "N-majority-moderate",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "tower",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "tower": 1,
+              "air": 1,
+              "bomb": 13,
+              "brush": 1
+            },
+            {
+              "bomb": 7,
+              "brush": 9
+            }
+          ],
+          "usedHigh": [
+            13,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 13,
+              "area": 10.08285248842091,
+              "ownedArea": 1.2830049549352207,
+              "enemyArea": 0
+            }
+          ],
+          "scores": [
+            53.21790052398862,
+            40.25
+          ],
+          "coverage": 0.6799603172984221,
+          "attacks": 23,
+          "paintCount": 31,
+          "firstContact": 3,
+          "winners": [
+            0
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4435
+        },
+        {
+          "variant": "N-majority-moderate",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "air": 1,
+              "bomb": 5,
+              "brush": 9
+            },
+            {
+              "bomb": 11,
+              "brush": 5
+            }
+          ],
+          "usedHigh": [
+            0,
+            10
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 10,
+              "area": 15.5,
+              "ownedArea": 2.75,
+              "enemyArea": 9.75
+            }
+          ],
+          "scores": [
+            43.46434086182966,
+            52.65298280112096
+          ],
+          "coverage": 0.6750856722143421,
+          "attacks": 19,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4353
+        },
+        {
+          "variant": "N-majority-moderate",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "arch",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "arch": 1,
+              "air": 1,
+              "brush": 8,
+              "bomb": 6
+            },
+            {
+              "bomb": 6,
+              "brush": 9,
+              "air": 1
+            }
+          ],
+          "usedHigh": [
+            3,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 3,
+              "area": 21.16004406184676,
+              "ownedArea": 9.488884857746584,
+              "enemyArea": 9.743111722058291
+            }
+          ],
+          "scores": [
+            50.519633142609976,
+            48.99311172205828
+          ],
+          "coverage": 0.677935112347193,
+          "attacks": 17,
+          "paintCount": 31,
+          "firstContact": 2,
+          "winners": [
+            0
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 5074
+        }
+      ]
+    },
+    {
+      "stage": "resized-buildings",
+      "results": [
+        {
+          "variant": "O-resized",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "dome",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "dome": 1,
+              "air": 1,
+              "bomb": 12,
+              "brush": 2
+            },
+            {
+              "bomb": 7,
+              "brush": 9
+            }
+          ],
+          "usedHigh": [
+            12,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 12,
+              "area": 9.50522612387059,
+              "ownedArea": 3.4782975749695613,
+              "enemyArea": 3.856465981331681
+            }
+          ],
+          "scores": [
+            41.19716475226335,
+            43.82473873186681
+          ],
+          "coverage": 0.6398243696891479,
+          "attacks": 22,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4290
+        },
+        {
+          "variant": "O-resized",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "tower",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "tower": 1,
+              "air": 1,
+              "bomb": 14
+            },
+            {
+              "bomb": 8,
+              "brush": 8
+            }
+          ],
+          "usedHigh": [
+            14,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 14,
+              "area": 11.387412760392335,
+              "ownedArea": 0.8892606259583775,
+              "enemyArea": 7.273698197531698
+            }
+          ],
+          "scores": [
+            46.55783198002844,
+            43.24197094806667
+          ],
+          "coverage": 0.6471340683269391,
+          "attacks": 22,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            0
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4400
+        },
+        {
+          "variant": "O-resized",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "air": 1,
+              "brush": 8,
+              "bomb": 6
+            },
+            {
+              "bomb": 12,
+              "brush": 4
+            }
+          ],
+          "usedHigh": [
+            0,
+            8
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 8,
+              "area": 17.25,
+              "ownedArea": 4.375,
+              "enemyArea": 7.125
+            }
+          ],
+          "scores": [
+            40.355577668921214,
+            47.12318705307382
+          ],
+          "coverage": 0.6069520596805349,
+          "attacks": 20,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4096
+        },
+        {
+          "variant": "O-resized",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "arch",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "arch": 1,
+              "air": 1,
+              "brush": 5,
+              "bomb": 9
+            },
+            {
+              "bomb": 9,
+              "air": 3,
+              "brush": 4
+            }
+          ],
+          "usedHigh": [
+            0,
+            1
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 1,
+              "area": 24.312444366498863,
+              "ownedArea": 10.392639967463435,
+              "enemyArea": 5.85940923104959
+            }
+          ],
+          "scores": [
+            47.85573313978055,
+            50.33256655989457
+          ],
+          "coverage": 0.6548488205794047,
+          "attacks": 14,
+          "paintCount": 31,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4784
+        }
+      ]
+    },
+    {
+      "stage": "wall-platform-highwall",
+      "results": [
+        {
+          "variant": "N-wall",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0,
+              "point": [
+                0,
+                0,
+                -2.6
+              ],
+              "follow": "ai"
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "bomb": 4,
+              "brush": 11
+            },
+            {
+              "bomb": 11,
+              "brush": 5
+            }
+          ],
+          "usedHigh": [
+            0,
+            8
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 8,
+              "area": 15.5,
+              "ownedArea": 5.25,
+              "enemyArea": 7.5
+            }
+          ],
+          "scores": [
+            45.25,
+            53.868139078470676
+          ],
+          "coverage": 0.6961620756635404,
+          "attacks": 19,
+          "paintCount": 31,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 1,
+          "invalid": 0,
+          "ms": 3794
+        },
+        {
+          "variant": "N-wall",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "air": 1,
+              "bomb": 5,
+              "brush": 9
+            },
+            {
+              "bomb": 11,
+              "brush": 5
+            }
+          ],
+          "usedHigh": [
+            0,
+            10
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 10,
+              "area": 15.5,
+              "ownedArea": 2.75,
+              "enemyArea": 9.75
+            }
+          ],
+          "scores": [
+            43.46434086182966,
+            52.65298280112096
+          ],
+          "coverage": 0.6750856722143421,
+          "attacks": 19,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 3536
+        },
+        {
+          "variant": "P-platform",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0,
+              "point": [
+                0,
+                0,
+                -2.6
+              ],
+              "follow": "ai"
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "bomb": 7,
+              "brush": 7,
+              "gun": 1
+            },
+            {
+              "bomb": 11,
+              "air": 1,
+              "brush": 4
+            }
+          ],
+          "usedHigh": [
+            0,
+            6
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 6,
+              "area": 12,
+              "ownedArea": 2.5,
+              "enemyArea": 6.416666666666667
+            }
+          ],
+          "scores": [
+            36.73057766892123,
+            46.65583330267726
+          ],
+          "coverage": 0.6205363466765996,
+          "attacks": 20,
+          "paintCount": 31,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 1,
+          "invalid": 0,
+          "ms": 3357
+        },
+        {
+          "variant": "P-platform",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "air": 1,
+              "bomb": 10,
+              "brush": 4
+            },
+            {
+              "bomb": 6,
+              "brush": 10
+            }
+          ],
+          "usedHigh": [
+            10,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 10,
+              "area": 12,
+              "ownedArea": 7.000000000000001,
+              "enemyArea": 2.75
+            }
+          ],
+          "scores": [
+            48.403617576945365,
+            47.750000000000036
+          ],
+          "coverage": 0.7155460209369031,
+          "attacks": 18,
+          "paintCount": 31,
+          "firstContact": 3,
+          "winners": [
+            0
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 3644
+        },
+        {
+          "variant": "Q-high-wall",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0,
+              "point": [
+                0,
+                0,
+                -2.6
+              ],
+              "follow": "ai"
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "bomb": 11,
+              "air": 1,
+              "brush": 3
+            },
+            {
+              "bomb": 13,
+              "brush": 2,
+              "gun": 1
+            }
+          ],
+          "usedHigh": [
+            10,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 10,
+              "area": 22.5,
+              "ownedArea": 9,
+              "enemyArea": 4.125
+            }
+          ],
+          "scores": [
+            59.28691063968815,
+            39.125
+          ],
+          "coverage": 0.6588114329584824,
+          "attacks": 16,
+          "paintCount": 31,
+          "firstContact": 3,
+          "winners": [
+            0
+          ],
+          "forced": 1,
+          "invalid": 0,
+          "ms": 4058
+        },
+        {
+          "variant": "Q-high-wall",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "air": 1,
+              "brush": 3,
+              "bomb": 11
+            },
+            {
+              "bomb": 13,
+              "brush": 1,
+              "gun": 1,
+              "air": 1
+            }
+          ],
+          "usedHigh": [
+            11,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 11,
+              "area": 22.5,
+              "ownedArea": 9,
+              "enemyArea": 4.125
+            }
+          ],
+          "scores": [
+            64.06131980434111,
+            36.60545563875948
+          ],
+          "coverage": 0.6739064626414516,
+          "attacks": 14,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            0
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4122
+        }
+      ]
+    },
+    {
+      "stage": "wall-height",
+      "results": [
+        {
+          "variant": "wall-2.4",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "air": 1,
+              "brush": 2,
+              "bomb": 12
+            },
+            {
+              "bomb": 8,
+              "air": 1,
+              "brush": 7
+            }
+          ],
+          "usedHigh": [
+            12,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 12,
+              "area": 18.30000000000002,
+              "ownedArea": 6.399999999999999,
+              "enemyArea": 6.799999999999997
+            }
+          ],
+          "scores": [
+            49.78777447421697,
+            45.518272750535075
+          ],
+          "coverage": 0.6564773638839961,
+          "attacks": 21,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            0
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4133
+        },
+        {
+          "variant": "wall-2.4",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0,
+              "point": [
+                0,
+                0,
+                -2.6
+              ],
+              "follow": "ai"
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "bomb": 11,
+              "brush": 4
+            },
+            {
+              "bomb": 8,
+              "brush": 8
+            }
+          ],
+          "usedHigh": [
+            10,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 10,
+              "area": 18.30000000000002,
+              "ownedArea": 11.1,
+              "enemyArea": 2.4
+            }
+          ],
+          "scores": [
+            45.58312540269394,
+            44.39999999999998
+          ],
+          "coverage": 0.6198125583689296,
+          "attacks": 16,
+          "paintCount": 31,
+          "firstContact": 4,
+          "winners": [
+            0
+          ],
+          "forced": 1,
+          "invalid": 0,
+          "ms": 4670
+        },
+        {
+          "variant": "wall-2.5",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "air": 3,
+              "brush": 4,
+              "bomb": 8
+            },
+            {
+              "bomb": 8,
+              "gun": 1,
+              "brush": 7
+            }
+          ],
+          "usedHigh": [
+            3,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 3,
+              "area": 19,
+              "ownedArea": 5.3125,
+              "enemyArea": 9.5
+            }
+          ],
+          "scores": [
+            46.37834001920964,
+            54.723157328844984
+          ],
+          "coverage": 0.6930553076348087,
+          "attacks": 13,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 3990
+        },
+        {
+          "variant": "wall-2.5",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0,
+              "point": [
+                0,
+                0,
+                -2.6
+              ],
+              "follow": "ai"
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "bomb": 11,
+              "brush": 4
+            },
+            {
+              "bomb": 8,
+              "brush": 8
+            }
+          ],
+          "usedHigh": [
+            10,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 10,
+              "area": 19,
+              "ownedArea": 13.0625,
+              "enemyArea": 3.4375
+            }
+          ],
+          "scores": [
+            52.75733001734328,
+            50.02831568842788
+          ],
+          "coverage": 0.7046002203094611,
+          "attacks": 18,
+          "paintCount": 31,
+          "firstContact": 2,
+          "winners": [
+            0
+          ],
+          "forced": 1,
+          "invalid": 0,
+          "ms": 3925
+        }
+      ]
+    },
+    {
+      "stage": "mixed-shapes-seat-1",
+      "results": [
+        {
+          "variant": "R-mixed-shapes",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "dome",
+              "seat": 1
+            }
+          },
+          "counts": [
+            {
+              "bomb": 11,
+              "brush": 5
+            },
+            {
+              "dome": 1,
+              "air": 1,
+              "bomb": 5,
+              "brush": 9
+            }
+          ],
+          "usedHigh": [
+            9,
+            2
+          ],
+          "buildings": [
+            {
+              "owner": 1,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-2",
+              "shots": 11,
+              "area": 9.50522612387059,
+              "ownedArea": 3.005051573715984,
+              "enemyArea": 5.42851581038367
+            }
+          ],
+          "scores": [
+            51.71709437916255,
+            42.25505157371598
+          ],
+          "coverage": 0.7071785809154454,
+          "attacks": 20,
+          "paintCount": 31,
+          "firstContact": 2,
+          "winners": [
+            0
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4388
+        },
+        {
+          "variant": "R-mixed-shapes",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "tower",
+              "seat": 1
+            }
+          },
+          "counts": [
+            {
+              "bomb": 6,
+              "brush": 10
+            },
+            {
+              "tower": 1,
+              "air": 1,
+              "bomb": 14
+            }
+          ],
+          "usedHigh": [
+            0,
+            14
+          ],
+          "buildings": [
+            {
+              "owner": 1,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-2",
+              "shots": 14,
+              "area": 11.387412760392335,
+              "ownedArea": 1.1696479248194416,
+              "enemyArea": 7.2736981975317025
+            }
+          ],
+          "scores": [
+            41.59827707886786,
+            50.788005199114316
+          ],
+          "coverage": 0.6657732952490325,
+          "attacks": 20,
+          "paintCount": 31,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4316
+        },
+        {
+          "variant": "R-mixed-shapes",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 1
+            }
+          },
+          "counts": [
+            {
+              "bomb": 8,
+              "brush": 7,
+              "air": 1
+            },
+            {
+              "wall": 1,
+              "air": 1,
+              "brush": 5,
+              "bomb": 9
+            }
+          ],
+          "usedHigh": [
+            0,
+            8
+          ],
+          "buildings": [
+            {
+              "owner": 1,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-2",
+              "shots": 8,
+              "area": 18.30000000000002,
+              "ownedArea": 7.649999999999998,
+              "enemyArea": 6.499999999999998
+            }
+          ],
+          "scores": [
+            44.464340861829605,
+            52.07152366882889
+          ],
+          "coverage": 0.6649484656298956,
+          "attacks": 18,
+          "paintCount": 31,
+          "firstContact": 3,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4048
+        },
+        {
+          "variant": "R-mixed-shapes",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "arch",
+              "seat": 1
+            }
+          },
+          "counts": [
+            {
+              "bomb": 6,
+              "brush": 9,
+              "air": 1
+            },
+            {
+              "arch": 1,
+              "air": 1,
+              "brush": 7,
+              "bomb": 7
+            }
+          ],
+          "usedHigh": [
+            0,
+            7
+          ],
+          "buildings": [
+            {
+              "owner": 1,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-2",
+              "shots": 7,
+              "area": 21.16004406184676,
+              "ownedArea": 8.32273285998427,
+              "enemyArea": 7.33849931403221
+            }
+          ],
+          "scores": [
+            40.30284017586186,
+            53.021163693412625
+          ],
+          "coverage": 0.6357740320985705,
+          "attacks": 20,
+          "paintCount": 31,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4437
+        }
+      ]
+    },
+    {
+      "stage": "multi-player-screen",
+      "results": [
+        {
+          "variant": "A-current",
+          "setting": {
+            "rounds": 6,
+            "profiles": [
+              "balanced",
+              "attack",
+              "builder"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 10,
+              "brush": 2
+            },
+            {
+              "bomb": 8,
+              "brush": 4
+            },
+            {
+              "arch": 1,
+              "dome": 1,
+              "tower": 1,
+              "bomb": 5,
+              "wall": 1,
+              "brush": 3
+            }
+          ],
+          "usedHigh": [
+            0,
+            0,
+            2
+          ],
+          "buildings": [
+            {
+              "owner": 2,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-4",
+              "area": 21.160044061846765,
+              "ownedArea": 7.2818700147831725,
+              "enemyArea": 0.9124999999999999
+            },
+            {
+              "owner": 2,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-5",
+              "shots": 2,
+              "area": 6.083344719277172,
+              "ownedArea": 1.7177928122429493,
+              "enemyArea": 1.7649037782612926
+            },
+            {
+              "owner": 2,
+              "kind": "tower",
+              "round": 2,
+              "id": "structure-8",
+              "area": 10.082852488420913,
+              "ownedArea": 0.6470476127563018,
+              "enemyArea": 1.1646857029613433
+            },
+            {
+              "owner": 2,
+              "kind": "wall",
+              "round": 3,
+              "id": "structure-12",
+              "area": 15.5,
+              "ownedArea": 4.5,
+              "enemyArea": 0.25
+            }
+          ],
+          "scores": [
+            19.67958948122262,
+            16.662499999999998,
+            27.1467104397824
+          ],
+          "coverage": 0.33630186795333994,
+          "attacks": 19,
+          "paintCount": 32,
+          "firstContact": 1,
+          "winners": [
+            2
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 7693
+        },
+        {
+          "variant": "A-current",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "balanced",
+              "attack",
+              "builder",
+              "expand"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 7,
+              "brush": 1
+            },
+            {
+              "bomb": 3,
+              "brush": 5
+            },
+            {
+              "arch": 1,
+              "dome": 1,
+              "brush": 3,
+              "bomb": 3
+            },
+            {
+              "bomb": 8
+            }
+          ],
+          "usedHigh": [
+            0,
+            0,
+            2,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 2,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-4",
+              "shots": 2,
+              "area": 21.16004406184676,
+              "ownedArea": 11.406898356796157,
+              "enemyArea": 1.6624999999999999
+            },
+            {
+              "owner": 2,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-5",
+              "area": 6.083344719277172,
+              "ownedArea": 0,
+              "enemyArea": 4.137354727291259
+            }
+          ],
+          "scores": [
+            20.71827275053513,
+            21.29985472729128,
+            26.570727428296554,
+            26.058643156083654
+          ],
+          "coverage": 0.6325801510509655,
+          "attacks": 17,
+          "paintCount": 30,
+          "firstContact": 1,
+          "winners": [
+            2
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 5437
+        },
+        {
+          "variant": "R-mixed-shapes",
+          "setting": {
+            "rounds": 6,
+            "profiles": [
+              "balanced",
+              "attack",
+              "builder"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 9,
+              "brush": 2,
+              "air": 1
+            },
+            {
+              "bomb": 7,
+              "brush": 4,
+              "air": 1
+            },
+            {
+              "arch": 1,
+              "wall": 1,
+              "dome": 1,
+              "bomb": 4,
+              "brush": 3,
+              "air": 1,
+              "tower": 1
+            }
+          ],
+          "usedHigh": [
+            0,
+            6,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 2,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-4",
+              "shots": 6,
+              "area": 21.160044061846765,
+              "ownedArea": 1,
+              "enemyArea": 6.493732390420468
+            },
+            {
+              "owner": 2,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-5",
+              "area": 18.30000000000002,
+              "ownedArea": 6.549999999999997,
+              "enemyArea": 4.949999999999999
+            },
+            {
+              "owner": 2,
+              "kind": "dome",
+              "round": 2,
+              "id": "structure-8",
+              "area": 9.505226123870589,
+              "ownedArea": 5.036399928273275,
+              "enemyArea": 0
+            },
+            {
+              "owner": 2,
+              "kind": "tower",
+              "round": 4,
+              "id": "structure-22",
+              "area": 11.387412760392332,
+              "ownedArea": 0.14019364943053225,
+              "enemyArea": 0.4205809482915964
+            }
+          ],
+          "scores": [
+            29.400000000000006,
+            29.455269943450084,
+            23.22659357770385
+          ],
+          "coverage": 0.42242390758637316,
+          "attacks": 14,
+          "paintCount": 32,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 6454
+        },
+        {
+          "variant": "R-mixed-shapes",
+          "setting": {
+            "rounds": 4,
+            "profiles": [
+              "balanced",
+              "attack",
+              "builder",
+              "expand"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 5,
+              "brush": 3
+            },
+            {
+              "bomb": 4,
+              "brush": 4
+            },
+            {
+              "arch": 1,
+              "dome": 1,
+              "air": 1,
+              "brush": 3,
+              "bomb": 2
+            },
+            {
+              "bomb": 6,
+              "brush": 2
+            }
+          ],
+          "usedHigh": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 2,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-4",
+              "area": 21.16004406184676,
+              "ownedArea": 11.316296846840821,
+              "enemyArea": 0.9124999999999999
+            },
+            {
+              "owner": 2,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-5",
+              "area": 9.50522612387059,
+              "ownedArea": 0.5685251528161825,
+              "enemyArea": 5.69751554358012
+            }
+          ],
+          "scores": [
+            17.327460860688177,
+            17.14790532766154,
+            21.134821999656985,
+            21.156195897583498
+          ],
+          "coverage": 0.5082411297894427,
+          "attacks": 18,
+          "paintCount": 30,
+          "firstContact": 1,
+          "winners": [
+            3
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 5145
+        }
+      ]
+    },
+    {
+      "stage": "ghost-region",
+      "results": [
+        {
+          "variant": "S-ghost-region",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "attack",
+              "balanced"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 3,
+              "brush": 13
+            },
+            {
+              "bomb": 6,
+              "brush": 10
+            }
+          ],
+          "usedHigh": [
+            0,
+            0
+          ],
+          "buildings": [],
+          "scores": [
+            36.96434086182966,
+            39
+          ],
+          "coverage": 0.5905740741592543,
+          "attacks": 22,
+          "paintCount": 32,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 3582
+        },
+        {
+          "variant": "S-ghost-region",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "attack"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 6,
+              "brush": 10
+            },
+            {
+              "bomb": 2,
+              "brush": 14
+            }
+          ],
+          "usedHigh": [
+            0,
+            0
+          ],
+          "buildings": [],
+          "scores": [
+            34.214340861829655,
+            37.5
+          ],
+          "coverage": 0.5575330474524982,
+          "attacks": 25,
+          "paintCount": 32,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 3658
+        }
+      ]
+    },
+    {
+      "stage": "new-ai-first",
+      "results": [
+        {
+          "variant": "v0.4-candidate",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 7,
+              "tower": 1,
+              "brush": 8
+            },
+            {
+              "bomb": 15,
+              "air": 1
+            }
+          ],
+          "usedHigh": [
+            0,
+            10
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 3,
+              "id": "structure-9",
+              "shots": 10,
+              "area": 11.387412760392335,
+              "ownedArea": 7.83447279525383,
+              "enemyArea": 0.8892606259583774
+            }
+          ],
+          "scores": [
+            40.79881365708331,
+            47.73168844701332
+          ],
+          "coverage": 0.6379869680062111,
+          "attacks": 19,
+          "paintCount": 31,
+          "firstContact": 4,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 4120
+        },
+        {
+          "variant": "v0.4-candidate",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "builder",
+              "attack"
+            ]
+          },
+          "counts": [
+            {
+              "tower": 1,
+              "arch": 1,
+              "brush": 7,
+              "bomb": 6,
+              "gun": 1
+            },
+            {
+              "air": 1,
+              "bomb": 5,
+              "brush": 9,
+              "gun": 1
+            }
+          ],
+          "usedHigh": [
+            0,
+            3
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 3,
+              "area": 11.387412760392335,
+              "ownedArea": 2.6636793391801095,
+              "enemyArea": 3.816955691143583
+            },
+            {
+              "owner": 0,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-1",
+              "area": 21.160044061846758,
+              "ownedArea": 6.103665515189803,
+              "enemyArea": 8.685016523192548
+            }
+          ],
+          "scores": [
+            27.5173448543699,
+            34.91389576763733
+          ],
+          "coverage": 0.39784019835504225,
+          "attacks": 17,
+          "paintCount": 30,
+          "firstContact": 3,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 5374
+        },
+        {
+          "variant": "v0.4-candidate",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "attack",
+              "builder"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 7,
+              "brush": 7,
+              "air": 2
+            },
+            {
+              "tower": 1,
+              "air": 1,
+              "bomb": 6,
+              "arch": 1,
+              "brush": 7
+            }
+          ],
+          "usedHigh": [
+            3,
+            2
+          ],
+          "buildings": [
+            {
+              "owner": 1,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-2",
+              "shots": 5,
+              "area": 11.387412760392335,
+              "ownedArea": 4.346003132346493,
+              "enemyArea": 3.6767620417130504
+            },
+            {
+              "owner": 1,
+              "kind": "arch",
+              "round": 3,
+              "id": "structure-10",
+              "area": 21.160044061846765,
+              "ownedArea": 7.330364408039283,
+              "enemyArea": 0.8875000000000002
+            }
+          ],
+          "scores": [
+            43.48684308678434,
+            33.3946402909209
+          ],
+          "coverage": 0.48992370313452205,
+          "attacks": 15,
+          "paintCount": 30,
+          "firstContact": 2,
+          "winners": [
+            0
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 4731
+        }
+      ]
+    },
+    {
+      "stage": "new-ai-alternative",
+      "results": [
+        {
+          "variant": "v0.4",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 7,
+              "tower": 1,
+              "brush": 8
+            },
+            {
+              "bomb": 15,
+              "air": 1
+            }
+          ],
+          "usedHigh": [
+            0,
+            10
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 3,
+              "id": "structure-9",
+              "shots": 10,
+              "area": 11.387412760392335,
+              "ownedArea": 7.83447279525383,
+              "enemyArea": 0.8892606259583774
+            }
+          ],
+          "scores": [
+            40.79881365708331,
+            47.73168844701332
+          ],
+          "coverage": 0.6379869680062111,
+          "attacks": 19,
+          "paintCount": 31,
+          "firstContact": 4,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 4048
+        },
+        {
+          "variant": "v0.4",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "builder",
+              "attack"
+            ]
+          },
+          "counts": [
+            {
+              "tower": 1,
+              "air": 1,
+              "brush": 2,
+              "bomb": 11,
+              "arch": 1
+            },
+            {
+              "bomb": 13,
+              "brush": 2,
+              "gun": 1
+            }
+          ],
+          "usedHigh": [
+            6,
+            12
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 18,
+              "area": 11.387412760392335,
+              "ownedArea": 3.3646475863327687,
+              "enemyArea": 5.515651057165932
+            },
+            {
+              "owner": 0,
+              "kind": "arch",
+              "round": 6,
+              "id": "structure-22",
+              "area": 21.160044061846758,
+              "ownedArea": 0,
+              "enemyArea": 1.5
+            }
+          ],
+          "scores": [
+            17.61464758633278,
+            30.248776459859968
+          ],
+          "coverage": 0.30500745983536115,
+          "attacks": 18,
+          "paintCount": 30,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 4605
+        },
+        {
+          "variant": "v0.4",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "attack",
+              "builder"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 7,
+              "brush": 7,
+              "air": 2
+            },
+            {
+              "tower": 1,
+              "air": 1,
+              "bomb": 6,
+              "arch": 1,
+              "brush": 7
+            }
+          ],
+          "usedHigh": [
+            3,
+            2
+          ],
+          "buildings": [
+            {
+              "owner": 1,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-2",
+              "shots": 5,
+              "area": 11.387412760392335,
+              "ownedArea": 4.346003132346493,
+              "enemyArea": 3.6767620417130504
+            },
+            {
+              "owner": 1,
+              "kind": "arch",
+              "round": 3,
+              "id": "structure-10",
+              "area": 21.160044061846765,
+              "ownedArea": 7.330364408039283,
+              "enemyArea": 0.8875000000000002
+            }
+          ],
+          "scores": [
+            43.48684308678434,
+            33.3946402909209
+          ],
+          "coverage": 0.48992370313452205,
+          "attacks": 15,
+          "paintCount": 30,
+          "firstContact": 2,
+          "winners": [
+            0
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 4776
+        }
+      ]
+    },
+    {
+      "stage": "strong-height-standard",
+      "results": [
+        {
+          "variant": "v0.4-standard",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "fast": false
+          },
+          "counts": [
+            {
+              "tower": 1,
+              "air": 1,
+              "bomb": 13,
+              "brush": 1
+            },
+            {
+              "tower": 1,
+              "air": 1,
+              "bomb": 13,
+              "brush": 1
+            }
+          ],
+          "usedHigh": [
+            13,
+            13
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 13,
+              "area": 11.387412760392332,
+              "ownedArea": 3.9571493405741136,
+              "enemyArea": 2.1029047414579813
+            },
+            {
+              "owner": 1,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-2",
+              "shots": 13,
+              "area": 11.387412760392333,
+              "ownedArea": 3.6767620417130495,
+              "enemyArea": 2.102904741457982
+            }
+          ],
+          "scores": [
+            43.485760592794094,
+            40.0724115647852
+          ],
+          "coverage": 0.561159212131024,
+          "attacks": 22,
+          "paintCount": 30,
+          "firstContact": 2,
+          "winners": [
+            0
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 21632
+        }
+      ]
+    },
+    {
+      "stage": "moderate-height",
+      "results": [
+        {
+          "variant": "T-moderate-height",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "fast": false
+          },
+          "counts": [
+            {
+              "bomb": 4,
+              "brush": 12
+            },
+            {
+              "bomb": 5,
+              "brush": 11
+            }
+          ],
+          "usedHigh": [
+            0,
+            0
+          ],
+          "buildings": [],
+          "scores": [
+            40.66042125211356,
+            40.46434086182966
+          ],
+          "coverage": 0.6306930427261238,
+          "attacks": 23,
+          "paintCount": 32,
+          "firstContact": 3,
+          "winners": [
+            0
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 15642
+        },
+        {
+          "variant": "T-moderate-height",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "tower",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "tower": 1,
+              "air": 1,
+              "bomb": 10,
+              "brush": 4
+            },
+            {
+              "bomb": 7,
+              "brush": 9
+            }
+          ],
+          "usedHigh": [
+            10,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 10,
+              "area": 11.387412760392335,
+              "ownedArea": 3.3533945413645494,
+              "enemyArea": 5.650726178708719
+            }
+          ],
+          "scores": [
+            42.41447585733838,
+            44.150726178708595
+          ],
+          "coverage": 0.6238242127767977,
+          "attacks": 23,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            1
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4468
+        }
+      ]
+    },
+    {
+      "stage": "selected-height-duels",
+      "results": [
+        {
+          "variant": "U-mid-height",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "fast": false
+          },
+          "counts": [
+            {
+              "bomb": 7,
+              "brush": 9
+            },
+            {
+              "bomb": 11,
+              "brush": 3,
+              "tower": 1,
+              "air": 1
+            }
+          ],
+          "usedHigh": [
+            0,
+            9
+          ],
+          "buildings": [
+            {
+              "owner": 1,
+              "kind": "tower",
+              "round": 3,
+              "id": "structure-10",
+              "shots": 9,
+              "area": 11.387412760392333,
+              "ownedArea": 0.8892606259583774,
+              "enemyArea": 6.432536300948505
+            }
+          ],
+          "scores": [
+            43.182536300948364,
+            45.18655672946815
+          ],
+          "coverage": 0.6368237882763055,
+          "attacks": 20,
+          "paintCount": 31,
+          "firstContact": 2,
+          "winners": [
+            1
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 16827
+        },
+        {
+          "variant": "U-mid-height",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "wall",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "wall": 1,
+              "air": 1,
+              "brush": 4,
+              "bomb": 10
+            },
+            {
+              "bomb": 9,
+              "brush": 7
+            }
+          ],
+          "usedHigh": [
+            10,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "wall",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 10,
+              "area": 18.30000000000002,
+              "ownedArea": 7.249999999999998,
+              "enemyArea": 6.599999999999997
+            }
+          ],
+          "scores": [
+            49.76533016523866,
+            43.303507497840194
+          ],
+          "coverage": 0.6410672458666177,
+          "attacks": 21,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            0
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 3594
+        }
+      ]
+    },
+    {
+      "stage": "selected-height-four-player",
+      "results": [
+        {
+          "variant": "U-mid-height",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "attack",
+              "builder",
+              "expand"
+            ]
+          },
+          "counts": [
+            {
+              "bomb": 7,
+              "tower": 1,
+              "brush": 8
+            },
+            {
+              "bomb": 9,
+              "air": 2,
+              "brush": 5
+            },
+            {
+              "tower": 1,
+              "air": 2,
+              "arch": 1,
+              "brush": 2,
+              "bomb": 10
+            },
+            {
+              "bomb": 8,
+              "brush": 8
+            }
+          ],
+          "usedHigh": [
+            0,
+            7,
+            8,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 2,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-4",
+              "shots": 7,
+              "area": 11.387412760392332,
+              "ownedArea": 0.5607745977221285,
+              "enemyArea": 6.6208286797542195
+            },
+            {
+              "owner": 2,
+              "kind": "arch",
+              "round": 2,
+              "id": "structure-10",
+              "area": 21.160044061846758,
+              "ownedArea": 3.859258428493745,
+              "enemyArea": 11.813729971610156
+            },
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 4,
+              "id": "structure-27",
+              "shots": 8,
+              "area": 11.387412760392332,
+              "ownedArea": 4.89040615721265,
+              "enemyArea": 0.8892606259583774
+            }
+          ],
+          "scores": [
+            47.106643200035805,
+            30.38529615047602,
+            33.809293652174226,
+            58.994069491500355
+          ],
+          "coverage": 0.5816062761701721,
+          "attacks": 35,
+          "paintCount": 61,
+          "firstContact": 2,
+          "winners": [
+            3
+          ],
+          "forced": 0,
+          "invalid": 0,
+          "ms": 15020
+        }
+      ]
+    },
+    {
+      "stage": "selected-height-other-buildings",
+      "results": [
+        {
+          "variant": "U-final",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "dome",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "dome": 1,
+              "air": 1,
+              "bomb": 11,
+              "brush": 3
+            },
+            {
+              "bomb": 8,
+              "brush": 8
+            }
+          ],
+          "usedHigh": [
+            11,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "dome",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 11,
+              "area": 9.50522612387059,
+              "ownedArea": 4.547971855014716,
+              "enemyArea": 3.9572219537628226
+            }
+          ],
+          "scores": [
+            44.75060222521695,
+            43.42011921538842
+          ],
+          "coverage": 0.6635205042345675,
+          "attacks": 20,
+          "paintCount": 31,
+          "firstContact": 2,
+          "winners": [
+            0
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 3795
+        },
+        {
+          "variant": "U-final",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "tower",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "tower": 1,
+              "air": 1,
+              "bomb": 12,
+              "brush": 2
+            },
+            {
+              "bomb": 6,
+              "brush": 10
+            }
+          ],
+          "usedHigh": [
+            12,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "tower",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 12,
+              "area": 11.387412760392335,
+              "ownedArea": 0.9701025010455027,
+              "enemyArea": 6.632081724722445
+            }
+          ],
+          "scores": [
+            48.36624327215393,
+            41.85035447525743
+          ],
+          "coverage": 0.6501376620797861,
+          "attacks": 22,
+          "paintCount": 31,
+          "firstContact": 1,
+          "winners": [
+            0
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4438
+        },
+        {
+          "variant": "U-final",
+          "setting": {
+            "rounds": 8,
+            "profiles": [
+              "balanced",
+              "balanced"
+            ],
+            "opening": {
+              "kind": "arch",
+              "seat": 0
+            }
+          },
+          "counts": [
+            {
+              "arch": 1,
+              "air": 1,
+              "brush": 7,
+              "bomb": 7
+            },
+            {
+              "bomb": 6,
+              "brush": 10
+            }
+          ],
+          "usedHigh": [
+            6,
+            0
+          ],
+          "buildings": [
+            {
+              "owner": 0,
+              "kind": "arch",
+              "round": 1,
+              "id": "structure-0",
+              "shots": 6,
+              "area": 21.16004406184676,
+              "ownedArea": 7.719957574503037,
+              "enemyArea": 10.868460193859777
+            }
+          ],
+          "scores": [
+            46.84622198963395,
+            46.11846019385978
+          ],
+          "coverage": 0.6333261367284866,
+          "attacks": 18,
+          "paintCount": 31,
+          "firstContact": 3,
+          "winners": [
+            0
+          ],
+          "forced": 2,
+          "invalid": 0,
+          "ms": 4576
+        }
+      ]
+    }
+  ]
+}

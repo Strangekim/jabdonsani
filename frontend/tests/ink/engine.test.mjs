@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { makeGame, active, apply, preview, view, score, BUILDINGS, bombRangeAt, gunRangeAt, canLaunchBomb } from '../../src/lib/ink/engine.mjs';
+import { makeGame, active, apply, preview, view, score, BUILDINGS, bombRangeAt, gunRangeAt, canLaunchBomb, getBombControl, isHighBombSurface, bombRadiusAt, RULES } from '../../src/lib/ink/engine.mjs';
 const nearest=(surfaces,point)=>surfaces.reduce((a,b)=>Math.hypot(...b.center.map((x,i)=>x-point[i]))<Math.hypot(...a.center.map((x,i)=>x-point[i]))?b:a);
 const game=()=>makeGame({players:4,rounds:8,factor:4});
 test('2~8인 순환 선턴과 고정 라운드',()=>{
@@ -84,7 +84,7 @@ test('고지대의 점유권과 높이가 폭탄 및 잉크 건 사거리를 결
   const initial=makeGame({players:2,rounds:8,factor:4});
   const center=nearest(initial.surfaces,[0,0,0]);
   let s=apply(initial,{kind:'build',building:'tower',targetId:center.id,rotation:0});
-  const roof=s.surfaces.find(p=>p.building&&p.center[1]===3&&p.normal[1]>.9);
+  const roof=s.surfaces.find(p=>p.building&&p.center[1]===2.5&&p.normal[1]>.9);
   const ground=s.surfaces.find(p=>p.building===null&&p.owner===0);
   const target=s.surfaces.filter(p=>p.building===null&&Math.hypot(p.center[0]-initial.players[0].base[0],p.center[2]-initial.players[0].base[2])>5.55&&Math.hypot(p.center[0]-roof.center[0],p.center[2]-roof.center[2])<9).sort((a,b)=>b.center[2]-a.center[2])[0];
   assert.ok(roof&&target&&ground);
@@ -97,18 +97,22 @@ test('고지대의 점유권과 높이가 폭탄 및 잉크 건 사거리를 결
   s=apply(s,air);
   s={...s,round:2,slot:0,ap:2};
   const ownedRoof=s.surfaces.find(p=>p.id===roof.id);
-  assert.ok(canLaunchBomb(ownedRoof,0));
-  assert.equal(bombRangeAt(ownedRoof,'low'),10);
-  assert.equal(bombRangeAt(ownedRoof,'high'),8.7);
+  assert.ok(canLaunchBomb(ownedRoof,0,getBombControl(s.surfaces)));
+  assert.equal(bombRangeAt(ownedRoof,'low'),8.8);
+  assert.equal(bombRangeAt(ownedRoof,'high'),7.8);
   assert.equal(gunRangeAt(ownedRoof),9.5);
+  assert.ok(Math.abs(bombRadiusAt(ownedRoof)-1.425)<1e-9);
   const p=preview(s,bomb);
   assert.ok(p.ok,p.message);
-  assert.equal(p.path[0][1],3.35);
+  assert.equal(p.path[0][1],2.85);
   assert.ok(p.affected.length>0);
-  assert.ok(p.affected.reduce((sum,d)=>sum+d.amount*s.surfaces.find(q=>q.id===d.id).area,0)<=5.001);
+  assert.ok(p.affected.reduce((sum,d)=>sum+d.amount*s.surfaces.find(q=>q.id===d.id).area,0)<=RULES.highBombInk+.001);
   const changed=apply(s,bomb);
   assert.equal(changed.ap,1);
-  const stolen={...s,surfaces:s.surfaces.map(q=>q.id===roof.id?{...q,owner:1,density:3}:q)};
+  const partial={...s,surfaces:s.surfaces.map(q=>q.id===roof.id?{...q,owner:1,density:3}:q)};
+  assert.equal(getBombControl(partial.surfaces).get(roof.building).controller,0);
+  assert.equal(preview({...partial,slot:1},bomb).ok,false);
+  const stolen={...s,surfaces:s.surfaces.map(q=>q.building===roof.building&&isHighBombSurface(q)?{...q,owner:1,density:3}:q)};
   assert.equal(preview(stolen,bomb).ok,false);
   const enemyTurn={...stolen,slot:1};
   assert.ok(preview(enemyTurn,bomb).ok);
@@ -118,4 +122,15 @@ test('고지대의 점유권과 높이가 폭탄 및 잉크 건 사거리를 결
   const gun={kind:'paint',weapon:'gun',sourceId:roof.id,targetId:far.id};
   assert.ok(preview(fortified,gun).ok);
   assert.equal(gunRangeAt(ground),5);
+});
+
+test('다인전에서도 상부 점유권은 정확히 과반을 초과해야 한다',()=>{
+  const patch={building:'test',center:[0,1,0],normal:[0,1,0],density:1,area:1};
+  const a={...patch,owner:0},b={...patch,owner:1},c={...patch,owner:2};
+  assert.equal(getBombControl([a,b]).get('test').controller,null);
+  assert.equal(getBombControl([a,b,c]).get('test').controller,null);
+  const control=getBombControl([a,{...a,area:2},b,c]);
+  assert.equal(control.get('test').controller,0);
+  assert.equal(canLaunchBomb(b,1,control),false);
+  assert.ok(canLaunchBomb(a,0,control));
 });

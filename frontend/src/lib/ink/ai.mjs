@@ -1,10 +1,10 @@
-import { apply, preview, score, RULES, BUILDINGS, gunRangeAt, bombRangeAt, canLaunchBomb, isHighBombSurface } from './engine.mjs';
+import { apply, preview, score, RULES, BUILDINGS, gunRangeAt, bombRangeAt, canLaunchBomb, isHighBombSurface, getBombControl, bombRadiusAt } from './engine.mjs';
 
 export const PROFILES = {
-  balanced: { label: '균형형', gain: 1, attack: .8, reach: .75, building: .35, trap: .7, reinforce: .25 },
-  expand: { label: '확장형', gain: 1.3, attack: .35, reach: .95, building: .15, trap: .35, reinforce: .18 },
-  attack: { label: '공격형', gain: .85, attack: 1.6, reach: .85, building: .2, trap: .95, reinforce: .22 },
-  builder: { label: '건축형', gain: .9, attack: .65, reach: 1.05, building: 3.0, trap: .65, reinforce: .3 }
+  balanced: { label: '균형형', gain: 1, attack: .8, reach: .75, building: .75, trap: .7, reinforce: .25 },
+  expand: { label: '확장형', gain: 1.3, attack: .35, reach: .95, building: .55, trap: .35, reinforce: .18 },
+  attack: { label: '공격형', gain: .85, attack: 1.6, reach: .85, building: .65, trap: .95, reinforce: .22 },
+  builder: { label: '건축형', gain: .9, attack: .65, reach: 1.05, building: 1.35, trap: .65, reinforce: .3 }
 };
 const SIZE = 1.5;
 const clamp = (v,lo,hi)=>Math.max(lo,Math.min(hi,v));
@@ -42,11 +42,14 @@ function makeIndex(s,pid) {
   };
   const representatives=[...reps.values()];
   const elevatedGun=representatives.filter(p=>owner(p)===pid&&p.center[1]>.1&&p.density>=RULES.gunThreshold);
-  const highBomb=representatives.filter(p=>canLaunchBomb(p,pid));
-  return {byId,reps:representatives,nearby,pid,elevatedGun,highBomb};
+  const controls=getBombControl(s.surfaces);
+  const highBomb=representatives.filter(p=>canLaunchBomb(p,pid,controls));
+  const seen=new Set(highBomb.map(p=>p.building));
+  for(const p of s.surfaces)if(canLaunchBomb(p,pid,controls)&&!seen.has(p.building)){highBomb.push(p);seen.add(p.building);}
+  return {byId,reps:representatives,nearby,pid,elevatedGun,highBomb,controls};
 }
 function contextAt(idx,p,base,profile) {
-  const local=idx.nearby(p.center,1.25);
+  const local=idx.nearby(p.center,RULES.bombRadius);
   let free=0,enemy=0,weak=0,mine=0;
   for(const q of local){
     const o=owner(q);
@@ -103,7 +106,16 @@ function candidateRows(s,profile,small=false) {
   for(const p of idx.reps){
     const c=contextAt(idx,p,player.base,profile),o=owner(p),targetId=p.id;
     const targetValue=o===null?.65:o===pid?.05:profile.attack*.7;
-    if(p.normal[1]>.06)add('air',{kind:'paint',weapon:'air',targetId},c.value+targetValue+(p.center[1]>.4?.65:0)+(c.nearMine>2.5?.3:0),p.center);
+    if(p.normal[1]>.06){
+      const control=idx.controls.get(p.building);
+      let roof=0;
+      if(control&&control.controller!==pid){
+        const local=idx.nearby(p.center,RULES.airRadius+1.2);
+        roof=local.filter(q=>q.building===p.building&&isHighBombSurface(q)&&owner(q)!==pid&&flat2(q.center,p.center)<=RULES.airRadius**2).reduce((sum,q)=>sum+q.area,0);
+        roof=Math.min(2.2,roof/Math.max(.1,control.total)*3);
+      }
+      add('air',{kind:'paint',weapon:'air',targetId},c.value+targetValue+(p.center[1]>.4?.65:0)+(c.nearMine>2.5?.3:0)+roof,p.center);
+    }
     if(c.baseDistance<=RULES.bombRange+.05)add('bomb',{kind:'paint',weapon:'bomb',targetId,arc:'low'},c.value+targetValue,p.center);
     if(s.buildings.length&&c.baseDistance<=RULES.highBombRange+.05)add('bomb',{kind:'paint',weapon:'bomb',targetId,arc:'high'},c.value+targetValue-.08,p.center);
     let highSource=null,highRank=-Infinity;
@@ -130,7 +142,7 @@ function candidateRows(s,profile,small=false) {
       if(Math.hypot(p.center[0],p.center[2])+BUILDINGS[kind].radius>s.config.radius-.02)continue;
       if(s.buildings.some(b=>Math.hypot(b.x-p.center[0],b.z-p.center[2])<BUILDINGS[kind].radius+BUILDINGS[b.kind].radius+.08))continue;
       const front=c.nearEnemy===Infinity?0:Math.max(0,1-Math.abs(c.nearEnemy-2.4)/3);
-      const baseRank=2*c.access+front*.9+c.free*.12-c.mine*.32+(c.baseDistance<4.2?.55:0);
+      const baseRank=2*c.access+front*.9+c.free*.12-c.mine*.32+Math.min(1,c.baseDistance*.18);
       const orientations=(kind==='wall'||kind==='arch')?[0,1]:[0];
       for(const rotation of orientations)add(kind,{kind:'build',building:kind,targetId,rotation},baseRank,p.center);
     }
@@ -175,9 +187,16 @@ function assess(s,p,c,idx,profile,baseScores) {
     for(const q of idx.nearby([b.x,0,b.z],3)){
       if(owner(q)===pid)mine+=q.area;else if(owner(q)!==null)enemy+=q.area;
     }
-    const potential=Math.min(2.5,accessible*.11+high*.32)+Math.min(1.0,enemy*.09);
-    const reachValue=top?extension(top)*.75:0;
-    return value+horizon*(profile.building*(.8+potential)+profile.reach*(Math.min(1,high*.14)+reachValue)-mine*.03)-.25;
+    const upper=p.buildSurfaces.filter(isHighBombSurface);
+    const roofReach=high?Math.max(0,...upper.map(q=>upper.filter(t=>flat2(t.center,q.center)<=RULES.airRadius**2).reduce((sum,t)=>sum+t.area,0)/high)):0;
+    const captureChance=clamp((roofReach-.3)/.45,0,1);
+    const extraArea=top?Math.PI*(bombRadiusAt(top)**2-RULES.bombRadius**2):0;
+    const futureShots=Math.min(3,Math.max(0,remaining*2-1));
+    const reachValue=top?extension(top)*.85:0;
+    const risk=1/(1+enemy*.055);
+    const investment=captureChance*risk*(reachValue+extraArea*futureShots*.65);
+    const existing=idx.highBomb.some(q=>flat2(q.center,[b.x,0,b.z])<9)?1.8:0;
+    return value+horizon*(profile.building*(investment+Math.min(1.1,accessible*.07))+profile.reach*Math.min(.7,high*.12)-existing-mine*.03)-.45;
   }
   if(c.weapon==='ghost'){
     const t=idx.byId.get(c.targetId);
@@ -186,11 +205,19 @@ function assess(s,p,c,idx,profile,baseScores) {
     return horizon*profile.trap*(.12+(4-nearest)*.24+Math.min(.7,enemy*.05)+(t.building?.25:0));
   }
   let weaken=0,secure=0,reach=0,over=0;
-  const newPlatforms=new Map();
+  const touched=new Map();
   for(const a of p.affected){
     const old=idx.byId.get(a.id);
     if(!old)continue;
     const oldOwner=owner(old),after=a.controller;
+    if(isHighBombSurface(old)){
+      const control=idx.controls.get(old.building);
+      if(!touched.has(old.building))touched.set(old.building,{total:control.total,areas:{...control.areas},before:control.controller,top:old});
+      const t=touched.get(old.building);
+      if(oldOwner!==null)t.areas[oldOwner]=(t.areas[oldOwner]??0)-old.area;
+      if(after!==null)t.areas[after]=(t.areas[after]??0)+old.area;
+      if(after===pid&&old.center[1]>t.top.center[1])t.top=old;
+    }
     if(old.owner!==null&&old.owner!==pid)weaken+=Math.min(old.density,a.amount)*old.area;
     if(after===pid){
       const oldStrength=oldOwner===pid?Math.min(3.5,old.density):0;
@@ -199,15 +226,21 @@ function assess(s,p,c,idx,profile,baseScores) {
         const frontier=idx.nearby(old.center,1.5).some(q=>owner(q)!==pid);
         if(frontier)reach+=old.area*(.25+(old.center[1]>.3?.55:0));
       }
-      if(oldOwner!==pid&&isHighBombSurface(old)&&!idx.highBomb.some(q=>q.building===old.building)){
-        const best=newPlatforms.get(old.building);
-        if(!best||old.center[1]>best.center[1])newPlatforms.set(old.building,old);
-      }
       if(a.density>=RULES.gunThreshold&&(oldOwner!==pid||old.density<RULES.gunThreshold))reach+=old.area*(.5+old.center[1]*.18);
       over+=Math.max(0,a.density-Math.max(5,oldOwner===pid?old.density:0))*old.area;
     }
   }
-  const launchGain=[...newPlatforms.values()].reduce((sum,q)=>sum+extension(q,q.building),0);
+  let launchGain=0;
+  for(const t of touched.values()){
+    const winner=Object.entries(t.areas).find(([,area])=>area>t.total*RULES.roofControl+1e-8);
+    const after=winner?Number(winner[0]):null;
+    if(after===pid&&t.before!==pid){
+      const extra=Math.PI*(bombRadiusAt(t.top)**2-RULES.bombRadius**2);
+      launchGain+=extension(t.top,t.top.building)+extra*.7;
+    }
+    if(t.before===pid&&after!==pid)launchGain-=2;
+    if(t.before!==null&&t.before!==pid&&after!==t.before)launchGain+=profile.attack*1.25;
+  }
   return value+weaken*.11*profile.attack+horizon*(profile.reach*(reach+launchGain)+secure*.14*profile.reinforce-over*.025);
 }
 function rank(s,profile,small=false){
@@ -231,8 +264,8 @@ export function chooseAction(publicView,style='balanced',options={}){
   if(s.ap===1||options.fast)return {command:rows[0].command,evaluated,value:rows[0].value,planned:[rows[0].command]};
   // 2 AP의 첫 행동이 두 번째 행동의 선택지를 바꾸는 경우를 비교한다.
   const beam=rows.slice(0,3);
-  const build=rows.find(r=>r.command.kind==='build');
-  if(build&&!beam.includes(build))beam.push(build);
+  const buildKinds=new Set();
+  for(const row of rows){if(row.command.kind!=='build'||buildKinds.has(row.command.building))continue;buildKinds.add(row.command.building);if(!beam.includes(row))beam.push(row);if(buildKinds.size>=2)break;}
   let best=null;
   for(const r of beam){
     const next=apply(s,r.command,s.version),second=rank(next,profile,true);

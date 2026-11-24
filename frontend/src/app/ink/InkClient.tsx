@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import InkBoard from './InkBoard';
-import { BUILDINGS, WEAPONS, RULES, COLORS, createLocalGame, canLaunchBomb, bombRangeAt, gunRangeAt } from '@/lib/ink/engine.mjs';
+import { BUILDINGS, WEAPONS, RULES, COLORS, createLocalGame, canLaunchBomb, bombRangeAt, gunRangeAt, getBombControl, bombRadiusAt } from '@/lib/ink/engine.mjs';
 import type { BuildingKind, Command, GamePort, GameView, Preview, Weapon } from '@/lib/ink/engine.mjs';
 import { PROFILES } from '@/lib/ink/ai.mjs';
 import type { Seat, AiProfile, AiResult } from '@/lib/ink/ai.mjs';
@@ -116,7 +116,7 @@ export default function InkClient() {
     if((needsSource(choice)||highBomb)&&!source){
       const p=view.surfaces.find(s=>s.id===id);
       if(!p||p.controller!==view.active){setMessage('내 색으로 칠해진 표면을 시작점으로 선택하세요.');return;}
-      if(highBomb&&!canLaunchBomb(p,view.active)){setMessage('높이 0.5 이상이고 위쪽을 향한 내 건물 표면을 선택하세요.');return;}
+      if(highBomb&&!canLaunchBomb(p,view.active,getBombControl(view.surfaces))){setMessage('상부 면적의 절반을 초과해 점유한 건물의 내 표면을 선택하세요.');return;}
       if(choice.kind==='paint'&&choice.weapon==='gun'&&p.density<RULES.gunThreshold){setMessage('잉크 건의 발사점은 농도 2.5 이상이어야 합니다.');return;}
       setSource(id);setTarget(null);setPreview(null);setMessage('');return;
     }
@@ -151,7 +151,7 @@ export default function InkClient() {
   if(!view){
     const rounds=players*cycles,area=players*rounds*2*factor,diameter=2*Math.sqrt(area/Math.PI);
     return <main className={styles.lobby}>
-      <div className={styles.hero}><div className={styles.eyebrow}>ABSTRACT STRATEGY / PROTOTYPE 0.3</div>
+      <div className={styles.hero}><div className={styles.eyebrow}>ABSTRACT STRATEGY / PROTOTYPE 0.4</div>
         <h1>INK<span>.</span></h1><p>색으로 공간을 점령하고, 건축으로 전장을 바꾸는 입체 영토 전략 게임.</p>
         <div className={styles.colorStripe}><i/><i/><i/><i/></div>
       </div>
@@ -174,7 +174,7 @@ export default function InkClient() {
         {message&&<p className={styles.warning}>{message}</p>}
         <button className={styles.primary} onClick={start}>경기 시작 <span>→</span></button>
       </section>
-      <section className={styles.intro}><h2>두 번의 행동, 하나의 목표.</h2><p>매 턴 2개의 행동력을 자유롭게 사용합니다. 잉크는 회수할 수 없고, 서로 다른 색은 상쇄됩니다. 건물은 새로운 표면을 만들며, 마지막 라운드에 가장 넓은 표면을 지배한 사람이 승리합니다.</p><p>선턴은 매 라운드 순환합니다. 잠복 잉크의 위치를 제외한 정보는 모두 공개됩니다.</p><small>v0.3 · AI는 공개 정보 기반 휴리스틱 탐색을 사용합니다. 수치와 표면 계산은 밸런스 검증용입니다.</small></section>
+      <section className={styles.intro}><h2>두 번의 행동, 하나의 목표.</h2><p>매 턴 2개의 행동력을 자유롭게 사용합니다. 잉크는 회수할 수 없고, 서로 다른 색은 상쇄됩니다. 건물은 새로운 표면을 만들며, 마지막 라운드에 가장 넓은 표면을 지배한 사람이 승리합니다.</p><p>선턴은 매 라운드 순환합니다. 잠복 잉크의 위치를 제외한 정보는 모두 공개됩니다.</p><small>v0.4 · AI는 공개 정보 기반 휴리스틱 탐색을 사용합니다. 수치와 표면 계산은 밸런스 검증용입니다.</small></section>
     </main>;
   }
 
@@ -187,13 +187,18 @@ export default function InkClient() {
   const activePreview=handoff||view.finished?null:preview;
   const bombSelected=choice.kind==='paint'&&choice.weapon==='bomb';
   const highBombSelected=bombSelected&&bombOrigin==='high';
-  const availableHighSources=view.surfaces.filter(p=>canLaunchBomb(p,view.active));
+  const controls=getBombControl(view.surfaces);
+  const availableHighSources=view.surfaces.filter(p=>canLaunchBomb(p,view.active,controls));
   const sourceSurface=view.surfaces.find(p=>p.id===source);
   const gunSelected=choice.kind==='paint'&&choice.weapon==='gun';
   const instruction=!source&&highBombSelected?'점유한 건물의 위쪽 표면을 발사점으로 선택하세요.':needsSource(choice)&&!source?'내 영토에서 발사 시작점을 선택하세요.':'보드에서 목표 표면을 선택하세요.';
   const selectedRange=bombSelected?bombRangeAt(highBombSelected?sourceSurface:null,arc):gunSelected&&sourceSurface?gunRangeAt(sourceSurface):null;
   const targetSurface=view.surfaces.find(p=>p.id===target);
   const targetAfter=activePreview?.ok?activePreview.affected.find(p=>p.id===target):undefined;
+  const shownBuilding=targetSurface?.building??sourceSurface?.building??null;
+  const shownControl=shownBuilding?controls.get(shownBuilding):undefined;
+  const shownBuildingData=view.buildings.find(b=>b.id===shownBuilding);
+  const previewControl=shownBuilding&&activePreview?.ok&&activePreview.affected.length?getBombControl(view.surfaces.map(p=>{const changed=activePreview.affected.find(a=>a.id===p.id);return changed?{...p,owner:changed.owner,density:changed.density}:p;})).get(shownBuilding):undefined;
   const preciseDensity=(n:number)=>String(Number(n.toFixed(6)));
 
   return <main className={styles.game}>
@@ -237,15 +242,16 @@ export default function InkClient() {
         {!view.finished&&!isAI&&<div className={styles.selection}>
           <h3>{chosenLabel}</h3><p>{chosenDetail}</p>{choice.kind==='build'&&<p>중립 및 내 영토에 설치 가능 · 상대 영토는 불가 · 새 표면은 중립</p>}
           {bombSelected&&<>
-            <label>발사 위치<select disabled={blocked} value={bombOrigin} onChange={e=>{setBombOrigin(e.target.value as 'base'|'high');clearSelection();}}><option value="base">본진에서 투척</option><option value="high" disabled={availableHighSources.length===0}>점유한 고지대에서 투척 ({availableHighSources.length}개 표면)</option></select></label>
-            {availableHighSources.length===0&&<p>건물의 위쪽 표면을 농도 0.5 이상으로 칠하면 고지대 투척을 사용할 수 있습니다.</p>}
+            <label>발사 위치<select disabled={blocked} value={bombOrigin} onChange={e=>{setBombOrigin(e.target.value as 'base'|'high');clearSelection();}}><option value="base">본진에서 투척</option><option value="high" disabled={availableHighSources.length===0}>점유한 고지대에서 투척 ({[...controls.values()].filter(c=>c.controller===view.active).length}개 거점)</option></select></label>
+            {availableHighSources.length===0&&<p>건물 상부의 절반을 초과해 점유해야 고지대 투척을 사용할 수 있습니다.</p>}
             <label>궤적<select disabled={blocked} value={arc} onChange={e=>{const next=e.target.value as 'low'|'high';setArc(next);if(target)requestPreview(target,source,next);}}><option value="low">낮은 투척 · 사거리 {fmt(bombRangeAt(highBombSelected?sourceSurface:null,'low'))}</option><option value="high">높은 투척 · 사거리 {fmt(bombRangeAt(highBombSelected?sourceSurface:null,'high'))}</option></select></label>
           </>}
-          {selectedRange!==null&&(!highBombSelected||sourceSurface)&&<p className={styles.target}>현재 사거리 <strong>{fmt(selectedRange)}</strong>{sourceSurface?' · 발사 높이 '+fmt(sourceSurface.center[1]):' · 본진'}</p>}
+          {selectedRange!==null&&(!highBombSelected||sourceSurface)&&<p className={styles.target}>현재 사거리 <strong>{fmt(selectedRange)}</strong>{sourceSurface?' · 발사 높이 '+fmt(sourceSurface.center[1]):' · 본진'}{bombSelected?' · 도색 반경 '+bombRadiusAt(highBombSelected?sourceSurface:null).toFixed(2):''}</p>}
           {choice.kind==='build'&&<label>회전<select disabled={blocked} value={rotation} onChange={e=>{const n=Number(e.target.value);setRotation(n);if(target)requestPreview(target,source,arc,n);}}>{[0,1,2,3].map(n=><option key={n} value={n}>{n*90}°</option>)}</select></label>}
           <p className={styles.instruction}>{instruction}</p>
           {source&&<button className={styles.textButton} onClick={clearSelection}>발사점 다시 선택</button>}
           {targetSurface&&<p className={styles.target}>목표: {targetSurface.building?'건물 표면':'지면'} · 농도 <strong>{preciseDensity(targetSurface.density)}{targetAfter?' → '+preciseDensity(targetAfter.density):''}</strong></p>}
+          {shownControl&&shownBuildingData&&<div className={styles.selection}><h3>{BUILDINGS[shownBuildingData.kind].label} 상부 점유</h3><p>과반 점유자: {shownControl.controller===null?'없음':view.players[shownControl.controller].name}{previewControl&&previewControl.controller!==shownControl.controller?' → '+(previewControl.controller===null?'없음':view.players[previewControl.controller].name):''}</p>{view.players.map(p=><p key={p.id} style={{color:p.color}}>{p.name} · {((shownControl.areas[p.id]??0)/shownControl.total*100).toFixed(1)}%{previewControl?' → '+((previewControl.areas[p.id]??0)/previewControl.total*100).toFixed(1)+'%':''}</p>)}</div>}
           {activePreview&&<p className={activePreview.ok?styles.previewText:styles.warning}>{activePreview.message}</p>}
           {message&&!handoff&&<p role="status" className={styles.warning}>{message}</p>}
           <button className={styles.primary} disabled={blocked||!target||!activePreview?.ok} onClick={()=>{if(target)submit(makeCommand(choice,target,source,arc,rotation));}}>행동 확정 <span>1 AP</span></button>
@@ -254,6 +260,6 @@ export default function InkClient() {
         <div className={styles.log}><div className={styles.sectionLabel}>최근 행동</div>{view.events.length===0?<p>아직 행동 기록이 없습니다.</p>:view.events.slice(-5).reverse().map(e=><div key={e.id}><span style={{color:view.players[e.player].color}}>{view.players[e.player].name}</span><span>{e.label}{e.triggered?' · 잠복 발동 '+e.triggered:''}</span><small>R{e.round}</small></div>)}</div>
       </aside>
     </div>
-    <div className={styles.footnote}>표면의 숫자는 잉크 농도(소수 첫째 자리 기준) · 미리보기에서는 도색 후 농도 · 표면적 기준 득점 · 최소 농도 0.5 · 노출 표면만 집계 · 보라색 외곽선은 내 잠복 잉크 · 미리보기는 숨겨진 잉크를 제외한 공개 정보로 계산합니다. 건물은 중립 또는 내 영토인 지면에만 건설할 수 있습니다. 상대 영토, 본진 및 기존 건물과 겹칠 수 없습니다. 고지대 투척은 내 색의 위쪽 표면에서 가능하며, 잉크 건과 폭탄의 사거리는 발사점 높이 × 1.5만큼 증가합니다.</div>
+    <div className={styles.footnote}>표면의 숫자는 잉크 농도(소수 첫째 자리 기준) · 미리보기에서는 도색 후 농도 · 표면적 기준 득점 · 최소 농도 0.5 · 노출 표면만 집계 · 보라색 외곽선은 내 잠복 잉크 · 미리보기는 숨겨진 잉크를 제외한 공개 정보로 계산합니다. 건물은 중립 또는 내 영토인 지면에만 건설할 수 있습니다. 상대 영토, 본진 및 기존 건물과 겹칠 수 없습니다. 고지대 투척은 건물 상부 과반 점유자만 가능하며, 사거리는 높이 × 1.8, 폭탄 반경은 높이 × 0.11(최대 0.33)만큼 증가합니다.</div>
   </main>;
 }
