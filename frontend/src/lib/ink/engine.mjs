@@ -3,16 +3,20 @@ export {BUILDINGS};
 export const COLORS=['#2381df','#ed793b','#20a77c','#8c5ad4','#d0a321','#10a6b7','#db588a','#7786a0'];
 export const WEAPONS={
  brush:{label:'붓',detail:'내 영토에서 표면을 따라 3유닛 · 폭 1',cost:1},
- gun:{label:'잉크 건',detail:'농도 2.5 이상인 내 표면에서 직선 5유닛',cost:1},
- bomb:{label:'잉크 폭탄',detail:'본진에서 곡선 투척 · 반경 1.25',cost:1},
+ gun:{label:'잉크 건',detail:'농도 2.5 이상인 내 표면 · 직선 사거리 5 + 높이 × 1.5',cost:1},
+ bomb:{label:'잉크 폭탄',detail:'본진 또는 점유한 고지대 · 곡선 투척 · 반경 1.25',cost:1},
  air:{label:'공중 투하',detail:'상공에서 수직 투하 · 반경 0.85',cost:1},
  ghost:{label:'잠복 잉크',detail:'내 영토 주변의 중립 표면에 비공개 설치',cost:1}
 };
-export const RULES={actions:2,threshold:.5,gunThreshold:2.5,ghostUses:3,ink:9,brushRange:3,gunRange:5,bombRange:5.5,highBombRange:4.2,ghostRange:1.5,buildingUses:1};
+export const RULES={actions:2,threshold:.5,gunThreshold:2.5,ghostUses:3,ink:9,brushRange:3,gunRange:5,bombRange:5.5,highBombRange:4.2,heightRangeFactor:1.5,bombMinHeight:.5,bombMinNormalY:.35,ghostRange:1.5,buildingUses:1};
 const keys=Object.keys(BUILDINGS);
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const round=n=>Math.round(n*1e6)/1e6;
 const owned=p=>p.density>=RULES.threshold?p.owner:null;
+export const gunRangeAt=p=>RULES.gunRange+Math.max(0,p?.center[1]??0)*RULES.heightRangeFactor;
+export const bombRangeAt=(p,arc='low')=>(arc==='high'?RULES.highBombRange:RULES.bombRange)+Math.max(0,p?.center[1]??0)*RULES.heightRangeFactor;
+export const isHighBombSurface=p=>p.building!==null&&p.center[1]>=RULES.bombMinHeight&&p.normal[1]>=RULES.bombMinNormalY;
+export const canLaunchBomb=(p,pid)=>!!p&&isHighBombSurface(p)&&owned(p)===pid;
 const fail=message=>({ok:false,message,affected:[],path:[],scores:[],buildSurfaces:[],covered:[]});
 const check=(condition,message)=>{if(!condition)throw new Error(message);};
 export function makeGame({players=4,rounds=8,factor=4}={}){
@@ -86,7 +90,8 @@ function paintPreview(s,c,pid,idx,target){
   } else if(c.weapon==='gun'){
     if(!source||owned(source)!==pid||source.density<RULES.gunThreshold)return fail('농도 2.5 이상인 내 표면을 발사점으로 선택하세요.');
     const origin=add(source.center,mul(source.normal,.12));
-    if(dist(origin,target.center)>RULES.gunRange+.05)return fail('잉크 건의 사거리 5유닛을 초과했습니다.');
+    const range=gunRangeAt(source);
+    if(dist(origin,target.center)>range+.05)return fail('잉크 건의 사거리 '+range.toFixed(1)+'유닛을 초과했습니다.');
     const end=add(target.center,mul(unit(sub(target.center,origin)),.03));
     const hit=raycast(idx,origin,end);
     const center=hit?.point??target.center,normal=hit?.patch.normal??target.normal;
@@ -95,15 +100,17 @@ function paintPreview(s,c,pid,idx,target){
     deposits=distribute(candidates.map(p=>({p,weight:p.area*Math.max(.15,dot(p.normal,normal))})),9,Math.PI*.56*.56);
     message=hit&&hit.patch.id!==target.id?'가장 먼저 충돌한 표면을 도색합니다.':'직선 집중 도색입니다.';
   } else if(c.weapon==='bomb'){
-    const base=s.players[pid].base,origin=add(base,[0,.35,0]),high=c.arc==='high',range=high?RULES.highBombRange:RULES.bombRange;
-    if(Math.hypot(target.center[0]-base[0],target.center[2]-base[2])>range+.05)return fail('본진에서의 투척 사거리를 초과했습니다.');
+    const high=c.arc==='high';
+    if(c.sourceId!==undefined&&!canLaunchBomb(source,pid))return fail('농도 0.5 이상으로 점유한 고지대의 위쪽 표면에서만 투척할 수 있습니다.');
+    const launch=source??null,base=launch?launch.center:s.players[pid].base,origin=add(base,[0,.35,0]),range=bombRangeAt(launch,c.arc);
+    if(Math.hypot(target.center[0]-base[0],target.center[2]-base[2])>range+.05)return fail('선택한 발사점의 투척 사거리 '+range.toFixed(1)+'유닛을 초과했습니다.');
     const height=high?3.3:1.8;let hit=null;path=[origin];
     const end=add(target.center,mul(target.normal,-.025));
     for(let i=1;i<=28;i++){const t=i/28,next=add(lerp(origin,end,t),[0,4*height*t*(1-t),0]);hit=raycast(idx,path[path.length-1],next);path.push(hit?hit.point:next);if(hit)break;}
     const center=hit?.point??target.center,normal=hit?.patch.normal??target.normal,explosion=add(center,mul(normal,.06));
     const pairs=s.surfaces.filter(p=>dist(p.center,center)<=1.25&&visible(idx,explosion,p)).map(p=>({p,weight:p.area}));
     deposits=distribute(pairs,5,Math.PI*1.25*1.25);
-    message='충돌 지점 주변으로 잉크가 확산됩니다.';
+    message=(launch?'고지대 투척 · ':'본진 투척 · ')+'충돌 지점 주변으로 잉크가 확산됩니다.';
   } else {
     const [x,,z]=target.center,origin=[x,8,z];const hit=raycast(idx,origin,[x,-.05,z]);
     if(!hit)return fail('투하할 표면을 찾지 못했습니다.');

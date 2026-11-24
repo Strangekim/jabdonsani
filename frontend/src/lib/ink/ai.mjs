@@ -1,4 +1,4 @@
-import { apply, preview, score, RULES, BUILDINGS } from './engine.mjs';
+import { apply, preview, score, RULES, BUILDINGS, gunRangeAt, bombRangeAt, canLaunchBomb, isHighBombSurface } from './engine.mjs';
 
 export const PROFILES = {
   balanced: { label: '균형형', gain: 1, attack: .8, reach: .75, building: .35, trap: .7, reinforce: .25 },
@@ -40,7 +40,10 @@ function makeIndex(s,pid) {
     }
     return out;
   };
-  return {byId,reps:[...reps.values()],nearby,pid};
+  const representatives=[...reps.values()];
+  const elevatedGun=representatives.filter(p=>owner(p)===pid&&p.center[1]>.1&&p.density>=RULES.gunThreshold);
+  const highBomb=representatives.filter(p=>canLaunchBomb(p,pid));
+  return {byId,reps:representatives,nearby,pid,elevatedGun,highBomb};
 }
 function contextAt(idx,p,base,profile) {
   const local=idx.nearby(p.center,1.25);
@@ -61,11 +64,18 @@ function contextAt(idx,p,base,profile) {
         const rank= -Math.abs(d-2.35)+q.center[1]*.07;
         if(rank>brushRank){brush=q;brushRank=rank;}
       }
-      if(d>.12&&d<=RULES.gunRange&&q.density>=RULES.gunThreshold){
+      if(d>.12&&d<=gunRangeAt(q)&&q.density>=RULES.gunThreshold){
         const rank=q.center[1]*.55-d*.16;
         if(rank>gunRank){gun=q;gunRank=rank;}
       }
     }else if(o!==null)nearEnemy=Math.min(nearEnemy,d);
+  }
+  for(const q of idx.elevatedGun){
+    const d=Math.sqrt(d2(q.center,p.center));
+    if(d>.12&&d<=gunRangeAt(q)){
+      const rank=q.center[1]*.55-d*.16;
+      if(rank>gunRank){gun=q;gunRank=rank;}
+    }
   }
   const value=free*profile.gain+weak*profile.attack+enemy*.12-mine*.22;
   const access=nearMine===Infinity?.25:1/(1+nearMine*.25);
@@ -85,7 +95,7 @@ function takeDiverse(rows,count,radius) {
 }
 function candidateRows(s,profile,small=false) {
   const pid=(s.round+s.slot)%s.players.length,player=s.players[pid],idx=makeIndex(s,pid);
-  const groups={brush:[],gun:[],bomb:[],air:[],ghost:[],dome:[],tower:[],wall:[],arch:[]};
+  const groups={brush:[],gun:[],bomb:[],highbomb:[],air:[],ghost:[],dome:[],tower:[],wall:[],arch:[]};
   const add=(group,command,rank,center)=>{
     if(Number.isFinite(rank))groups[group].push({command,rank,center,key:cmdKey(command)});
   };
@@ -96,6 +106,18 @@ function candidateRows(s,profile,small=false) {
     if(p.normal[1]>.06)add('air',{kind:'paint',weapon:'air',targetId},c.value+targetValue+(p.center[1]>.4?.65:0)+(c.nearMine>2.5?.3:0),p.center);
     if(c.baseDistance<=RULES.bombRange+.05)add('bomb',{kind:'paint',weapon:'bomb',targetId,arc:'low'},c.value+targetValue,p.center);
     if(s.buildings.length&&c.baseDistance<=RULES.highBombRange+.05)add('bomb',{kind:'paint',weapon:'bomb',targetId,arc:'high'},c.value+targetValue-.08,p.center);
+    let highSource=null,highRank=-Infinity;
+    for(const q of idx.highBomb){
+      const distance=Math.sqrt(flat2(q.center,p.center));
+      if(distance>bombRangeAt(q,'low')+.05||distance<.25)continue;
+      const rank=q.center[1]*.3-distance*.05;
+      if(rank>highRank){highRank=rank;highSource=q;}
+    }
+    if(highSource){
+      add('highbomb',{kind:'paint',weapon:'bomb',sourceId:highSource.id,targetId,arc:'low'},c.value+targetValue+.15,p.center);
+      if(Math.sqrt(flat2(highSource.center,p.center))<=bombRangeAt(highSource,'high')+.05)
+        add('highbomb',{kind:'paint',weapon:'bomb',sourceId:highSource.id,targetId,arc:'high'},c.value+targetValue+.07,p.center);
+    }
     if(c.brush)add('brush',{kind:'paint',weapon:'brush',sourceId:c.brush.id,targetId},c.value*.7+targetValue+c.access+(p.building?.55:0),p.center);
     if(c.gun)add('gun',{kind:'paint',weapon:'gun',sourceId:c.gun.id,targetId},targetValue+c.value*.45+(o!==null&&o!==pid?Math.min(3,p.density)*.45:0)+(p.center[1]>.4?.45:0),p.center);
     if(player.ghosts>0&&p.owner===null&&!p.traps.includes(pid)&&c.nearMine<=RULES.ghostRange&&c.nearEnemy<=4&&late<.9){
@@ -113,7 +135,7 @@ function candidateRows(s,profile,small=false) {
       for(const rotation of orientations)add(kind,{kind:'build',building:kind,targetId,rotation},baseRank,p.center);
     }
   }
-  const quotas=small?{brush:5,gun:4,bomb:5,air:5,ghost:2,dome:1,tower:1,wall:1,arch:1}:{brush:10,gun:8,bomb:10,air:10,ghost:4,dome:3,tower:3,wall:4,arch:4};
+  const quotas=small?{brush:5,gun:4,bomb:5,highbomb:4,air:5,ghost:2,dome:1,tower:1,wall:1,arch:1}:{brush:10,gun:8,bomb:10,highbomb:7,air:10,ghost:4,dome:3,tower:3,wall:4,arch:4};
   const selected=[];
   for(const [group,rows] of Object.entries(groups)){
     selected.push(...takeDiverse(rows,quotas[group],group==='ghost'?.7:group==='gun'?.85:1.2));
@@ -124,6 +146,19 @@ function assess(s,p,c,idx,profile,baseScores) {
   const pid=idx.pid,remaining=s.config.rounds-s.round-1+(s.ap-1)*.5;
   const horizon=clamp(remaining/3,0,1);
   const own=p.scores[pid]-baseScores[pid];
+  const base=s.players[pid].base;
+  // 기존 본진과 확보된 고지대에서 닿지 않는 표면만 추가 거점 가치로 평가한다.
+  const extension=(q,skipBuilding=null)=>{
+    const range=bombRangeAt(q,'low'),binRadius=range;
+    let benefit=0;
+    for(const t of idx.nearby(q.center,binRadius+q.center[1])){
+      if(t.building!==null||owner(t)===pid||flat2(t.center,q.center)>range*range)continue;
+      if(flat2(t.center,base)<=RULES.bombRange**2)continue;
+      if(idx.highBomb.some(b=>b.building!==skipBuilding&&flat2(t.center,b.center)<=bombRangeAt(b,'low')**2))continue;
+      benefit+=t.area*(owner(t)===null?.65:1);
+    }
+    return Math.min(3.2,benefit*.045);
+  };
   const opponentScores=baseScores.filter((_,i)=>i!==pid);
   const lead=Math.max(...opponentScores);
   let denial=0;
@@ -131,17 +166,18 @@ function assess(s,p,c,idx,profile,baseScores) {
   let value=own*profile.gain+denial*profile.attack;
   if(c.kind==='build'){
     const b=p.building;
-    let accessible=0,high=0,enemy=0,mine=0;
+    let accessible=0,high=0,enemy=0,mine=0,top=null;
     for(const q of p.buildSurfaces){
       const nearby=idx.nearby(q.center,3);
       if(nearby.some(v=>owner(v)===pid))accessible+=q.area;
-      if(q.normal[1]>.35&&q.center[1]>1)high+=q.area;
+      if(isHighBombSurface(q)){high+=q.area;if(!top||q.center[1]>top.center[1])top=q;}
     }
     for(const q of idx.nearby([b.x,0,b.z],3)){
       if(owner(q)===pid)mine+=q.area;else if(owner(q)!==null)enemy+=q.area;
     }
     const potential=Math.min(2.5,accessible*.11+high*.32)+Math.min(1.0,enemy*.09);
-    return value+horizon*(profile.building*(.8+potential)+profile.reach*high*.14-mine*.03)-.25;
+    const reachValue=top?extension(top)*.75:0;
+    return value+horizon*(profile.building*(.8+potential)+profile.reach*(Math.min(1,high*.14)+reachValue)-mine*.03)-.25;
   }
   if(c.weapon==='ghost'){
     const t=idx.byId.get(c.targetId);
@@ -150,6 +186,7 @@ function assess(s,p,c,idx,profile,baseScores) {
     return horizon*profile.trap*(.12+(4-nearest)*.24+Math.min(.7,enemy*.05)+(t.building?.25:0));
   }
   let weaken=0,secure=0,reach=0,over=0;
+  const newPlatforms=new Map();
   for(const a of p.affected){
     const old=idx.byId.get(a.id);
     if(!old)continue;
@@ -162,11 +199,16 @@ function assess(s,p,c,idx,profile,baseScores) {
         const frontier=idx.nearby(old.center,1.5).some(q=>owner(q)!==pid);
         if(frontier)reach+=old.area*(.25+(old.center[1]>.3?.55:0));
       }
+      if(oldOwner!==pid&&isHighBombSurface(old)&&!idx.highBomb.some(q=>q.building===old.building)){
+        const best=newPlatforms.get(old.building);
+        if(!best||old.center[1]>best.center[1])newPlatforms.set(old.building,old);
+      }
       if(a.density>=RULES.gunThreshold&&(oldOwner!==pid||old.density<RULES.gunThreshold))reach+=old.area*(.5+old.center[1]*.18);
       over+=Math.max(0,a.density-Math.max(5,oldOwner===pid?old.density:0))*old.area;
     }
   }
-  return value+weaken*.11*profile.attack+horizon*(profile.reach*reach+secure*.14*profile.reinforce-over*.025);
+  const launchGain=[...newPlatforms.values()].reduce((sum,q)=>sum+extension(q,q.building),0);
+  return value+weaken*.11*profile.attack+horizon*(profile.reach*(reach+launchGain)+secure*.14*profile.reinforce-over*.025);
 }
 function rank(s,profile,small=false){
   const {selected,idx}=candidateRows(s,profile,small);

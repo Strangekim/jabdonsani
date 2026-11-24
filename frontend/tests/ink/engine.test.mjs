@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { makeGame, active, apply, preview, view, score, BUILDINGS } from '../../src/lib/ink/engine.mjs';
+import { makeGame, active, apply, preview, view, score, BUILDINGS, bombRangeAt, gunRangeAt, canLaunchBomb } from '../../src/lib/ink/engine.mjs';
 const nearest=(surfaces,point)=>surfaces.reduce((a,b)=>Math.hypot(...b.center.map((x,i)=>x-point[i]))<Math.hypot(...a.center.map((x,i)=>x-point[i]))?b:a);
 const game=()=>makeGame({players:4,rounds:8,factor:4});
 test('2~8인 순환 선턴과 고정 라운드',()=>{
@@ -15,7 +15,7 @@ test('2~8인 순환 선턴과 고정 라운드',()=>{
 test('다섯 도구, 행동력, 버전, 결정론적 결과',()=>{
   const s=game(),source=s.surfaces.find(p=>p.owner===0),target=nearest(s.surfaces.filter(p=>p.owner===null),source.center);
   for(const weapon of ['brush','gun','bomb','air','ghost']){
-    const c={kind:'paint',weapon,sourceId:source.id,targetId:target.id};
+    const c={kind:'paint',weapon,sourceId:weapon==='brush'||weapon==='gun'?source.id:undefined,targetId:target.id};
     const p=preview(s,c);assert.ok(p.ok,p.message);
     assert.deepEqual(p,preview(s,c));
     const a=apply(s,c),b=apply(s,c);assert.deepEqual(a,b);assert.equal(a.ap,1);assert.equal(a.version,1);
@@ -78,4 +78,44 @@ test('최종 점수는 전체 노출 표면적과 일치한다',()=>{
   let s=game();const c={kind:'paint',weapon:'air',targetId:s.surfaces.find(p=>p.owner===null).id};
   s=apply(s,c);const r=score(s);
   assert.ok(Math.abs(r.total-r.neutral-r.scores.reduce((a,b)=>a+b,0))<1e-5);
+});
+
+test('고지대의 점유권과 높이가 폭탄 및 잉크 건 사거리를 결정한다',()=>{
+  const initial=makeGame({players:2,rounds:8,factor:4});
+  const center=nearest(initial.surfaces,[0,0,0]);
+  let s=apply(initial,{kind:'build',building:'tower',targetId:center.id,rotation:0});
+  const roof=s.surfaces.find(p=>p.building&&p.center[1]===3&&p.normal[1]>.9);
+  const ground=s.surfaces.find(p=>p.building===null&&p.owner===0);
+  const target=s.surfaces.filter(p=>p.building===null&&Math.hypot(p.center[0]-initial.players[0].base[0],p.center[2]-initial.players[0].base[2])>5.55&&Math.hypot(p.center[0]-roof.center[0],p.center[2]-roof.center[2])<9).sort((a,b)=>b.center[2]-a.center[2])[0];
+  assert.ok(roof&&target&&ground);
+  const bomb={kind:'paint',weapon:'bomb',sourceId:roof.id,targetId:target.id,arc:'low'};
+  assert.equal(preview(s,bomb).ok,false);
+  assert.equal(preview(s,{...bomb,sourceId:undefined}).ok,false);
+  assert.equal(preview(s,{...bomb,sourceId:ground.id}).ok,false);
+  assert.equal(preview(s,{...bomb,sourceId:'missing'}).ok,false);
+  const air={kind:'paint',weapon:'air',targetId:roof.id};
+  s=apply(s,air);
+  s={...s,round:2,slot:0,ap:2};
+  const ownedRoof=s.surfaces.find(p=>p.id===roof.id);
+  assert.ok(canLaunchBomb(ownedRoof,0));
+  assert.equal(bombRangeAt(ownedRoof,'low'),10);
+  assert.equal(bombRangeAt(ownedRoof,'high'),8.7);
+  assert.equal(gunRangeAt(ownedRoof),9.5);
+  const p=preview(s,bomb);
+  assert.ok(p.ok,p.message);
+  assert.equal(p.path[0][1],3.35);
+  assert.ok(p.affected.length>0);
+  assert.ok(p.affected.reduce((sum,d)=>sum+d.amount*s.surfaces.find(q=>q.id===d.id).area,0)<=5.001);
+  const changed=apply(s,bomb);
+  assert.equal(changed.ap,1);
+  const stolen={...s,surfaces:s.surfaces.map(q=>q.id===roof.id?{...q,owner:1,density:3}:q)};
+  assert.equal(preview(stolen,bomb).ok,false);
+  const enemyTurn={...stolen,slot:1};
+  assert.ok(preview(enemyTurn,bomb).ok);
+  const fortified={...s,surfaces:s.surfaces.map(q=>q.id===roof.id?{...q,owner:0,density:3}:q)};
+  const far=s.surfaces.filter(q=>q.building===null&&Math.hypot(...q.center.map((v,i)=>v-(roof.center[i]+(i===1?.12:0))))>5.1&&Math.hypot(...q.center.map((v,i)=>v-(roof.center[i]+(i===1?.12:0))))<9.5).sort((a,b)=>b.center[2]-a.center[2])[0];
+  assert.ok(far);
+  const gun={kind:'paint',weapon:'gun',sourceId:roof.id,targetId:far.id};
+  assert.ok(preview(fortified,gun).ok);
+  assert.equal(gunRangeAt(ground),5);
 });

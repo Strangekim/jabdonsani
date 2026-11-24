@@ -62,5 +62,5 @@ test('8인 경기의 빠른 탐색에서도 유효한 행동을 반환한다',()
   const s=makeGame({players:8,rounds:8,factor:4});
   const result=chooseAction(view(s),'expand',{fast:true});
   assert.ok(preview(s,result.command).ok);
-  assert.ok(result.evaluated<=25);
+  assert.ok(result.evaluated<=29);
 });
