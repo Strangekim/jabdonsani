@@ -23,7 +23,7 @@ function runGame(variant,setting){
     counts[pid][label]=(counts[pid][label]??0)+1;
     const before=score(s).scores,byId=new Map(s.surfaces.map(q=>[q.id,q]));
     if(command.kind==='build'){
-      structures.push({id:p.building.id,kind:command.building,owner:pid,round:s.round+1,forced:forcedAction,position:[p.building.x,p.building.z]});
+      structures.push({id:p.building.id,kind:command.building,owner:pid,round:s.round+1,turn:s.turn,forced:forcedAction,position:[p.building.x,p.building.z],paintApBefore:s.ap});
     }else if(command.kind==='paint'&&command.weapon!=='ghost'){
       paintCount++;
       const v=perWeapon[label]??={count:0,areaGain:0,enemyLoss:0,inkMass:0,hits:0,rays:0,buildingInk:0,buildingHits:0};
@@ -38,7 +38,7 @@ function runGame(variant,setting){
       }
       if(attacked){attackCount++;if(firstContact===null)firstContact=s.round+1;}
       if(p.rayStats){v.hits+=p.rayStats.hitCount;v.rays+=p.rayStats.rays;}
-      if(command.weapon==='bomb'&&command.sourceId){highShots++;const b=byId.get(command.sourceId)?.building;if(b)shotsByBuilding[b]=(shotsByBuilding[b]??0)+1;}
+      if(command.weapon==='bomb'&&command.sourceId){highShots++;const b=byId.get(command.sourceId)?.building;if(b)(shotsByBuilding[b]??=Array(players).fill(0))[pid]++;}
     }
     if(forcedAction)forced++;
     const round=s.round+1;
@@ -73,7 +73,7 @@ function runGame(variant,setting){
   }
   let guard=0;
   while(!s.finished){
-    if(++guard>players*setting.rounds*2+1)throw Error('turn loop');
+    if(++guard>players*(setting.rounds*2+EXPERIMENT.constructionCredits)+1)throw Error('turn loop');
     const result=chooseAction(view(s),setting.profiles[active(s)],{fast:setting.fast!==false});
     act(result.command);
   }
@@ -83,9 +83,10 @@ function runGame(variant,setting){
     b.area=patches.reduce((a,q)=>a+q.area,0);
     b.ownerArea=patches.filter(q=>q.owner===b.owner&&q.density>=RULES.threshold).reduce((a,q)=>a+q.area,0);
     b.enemyArea=patches.filter(q=>q.owner!==null&&q.owner!==b.owner&&q.density>=RULES.threshold).reduce((a,q)=>a+q.area,0);
-    b.shots=shotsByBuilding[b.id]??0;
+    b.shotsByPlayer=shotsByBuilding[b.id]??Array(players).fill(0);
+    b.shots=b.shotsByPlayer.reduce((a,b)=>a+b,0);
   }
-  return {variant:variant.name,setting,diameter:s.config.radius*2,initialArea,counts,structures,highShots,paintCount,attackCount,firstContact,traps,forced,perWeapon,coverage:1-t.neutral/t.total,scores:t.scores,winners:t.scores.map((v,i)=>Math.abs(v-max)<1e-7?i:-1).filter(i=>i>=0),turnHistory,ms:Date.now()-started};
+  return {variant:variant.name,setting,constructionCredits:EXPERIMENT.constructionCredits,creditsRemaining:s.players.map(p=>p.constructionCredits),diameter:s.config.radius*2,initialArea,counts,structures,highShots,paintCount,attackCount,firstContact,traps,forced,perWeapon,coverage:1-t.neutral/t.total,scores:t.scores,winners:t.scores.map((v,i)=>Math.abs(v-max)<1e-7?i:-1).filter(i=>i>=0),turnHistory,ms:Date.now()-started};
 }
 function summarize(x){
   return {variant:x.variant,profiles:x.setting.profiles,rounds:x.setting.rounds,factor:x.setting.factor,opening:x.setting.opening,diameter:x.diameter,counts:x.counts,builds:x.structures.map(b=>[b.owner,b.kind,b.shots]),high:x.highShots,scores:x.scores.map(n=>+n.toFixed(2)),coverage:+x.coverage.toFixed(3),contact:x.firstContact,attacks:x.attackCount,paints:x.paintCount,perWeapon:Object.fromEntries(Object.entries(x.perWeapon).map(([k,v])=>[k,{n:v.count,avgGain:+(v.areaGain/v.count).toFixed(2),avgInk:+(v.inkMass/v.count).toFixed(2)}])),ms:x.ms};
@@ -93,7 +94,9 @@ function summarize(x){
 
 const selected={name:'disk-splash-65',experiment:{bombPattern:'disk',bombDownFraction:.65,bombGroundRadius:1.25,airLength:2.8,airWidth:1,airEmit:3.2,brushLength:3}};
 const quick={rounds:10,factor:5,profiles:['balanced','balanced']};
-const jobs=process.argv.includes('--full')?[
+const separate={name:'C-separate-credits',experiment:{...selected.experiment,constructionCredits:2}};
+const comparison=[['balanced','balanced'],['builder','attack'],['attack','builder'],['expand','balanced'],['balanced','expand']].flatMap(profiles=>[{...selected,name:'A-shared-AP'},separate].map(v=>[v,{...quick,profiles}]));
+const jobs=process.argv.includes('--credits')?comparison:process.argv.includes('--full')?[
   ...[
     {name:'old-shapes-old-patterns',experiment:{shapes:'old',patterns:'legacy'}},
     {name:'new-shapes-old-patterns',experiment:{shapes:'new',patterns:'legacy'}},

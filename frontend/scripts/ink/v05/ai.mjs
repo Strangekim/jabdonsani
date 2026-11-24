@@ -1,4 +1,4 @@
-import { apply, preview, score, RULES, BUILDINGS, gunRangeAt, bombRangeAt, canLaunchBomb, isHighBombSurface, getBombControl, bombRadiusAt, EXPERIMENT } from './engine.mjs';
+import { apply, preview, score, RULES, BUILDINGS, gunRangeAt, bombRangeAt, canLaunchBomb, isHighBombSurface, getBombControl, bombRadiusAt, EXPERIMENT, canBuildNow } from './engine.mjs';
 
 export const PROFILES = {
   balanced: { label: '균형형', gain: 1, attack: .8, reach: .75, building: .75, trap: .7, reinforce: .25 },
@@ -103,6 +103,7 @@ function candidateRows(s,profile,small=false) {
     if(Number.isFinite(rank))groups[group].push({command,rank,center,key:cmdKey(command)});
   };
   const late=(s.round+1)/s.config.rounds;
+  const buildAllowed=canBuildNow(s,pid);
   for(const p of idx.reps){
     const c=contextAt(idx,p,player.base,profile),o=owner(p),targetId=p.id;
     const targetValue=o===null?.65:o===pid?.05:profile.attack*.7;
@@ -149,7 +150,7 @@ function candidateRows(s,profile,small=false) {
       add('ghost',{kind:'paint',weapon:'ghost',targetId},(4-c.nearEnemy)*.55+c.enemy*.2+p.area+(p.building?.6:0),p.center);
     }
     if(p.building===null&&o!==null&&o!==pid)continue;
-    if(p.building!==null||late>=.85||c.nearMine>4.8||c.baseDistance<1.1)continue;
+    if(!buildAllowed||p.building!==null||late>=.85||c.nearMine>4.8||c.baseDistance<1.1)continue;
     for(const kind of Object.keys(BUILDINGS)){
       if(!player.builds[kind])continue;
       if(Math.hypot(p.center[0],p.center[2])+BUILDINGS[kind].radius>s.config.radius-.02)continue;
@@ -280,6 +281,41 @@ export function chooseAction(publicView,style='balanced',options={}){
   const first=rank(s,profile,Boolean(options.fast)),rows=first.rows;
   let evaluated=first.count;
   if(!rows.length)return {command:{kind:'pass'},evaluated,value:0,planned:[]};
+  if(EXPERIMENT.constructionCredits&&canBuildNow(s)){
+    // 동일한 도색 AP를 보유한 채 건설 여부를 비교한다. 건설권은 아껴둘 수 있다.
+    const candidates=[],kinds=new Set();
+    for(const row of rows){
+      if(row.command.kind!=='build'||kinds.has(row.command.building))continue;
+      candidates.push(row);kinds.add(row.command.building);
+      if(candidates.length>=(options.fast?3:5))break;
+    }
+    const paints=rows.filter(r=>r.command.kind!=='build');
+    const baseline=paints[0];
+    if(!baseline)return {command:{kind:'pass'},evaluated,value:0,planned:[]};
+    let baselineValue=baseline.value,basePlan=[baseline.command];
+    if(!options.fast){
+      const next=apply(s,baseline.command,s.version),ranked=rank(next,profile,true);
+      evaluated+=ranked.count;
+      const second=ranked.rows[0];if(second){baselineValue+=second.value*.9;basePlan.push(second.command);}
+    }
+    let best={command:baseline.command,value:baselineValue,planned:basePlan};
+    for(const row of candidates){
+      const built=apply(s,row.command,s.version),ranked=rank(built,profile,true);
+      evaluated+=ranked.count;
+      const firstPaint=ranked.rows.find(r=>r.command.kind!=='build');if(!firstPaint)continue;
+      let immediate=firstPaint.value,plan=[row.command,firstPaint.command];
+      if(!options.fast){
+        const after=apply(built,firstPaint.command,built.version),second=rank(after,profile,true);
+        evaluated+=second.count;
+        if(second.rows[0]){immediate+=second.rows[0].value*.9;plan.push(second.rows[0].command);}
+      }
+      const remaining=s.config.rounds-s.round;
+      const opportunityCost=(s.players[(s.round+s.slot)%s.players.length].constructionCredits===1?1.35:1.0)*Math.min(1,remaining/4);
+      const value=immediate+.65*row.value-opportunityCost;
+      if(value>best.value+1e-9)best={command:row.command,value,planned:plan};
+    }
+    return {...best,evaluated};
+  }
   if(s.ap===1||options.fast)return {command:rows[0].command,evaluated,value:rows[0].value,planned:[rows[0].command]};
   // 2 AP의 첫 행동이 두 번째 행동의 선택지를 바꾸는 경우를 비교한다.
   const beam=rows.slice(0,3);

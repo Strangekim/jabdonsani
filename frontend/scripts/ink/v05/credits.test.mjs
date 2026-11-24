@@ -1,0 +1,61 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { EXPERIMENT, makeGame, preview, apply, active, canBuildNow, view } from './engine.mjs';
+
+const nearest=(s,x,z)=>s.surfaces.filter(p=>p.building===null).reduce((a,b)=>Math.hypot(b.center[0]-x,b.center[2]-z)<Math.hypot(a.center[0]-x,a.center[2]-z)?b:a);
+const build=(s,building,x,z)=>({kind:'build',building,targetId:nearest(s,x,z).id,rotation:0});
+const setup=()=>{
+  Object.assign(EXPERIMENT,{shapes:'new',patterns:'rays',constructionCredits:2,bombPattern:'disk',bombDownFraction:.65,bombGroundRadius:1.25,airLength:2.8,airWidth:1,airEmit:3.2,brushLength:3});
+  return makeGame({players:2,rounds:10,factor:5});
+};
+test('C안 건설은 도색 AP와 분리되고 같은 턴에 한 번만 가능하다',()=>{
+  let s=setup();
+  const first=build(s,'tower',0,0);
+  assert.ok(preview(s,first).ok);
+  s=apply(s,first);
+  assert.equal(s.ap,2);
+  assert.equal(s.turn,0);
+  assert.equal(s.players[0].constructionCredits,1);
+  assert.equal(view(s).players[0].constructionCredits,1);
+  assert.equal(canBuildNow(s),false);
+  assert.equal(preview(s,build(s,'ramp',-3,0)).ok,false);
+  assert.ok(s.surfaces.filter(p=>p.building!==null).every(p=>p.owner===null));
+  const roof=s.surfaces.find(p=>p.building!==null&&p.normal[1]>.9);
+  s=apply(s,{kind:'paint',weapon:'air',targetId:roof.id,rotation:0});
+  assert.equal(s.ap,1);
+  assert.equal(preview(s,build(s,'ramp',-3,0)).ok,false);
+  s=apply(s,{kind:'paint',weapon:'air',targetId:roof.id,rotation:1});
+  assert.equal(active(s),1);
+  assert.equal(s.ap,2);
+  assert.equal(s.players[1].constructionCredits,2);
+  assert.equal(canBuildNow(s),true);
+});
+test('건설권 소진 후 다음 턴에도 건설할 수 없고 기존 도색 AP는 유지한다',()=>{
+  let s=setup();
+  s=apply(s,build(s,'tower',0,0));
+  do{s=apply(s,{kind:'pass'});}while(active(s)!==0);
+  assert.equal(canBuildNow(s),true);
+  const second=build(s,'ramp',-3,-1);
+  assert.ok(preview(s,second).ok);
+  s=apply(s,second);
+  assert.equal(s.players[0].constructionCredits,0);
+  assert.equal(s.ap,2);
+  do{s=apply(s,{kind:'pass'});}while(active(s)!==0);
+  assert.equal(canBuildNow(s),false);
+  assert.equal(preview(s,build(s,'canopy',3,0)).ok,false);
+  assert.equal(s.ap,2);
+});
+test('C안에서도 도색 후 건설 불가, 기존 AP 방식은 건설에 1 AP 소비',()=>{
+  let s=setup();
+  const target=nearest(s,0,0);
+  s=apply(s,{kind:'paint',weapon:'air',targetId:target.id});
+  assert.equal(s.ap,1);
+  assert.equal(canBuildNow(s),false);
+  assert.equal(preview(s,build(s,'tower',-3,0)).ok,false);
+  EXPERIMENT.constructionCredits=0;
+  s=makeGame({players:2,rounds:10,factor:5});
+  s=apply(s,build(s,'tower',0,0));
+  assert.equal(s.ap,1);
+  assert.equal(s.players[0].constructionCredits,0);
+  assert.equal(canBuildNow(s),true);
+});

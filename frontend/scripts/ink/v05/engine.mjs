@@ -9,7 +9,7 @@ export const WEAPONS={
  ghost:{label:'잠복 잉크',detail:'내 영토 주변의 중립 표면에 비공개 설치',cost:1}
 };
 export const RULES={actions:2,threshold:.5,gunThreshold:2.5,ghostUses:3,ink:9,brushRange:3,gunRange:5,bombRange:4.3,highBombRange:3.3,heightRangeFactor:1.8,bombMinHeight:.5,bombMinNormalY:.35,roofControl:.5,bombRadius:1.15,bombInk:5,highBombInk:5.7,heightRadiusFactor:.11,maxHeightRadiusBonus:.33,gunRadius:.65,gunInk:7,airRadius:.95,airInk:3.5,ghostRange:1.5,buildingUses:1};
-export const EXPERIMENT={shapes:'new',patterns:'rays',bombEmit:9,bombBurstHeight:.55,bombRayLength:1.65,bombDownBias:0,bombPattern:'sphere',bombDownFraction:.55,bombGroundRadius:1.2,gunEmit:7,gunFan:.23,gunPitch:.035,airEmit:3.5,airLength:3,airWidth:1.1,brushLength:3.5,ghostRadius:0,roofMajority:true};
+export const EXPERIMENT={shapes:'new',patterns:'rays',bombEmit:9,bombBurstHeight:.55,bombRayLength:1.65,bombDownBias:0,bombPattern:'sphere',bombDownFraction:.55,bombGroundRadius:1.2,gunEmit:7,gunFan:.23,gunPitch:.035,airEmit:3.5,airLength:3,airWidth:1.1,brushLength:3.5,ghostRadius:0,roofMajority:true,constructionCredits:0};
 const keys=()=>EXPERIMENT.shapes==='new'?['ramp','canopy','basin','tunnel','tower']:['dome','tower','wall','arch'];
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const round=n=>Math.round(n*1e6)/1e6;
@@ -44,7 +44,7 @@ export function makeGame({players=4,rounds=8,factor=5}={}){
   const surfaces=ground(radius);
   const ps=Array.from({length:players},(_,i)=>{
     const a=2*Math.PI*i/players-Math.PI/2,base=[radius*.7*Math.cos(a),0,radius*.7*Math.sin(a)];
-    return {id:i,name:'P'+(i+1),color:COLORS[i],base,ghosts:RULES.ghostUses,builds:Object.fromEntries(keys().map(k=>[k,RULES.buildingUses]))};
+    return {id:i,name:'P'+(i+1),color:COLORS[i],base,ghosts:RULES.ghostUses,constructionCredits:EXPERIMENT.constructionCredits,lastBuildTurn:-1,builds:Object.fromEntries(keys().map(k=>[k,RULES.buildingUses]))};
   });
   for(const p of surfaces)for(const pl of ps)if(dist(p.center,pl.base)<=.95){p.owner=pl.id;p.density=3;}
   return {version:0,rulesVersion:1,config:{players,rounds,factor,radius},players:ps,surfaces,buildings:[],round:0,slot:0,ap:2,turn:0,finished:false,events:[]};
@@ -72,7 +72,12 @@ function distribute(pairs,budget,nominal=0){
   if(denom<=0)return [];
   return pairs.map(({p,weight})=>({id:p.id,amount:round(budget*weight/denom/p.area)})).filter(p=>p.amount>0);
 }
+export function canBuildNow(s,pid=active(s)){
+  if(!EXPERIMENT.constructionCredits)return s.ap>0;
+  return s.ap===RULES.actions&&s.players[pid].constructionCredits>0&&s.players[pid].lastBuildTurn!==s.turn;
+}
 function footprintPreview(s,c,target,pid){
+  if(!canBuildNow(s,pid))return fail('별도 건설권이 남아 있고 이번 턴 도색 전이며 아직 건설하지 않았을 때만 설치할 수 있습니다.');
   if(!keys().includes(c.building))return fail('건물 종류를 선택하세요.');
   if(!s.players[pid].builds[c.building])return fail('이 건물은 이미 사용했습니다.');
   if(target.building!==null)return fail('건물은 지면에만 설치합니다.');
@@ -247,6 +252,7 @@ export function apply(s,c,expectedVersion=s.version){
     const covered=new Set(p.covered);
     next.surfaces=next.surfaces.filter(v=>!covered.has(v.id)).concat(p.buildSurfaces);
     next.buildings.push(p.building);next.players[pid].builds[c.building]--;
+    if(EXPERIMENT.constructionCredits){next.players[pid].constructionCredits--;next.players[pid].lastBuildTurn=s.turn;}
   } else if(c.kind==='paint'){
     if(c.weapon==='ghost'){
       next.players[pid].ghosts--;
@@ -264,7 +270,7 @@ export function apply(s,c,expectedVersion=s.version){
   }
   const label=c.kind==='pass'?'턴 종료':c.kind==='build'?BUILDINGS[c.building].label+' 건설':WEAPONS[c.weapon].label;
   next.events.push({id:next.version,player:pid,label,round:s.round+1,triggered});
-  next.ap=c.kind==='pass'?0:s.ap-1;
+  next.ap=c.kind==='pass'?0:c.kind==='build'&&EXPERIMENT.constructionCredits?s.ap:s.ap-1;
   if(next.ap===0){
     next.turn++;next.slot++;
     if(next.slot===s.players.length){next.slot=0;next.round++;}
