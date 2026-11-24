@@ -1,0 +1,29 @@
+export type Vec3 = [number, number, number];
+export type Weapon = 'brush' | 'gun' | 'bomb' | 'air' | 'ghost';
+export type BuildingKind = 'dome' | 'tower' | 'wall' | 'arch';
+export type Config = { players: number; rounds: number; factor: number; radius?: number };
+export type Player = { id: number; name: string; color: string; base: Vec3; ghosts: number; builds: Record<BuildingKind, number> };
+export type Surface = { id: string; building: string | null; vertices: Vec3[]; center: Vec3; normal: Vec3; area: number; owner: number | null; density: number };
+export type PublicSurface = Surface & { controller: number | null; ownTrap: boolean };
+export type Building = { id: string; kind: BuildingKind; x: number; z: number; rotation: number };
+export type GameEvent = { id: number; player: number; label: string; round: number; triggered: number };
+export type GameView = { version: number; config: Required<Config>; players: Player[]; surfaces: PublicSurface[]; buildings: Building[]; round: number; slot: number; ap: number; turn: number; active: number; finished: boolean; scores: number[]; neutral: number; total: number; events: GameEvent[] };
+export type Command = { kind: 'paint'; weapon: Weapon; targetId: string; sourceId?: string; arc?: 'low' | 'high' } | { kind: 'build'; building: BuildingKind; targetId: string; rotation: number } | { kind: 'pass' };
+export type Preview = { ok: boolean; message: string; affected: { id: string; amount: number; owner: number | null; density: number; controller: number | null }[]; path: Vec3[]; scores: number[]; buildSurfaces: Surface[]; covered: string[]; ghost?: string; building?: Building };
+export interface GamePort {
+  getView(): GameView;
+  preview(command: Command): Preview;
+  dispatch(command: Command, expectedVersion: number): GameView;
+}
+export const COLORS: string[];
+export const WEAPONS: Record<Weapon, { label: string; detail: string; cost: number }>;
+export const BUILDINGS: Record<BuildingKind, { label: string; detail: string; radius: number }>;
+export const RULES: { actions: number; threshold: number; gunThreshold: number; ghostUses: number; ink: number; brushRange: number; gunRange: number; bombRange: number; highBombRange: number; ghostRange: number; buildingUses: number };
+export type EngineState = Omit<GameView,'active'|'scores'|'neutral'|'total'|'surfaces'> & { rulesVersion: number; surfaces: (Surface & {traps: number[]})[] };
+export function makeGame(config?: Partial<Config>): EngineState;
+export function active(state: EngineState): number;
+export function score(state: EngineState): {scores:number[];neutral:number;total:number};
+export function view(state: EngineState, player?: number): GameView;
+export function preview(state: EngineState, command: Command): Preview;
+export function apply(state: EngineState, command: Command, expectedVersion?: number): EngineState;
+export function createLocalGame(config: Config): GamePort;
