@@ -45,7 +45,25 @@ test('건물 네 종류의 표면적, 건설 제한 및 공중 투하',()=>{
   const initial=game(),center=nearest(initial.surfaces,[0,0,0]);
   for(const building of Object.keys(BUILDINGS)){
     const c={kind:'build',building,targetId:center.id,rotation:0};
-    assert.equal(preview(initial,c).ok,false);
+    const neutral=preview(initial,c);assert.ok(neutral.ok,neutral.message);
+    const neutralBuilt=apply(initial,c);
+    assert.deepEqual(neutral.scores,score(initial).scores);
+    assert.deepEqual(score(neutralBuilt).scores,score(initial).scores);
+    assert.equal(neutralBuilt.ap,1);
+    assert.ok(neutralBuilt.surfaces.filter(p=>p.building).every(p=>p.owner===null));
+    const covered=new Set(neutral.covered);
+    const first=neutral.covered[0];
+    const mixed={...initial,surfaces:initial.surfaces.map(p=>p.id===first?{...p,owner:0,density:3}:p)};
+    const mixedPreview=preview(mixed,c);assert.ok(mixedPreview.ok);
+    const mixedBuilt=apply(mixed,c);
+    assert.ok(Math.abs(mixedPreview.scores[0]-score(mixedBuilt).scores[0])<1e-8);
+    assert.ok(Math.abs(score(mixedBuilt).scores[0]-score(initial).scores[0])<1e-8);
+    const enemy={...mixed,surfaces:mixed.surfaces.map(p=>p.id===first?{...p,owner:1,density:3}:p)};
+    assert.equal(preview(enemy,c).ok,false);
+    assert.throws(()=>apply(enemy,c),/상대 영토/);
+    const belowThreshold={...initial,surfaces:initial.surfaces.map(p=>covered.has(p.id)?{...p,owner:1,density:.25}:p)};
+    assert.ok(preview(belowThreshold,c).ok);
+    assert.deepEqual(preview(belowThreshold,c).scores,score(initial).scores);
     const s={...initial,surfaces:initial.surfaces.map(p=>({...p,owner:0,density:3}))};
     const p=preview(s,c);assert.ok(p.ok,p.message);assert.ok(p.covered.length);
     const a=apply(s,c);assert.equal(a.buildings.length,1);assert.equal(a.players[0].builds[building],0);

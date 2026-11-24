@@ -61,10 +61,10 @@ function footprintPreview(s,c,target,pid){
   if(s.buildings.some(a=>Math.hypot(a.x-b.x,a.z-b.z)<BUILDINGS[a.kind].radius+BUILDINGS[b.kind].radius+.08))return fail('기존 건물과 겹치거나 너무 가깝습니다.');
   if(s.players.some(pl=>footprint(b,pl.base,false)))return fail('고정 본진 위에는 건설할 수 없습니다.');
   const covered=s.surfaces.filter(p=>p.building===null&&footprint(b,p.center));
-  if(!covered.length||covered.some(p=>owned(p)!==pid))return fail('건물 바닥 전체를 먼저 자신의 색으로 확보하세요.');
+  if(!covered.length||covered.some(p=>owned(p)!==null&&owned(p)!==pid))return fail('상대 영토 위에는 건설할 수 없습니다. 중립 또는 자신의 영토를 선택하세요.');
   const buildSurfaces=buildingSurfaces(b);
-  const scores=score(s).scores;for(const p of covered)scores[pid]-=p.area;
-  return {ok:true,message:'바닥 잉크는 소멸하고 건물 표면은 중립으로 시작합니다.',affected:[],path:[],scores,buildSurfaces,covered:covered.map(p=>p.id),building:b};
+  const scores=score(s).scores;for(const p of covered)if(owned(p)===pid)scores[pid]-=p.area;
+  return {ok:true,message:'중립 또는 내 영토에 건설합니다. 가려진 잉크는 소멸하고 새 표면은 중립입니다.',affected:[],path:[],scores,buildSurfaces,covered:covered.map(p=>p.id),building:b};
 }
 function paintPreview(s,c,pid,idx,target){
   if(!Object.hasOwn(WEAPONS,c.weapon))return fail('도색 도구를 선택하세요.');

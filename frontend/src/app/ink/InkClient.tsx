@@ -134,7 +134,7 @@ export default function InkClient() {
         <div className={styles.sectionLabel}>건설 <span>1 AP</span></div>
         <div className={styles.tools}>{buildings.map(b=><button key={b} disabled={handoff||view.finished||current.builds[b]===0} className={choice.kind==='build'&&choice.building===b?styles.selected:''} onClick={()=>select({kind:'build',building:b})}><strong>{BUILDINGS[b].label}</strong><small>남은 {current.builds[b]}개</small></button>)}</div>
         {!view.finished&&<div className={styles.selection}>
-          <h3>{chosenLabel}</h3><p>{chosenDetail}</p>
+          <h3>{chosenLabel}</h3><p>{chosenDetail}</p>{choice.kind==='build'&&<p>중립 및 내 영토에 설치 가능 · 상대 영토는 불가 · 새 표면은 중립</p>}
           {choice.kind==='paint'&&choice.weapon==='bomb'&&<label>궤적<select disabled={handoff} value={arc} onChange={e=>{const next=e.target.value as 'low'|'high';setArc(next);if(target)requestPreview(target,source,next);}}><option value="low">낮은 투척 · 사거리 5.5</option><option value="high">높은 투척 · 사거리 4.2</option></select></label>}
           {choice.kind==='build'&&<label>회전<select disabled={handoff} value={rotation} onChange={e=>{const n=Number(e.target.value);setRotation(n);if(target)requestPreview(target,source,arc,n);}}>{[0,1,2,3].map(n=><option key={n} value={n}>{n*90}°</option>)}</select></label>}
           <p className={styles.instruction}>{instruction}</p>
@@ -148,6 +148,6 @@ export default function InkClient() {
         <div className={styles.log}><div className={styles.sectionLabel}>최근 행동</div>{view.events.length===0?<p>아직 행동 기록이 없습니다.</p>:view.events.slice(-5).reverse().map(e=><div key={e.id}><span style={{color:view.players[e.player].color}}>{view.players[e.player].name}</span><span>{e.label}{e.triggered?' · 잠복 발동 '+e.triggered:''}</span><small>R{e.round}</small></div>)}</div>
       </aside>
     </div>
-    <div className={styles.footnote}>표면적 기준 득점 · 최소 농도 0.5 · 노출 표면만 집계 · 보라색 외곽선은 내 잠복 잉크 · 미리보기는 숨겨진 잉크를 제외한 공개 정보로 계산합니다. 건물은 지면에만, 설치 면 전체가 내 영토일 때 건설할 수 있습니다.</div>
+    <div className={styles.footnote}>표면적 기준 득점 · 최소 농도 0.5 · 노출 표면만 집계 · 보라색 외곽선은 내 잠복 잉크 · 미리보기는 숨겨진 잉크를 제외한 공개 정보로 계산합니다. 건물은 중립 또는 내 영토인 지면에만 건설할 수 있습니다. 상대 영토, 본진 및 기존 건물과 겹칠 수 없습니다.</div>
   </main>;
 }
