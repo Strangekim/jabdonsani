@@ -5,9 +5,11 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import type { GameView, Preview, Surface, Vec3 } from '@/lib/ink/engine.mjs';
 import styles from './Ink.module.css';
+import { createDensityLabels } from './InkDensityLabels';
+import type { DensityLabels } from './InkDensityLabels';
 
 type Props = { view: GameView; preview: Preview | null; source: string | null; target: string | null; hidden: boolean; showTraps: boolean; onPick: (id: string) => void };
-type SceneHandles = { scene: THREE.Scene; camera: THREE.PerspectiveCamera; renderer: THREE.WebGLRenderer; controls: OrbitControls; layer: THREE.Group; pickMesh: THREE.Mesh | null; faces: string[] };
+type SceneHandles = { scene: THREE.Scene; camera: THREE.PerspectiveCamera; renderer: THREE.WebGLRenderer; controls: OrbitControls; layer: THREE.Group; pickMesh: THREE.Mesh | null; faces: string[]; densityLabels: DensityLabels | null };
 const WHITE = new THREE.Color('#f2eee4');
 const INK = new THREE.Color('#b5b3bb');
 
@@ -74,6 +76,7 @@ export default function InkBoard({ view, preview, source, target, hidden, showTr
   const handles = useRef<SceneHandles | null>(null);
   const callback = useRef(onPick);
   const [error, setError] = useState('');
+  const [showDensity, setShowDensity] = useState(true);
   useEffect(() => { callback.current = onPick; }, [onPick]);
   const radius = view.config.radius;
 
@@ -103,7 +106,7 @@ export default function InkBoard({ view, preview, source, target, hidden, showTr
     scene.add(ambient, sun);
     const layer = new THREE.Group();
     scene.add(layer);
-    const state: SceneHandles = { scene, camera, renderer, controls, layer, pickMesh: null, faces: [] };
+    const state: SceneHandles = { scene, camera, renderer, controls, layer, pickMesh: null, faces: [], densityLabels: null };
     handles.current = state;
     const resize = () => {
       const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight);
@@ -127,13 +130,13 @@ export default function InkBoard({ view, preview, source, target, hidden, showTr
     renderer.domElement.addEventListener('pointerdown', pointerDown);
     renderer.domElement.addEventListener('pointerup', pointerUp);
     let frame = 0;
-    const tick = () => { controls.update(); renderer.render(scene,camera); frame = requestAnimationFrame(tick); };
+    const tick = () => { controls.update(); camera.updateMatrixWorld(); state.densityLabels?.update(camera); renderer.render(scene,camera); frame = requestAnimationFrame(tick); };
     tick();
     return () => {
       cancelAnimationFrame(frame); observer.disconnect();
       renderer.domElement.removeEventListener('pointerdown', pointerDown);
       renderer.domElement.removeEventListener('pointerup', pointerUp);
-      controls.dispose(); disposeLayer(layer); renderer.dispose(); renderer.domElement.remove();
+      controls.dispose(); disposeLayer(layer); state.densityLabels?.dispose(); renderer.dispose(); renderer.domElement.remove();
       handles.current = null;
     };
   }, [radius]);
@@ -142,6 +145,7 @@ export default function InkBoard({ view, preview, source, target, hidden, showTr
     const h = handles.current;
     if (!h) return;
     disposeLayer(h.layer);
+    if (h.densityLabels) { h.scene.remove(h.densityLabels.mesh); h.densityLabels.dispose(); h.densityLabels = null; }
     const surfaceById = new Map(view.surfaces.map(p => [p.id,p]));
     const changes = new Map((preview?.ok ? preview.affected : []).map(p => [p.id,p]));
     const covered = new Set(preview?.ok ? preview.covered : []);
@@ -168,11 +172,21 @@ export default function InkBoard({ view, preview, source, target, hidden, showTr
       if (target) { const p = surfaceById.get(target); if (p) h.layer.add(outline(p,'#ffffff')); }
       if (preview?.ok && preview.path.length > 1) h.layer.add(line(preview.path,view.players[view.active].color));
     }
+    if (showDensity && (!hidden || view.finished)) {
+      const items = view.surfaces.flatMap(p => {
+        if (covered.has(p.id)) return [];
+        const change = changes.get(p.id);
+        const density = change?.density ?? p.density;
+        return density > 0 || change ? [{ surface: p, density }] : [];
+      });
+      h.densityLabels = createDensityLabels(items);
+      if (h.densityLabels) { h.scene.add(h.densityLabels.mesh); h.camera.updateMatrixWorld(); h.densityLabels.update(h.camera); }
+    }
     for (const p of view.players) {
       const ring = new THREE.Mesh(new THREE.RingGeometry(.22,.33,32),new THREE.MeshBasicMaterial({color:p.color,side:THREE.DoubleSide,depthTest:false}));
       ring.rotation.x = -Math.PI/2;ring.position.set(p.base[0],.025,p.base[2]);ring.renderOrder=4;h.layer.add(ring);
     }
-  }, [view, preview, source, target, hidden, showTraps, radius]);
+  }, [view, preview, source, target, hidden, showTraps, showDensity, radius]);
 
   const resetCamera = () => {
     const h=handles.current;if(!h)return;
@@ -186,9 +200,10 @@ export default function InkBoard({ view, preview, source, target, hidden, showTr
     <div ref={host} className={styles.canvas} aria-label="입체 영토 게임 보드" />
     {error && <div className={styles.boardError}>{error}</div>}
     <div className={styles.cameraTools}>
+      <button type="button" aria-pressed={showDensity} className={showDensity?styles.cameraActive:undefined} onClick={()=>setShowDensity(v=>!v)}>농도 숫자 {showDensity?'ON':'OFF'}</button>
       <button type="button" onClick={topCamera}>위에서 보기</button>
       <button type="button" onClick={resetCamera}>시점 초기화</button>
     </div>
-    <div className={styles.boardHint}>드래그 회전 · 휠 확대 · 표면 클릭</div>
+    <div className={styles.boardHint}>드래그 회전 · 휠 확대 · 숫자 = 잉크 농도</div>
   </div>;
 }

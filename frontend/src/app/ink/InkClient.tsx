@@ -184,6 +184,8 @@ export default function InkClient() {
   const activePreview=handoff||view.finished?null:preview;
   const instruction=needsSource(choice)&&!source?'내 영토에서 발사 시작점을 선택하세요.':'보드에서 목표 표면을 선택하세요.';
   const targetSurface=view.surfaces.find(p=>p.id===target);
+  const targetAfter=activePreview?.ok?activePreview.affected.find(p=>p.id===target):undefined;
+  const preciseDensity=(n:number)=>String(Number(n.toFixed(6)));
 
   return <main className={styles.game}>
     <header className={styles.gameHeader}>
@@ -229,7 +231,7 @@ export default function InkClient() {
           {choice.kind==='build'&&<label>회전<select disabled={blocked} value={rotation} onChange={e=>{const n=Number(e.target.value);setRotation(n);if(target)requestPreview(target,source,arc,n);}}>{[0,1,2,3].map(n=><option key={n} value={n}>{n*90}°</option>)}</select></label>}
           <p className={styles.instruction}>{instruction}</p>
           {source&&<button className={styles.textButton} onClick={clearSelection}>발사점 다시 선택</button>}
-          {targetSurface&&<p className={styles.target}>목표: {targetSurface.building?'건물 표면':'지면'} · 농도 {fmt(targetSurface.density)}</p>}
+          {targetSurface&&<p className={styles.target}>목표: {targetSurface.building?'건물 표면':'지면'} · 농도 <strong>{preciseDensity(targetSurface.density)}{targetAfter?' → '+preciseDensity(targetAfter.density):''}</strong></p>}
           {activePreview&&<p className={activePreview.ok?styles.previewText:styles.warning}>{activePreview.message}</p>}
           {message&&!handoff&&<p role="status" className={styles.warning}>{message}</p>}
           <button className={styles.primary} disabled={blocked||!target||!activePreview?.ok} onClick={()=>{if(target)submit(makeCommand(choice,target,source,arc,rotation));}}>행동 확정 <span>1 AP</span></button>
@@ -238,6 +240,6 @@ export default function InkClient() {
         <div className={styles.log}><div className={styles.sectionLabel}>최근 행동</div>{view.events.length===0?<p>아직 행동 기록이 없습니다.</p>:view.events.slice(-5).reverse().map(e=><div key={e.id}><span style={{color:view.players[e.player].color}}>{view.players[e.player].name}</span><span>{e.label}{e.triggered?' · 잠복 발동 '+e.triggered:''}</span><small>R{e.round}</small></div>)}</div>
       </aside>
     </div>
-    <div className={styles.footnote}>표면적 기준 득점 · 최소 농도 0.5 · 노출 표면만 집계 · 보라색 외곽선은 내 잠복 잉크 · 미리보기는 숨겨진 잉크를 제외한 공개 정보로 계산합니다. 건물은 중립 또는 내 영토인 지면에만 건설할 수 있습니다. 상대 영토, 본진 및 기존 건물과 겹칠 수 없습니다.</div>
+    <div className={styles.footnote}>표면의 숫자는 잉크 농도(소수 첫째 자리 기준) · 미리보기에서는 도색 후 농도 · 표면적 기준 득점 · 최소 농도 0.5 · 노출 표면만 집계 · 보라색 외곽선은 내 잠복 잉크 · 미리보기는 숨겨진 잉크를 제외한 공개 정보로 계산합니다. 건물은 중립 또는 내 영토인 지면에만 건설할 수 있습니다. 상대 영토, 본진 및 기존 건물과 겹칠 수 없습니다.</div>
   </main>;
 }
