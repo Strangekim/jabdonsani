@@ -16,7 +16,6 @@ export const NAV_ITEMS: NavItem[] = [
     { label: '동향', href: '/' },
     { label: '잡동사니', href: '/stuff' },
     { label: '농구', href: '/basketball' },
-    { label: 'INK', href: '/ink' },
     { label: '블로그', href: '/blog' },
-    { label: 'ARL', href: '/arl' },
+    { label: 'INK', href: '/ink' },
 ];

@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
   validate:
-    name: Validate site and ARL deployment receiver
+    name: Validate site and backend
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -34,17 +34,17 @@ jobs:
           cache-dependency-path: |
             backend/package-lock.json
             frontend/package-lock.json
-      - name: Validate deployment receiver
+      - name: Validate backend
         working-directory: backend
         run: |
           npm ci --no-audit --no-fund
           npx tsc --noEmit
-          npm run test:arl
       - name: Validate website
         working-directory: frontend
         run: |
           npm ci --no-audit --no-fund
           npm run typecheck
+          node --test tests/ink/engine.test.mjs
           npm run build
 
   deploy:
@@ -91,9 +91,11 @@ jobs:
             sudo docker-compose up -d --build
 
             # API가 새 컨테이너에서 정상 응답하는지 검증한다.
-            echo "🔎 Checking ARL preview API..."
+            echo "🔎 Checking backend health and INK page..."
             curl --fail --silent --show-error --retry 12 --retry-all-errors --retry-delay 5 \
-              https://jobdongsani.co.kr/api/arl-preview/status
+              https://jobdongsani.co.kr/health
+            curl --fail --silent --show-error --retry 12 --retry-all-errors --retry-delay 5 \
+              https://jobdongsani.co.kr/ink > /dev/null
 
             # DB 마이그레이션 실행 (컨테이너 기동 대기 후)
             echo "📦 Running migrations..."
