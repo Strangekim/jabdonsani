@@ -9,12 +9,12 @@ export const WEAPONS={
  ghost:{label:'잠복 잉크',detail:'내 영토 주변의 중립 표면에 비공개 설치',cost:1}
 };
 export const RULES={actions:2,threshold:.5,gunThreshold:2.5,ghostUses:3,ink:9,brushRange:3,gunRange:5,bombRange:4.3,highBombRange:3.3,heightRangeFactor:1.8,bombMinHeight:.5,bombMinNormalY:.35,roofControl:.5,bombRadius:1.15,bombInk:5,highBombInk:5.7,heightRadiusFactor:.11,maxHeightRadiusBonus:.33,gunRadius:.65,gunInk:7,airRadius:.95,airInk:3.5,ghostRange:1.5,buildingUses:1};
-export const EXPERIMENT={shapes:'new',patterns:'rays',bombEmit:9,bombBurstHeight:.55,bombRayLength:1.65,bombDownBias:0,bombPattern:'sphere',bombDownFraction:.55,bombGroundRadius:1.2,gunEmit:7,gunFan:.23,gunPitch:.035,airEmit:3.5,airLength:3,airWidth:1.1,brushLength:3.5,ghostRadius:0,roofMajority:true,constructionCredits:0};
+export const EXPERIMENT={shapes:'new',patterns:'rays',bombEmit:9,bombBurstHeight:.55,bombRayLength:1.65,bombDownBias:0,bombPattern:'sphere',bombDownFraction:.55,bombGroundRadius:1.2,gunEmit:7,gunFan:.23,gunPitch:.035,airEmit:3.5,airLength:3,airWidth:1.1,brushLength:3.5,ghostRadius:0,roofMajority:true,constructionCredits:0,gunOriginOffset:.12,gunHeightBonus:1.8,ghostOwn:false,ghostMaxArea:Infinity,ghostStoredDensity:0,ghostBurstRegion:false};
 const keys=()=>EXPERIMENT.shapes==='new'?['ramp','canopy','basin','tunnel','tower']:['dome','tower','wall','arch'];
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const round=n=>Math.round(n*1e6)/1e6;
 const owned=p=>p.density>=RULES.threshold?p.owner:null;
-export const gunRangeAt=p=>RULES.gunRange+Math.max(0,p?.center[1]??0)*RULES.heightRangeFactor;
+export const gunRangeAt=p=>RULES.gunRange+Math.max(0,p?.center[1]??0)*EXPERIMENT.gunHeightBonus;
 export const bombRangeAt=(p,arc='low')=>(arc==='high'?RULES.highBombRange:RULES.bombRange)+Math.max(0,p?.center[1]??0)*RULES.heightRangeFactor;
 export const isHighBombSurface=p=>p.building!==null&&p.center[1]>=RULES.bombMinHeight&&p.normal[1]>=RULES.bombMinNormalY;
 export const bombRadiusAt=p=>RULES.bombRadius+(p?Math.min(RULES.maxHeightRadiusBonus,Math.max(0,p.center[1])*RULES.heightRadiusFactor):0);
@@ -47,7 +47,7 @@ export function makeGame({players=4,rounds=8,factor=5}={}){
     return {id:i,name:'P'+(i+1),color:COLORS[i],base,ghosts:RULES.ghostUses,constructionCredits:EXPERIMENT.constructionCredits,lastBuildTurn:-1,builds:Object.fromEntries(keys().map(k=>[k,RULES.buildingUses]))};
   });
   for(const p of surfaces)for(const pl of ps)if(dist(p.center,pl.base)<=.95){p.owner=pl.id;p.density=3;}
-  return {version:0,rulesVersion:1,config:{players,rounds,factor,radius},players:ps,surfaces,buildings:[],round:0,slot:0,ap:2,turn:0,finished:false,events:[]};
+  return {version:0,rulesVersion:1,config:{players,rounds,factor,radius},players:ps,surfaces,buildings:[],ghostRegions:[],round:0,slot:0,ap:2,turn:0,finished:false,events:[]};
 }
 export const active=s=>(s.round+s.slot)%s.players.length;
 export function score(s){
@@ -56,7 +56,7 @@ export function score(s){
   return {scores,neutral,total};
 }
 export function view(s,player=active(s)){
-  return {version:s.version,config:{...s.config},players:s.players.map(p=>({...p,base:[...p.base],builds:{...p.builds}})),surfaces:s.surfaces.map(({traps,...p})=>({...p,ownTrap:!s.finished&&traps.includes(player),owner:p.owner,controller:owned(p)})),buildings:s.buildings.map(b=>({...b})),round:s.round,slot:s.slot,ap:s.ap,turn:s.turn,active:active(s),finished:s.finished,...score(s),events:s.events.slice(-15)};
+  return {version:s.version,config:{...s.config},players:s.players.map(p=>({...p,base:[...p.base],builds:{...p.builds}})),surfaces:s.surfaces.map(({traps,...p})=>({...p,ownTrap:!s.finished&&traps.includes(player),owner:p.owner,controller:owned(p)})),buildings:s.buildings.map(b=>({...b})),ownGhostRegions:s.finished?[]:(s.ghostRegions??[]).filter(g=>g.player===player).map(g=>({...g,ids:[...g.ids]})),round:s.round,slot:s.slot,ap:s.ap,turn:s.turn,active:active(s),finished:s.finished,...score(s),events:s.events.slice(-15)};
 }
 function addInk(p,player,amount){
   let owner=p.owner,density=p.density;
@@ -147,16 +147,25 @@ function bandRays(target,rotation){
   }
   return rays;
 }
+export function ghostEligible(p,pid){
+  return !p.traps.includes(pid)&&(p.owner===null||(EXPERIMENT.ghostOwn&&owned(p)===pid));
+}
 function paintPreview(s,c,pid,idx,target){
   if(!Object.hasOwn(WEAPONS,c.weapon))return fail('도색 도구를 선택하세요.');
   const source=idx.byId.get(c.sourceId);
   let deposits=[],path=[],message='',rayStats=null;
   if(c.weapon==='ghost'){
-    if(target.owner!==null||target.traps.includes(pid))return fail('아직 잉크가 없는 중립 표면에만 설치할 수 있습니다.');
+    if(!ghostEligible(target,pid))return fail(EXPERIMENT.ghostOwn?'미설치 중립 또는 내 영토를 선택하세요.':'아직 잉크가 없는 중립 표면에만 설치할 수 있습니다.');
     if(s.players[pid].ghosts<=0)return fail('잠복 잉크를 모두 사용했습니다.');
-    if(!s.surfaces.some(p=>owned(p)===pid&&dist(p.center,target.center)<=RULES.ghostRange))return fail('내 영토에서 1.5유닛 이내에 설치하세요.');
-    const ghostIds=s.surfaces.filter(p=>p.owner===null&&!p.traps.includes(pid)&&p.building===target.building&&dist(p.center,target.center)<=EXPERIMENT.ghostRadius+1e-7&&dot(p.normal,target.normal)>.15).map(p=>p.id);
-    return {ok:true,message:'위치는 비공개이며 상대의 다음 도색에 한 번 반응합니다.',affected:[],path:[],scores:score(s).scores,buildSurfaces:[],covered:[],ghost:target.id,ghostIds};
+    if(!s.surfaces.some(p=>owned(p)===pid&&dist(p.center,target.center)<=RULES.ghostRange))return fail('내 영토에서 '+RULES.ghostRange+'유닛 이내에 설치하세요.');
+    const eligible=s.surfaces.filter(p=>ghostEligible(p,pid)&&p.building===target.building&&dist(p.center,target.center)<=EXPERIMENT.ghostRadius+1e-7&&dot(p.normal,target.normal)>.15).sort((a,b)=>dist(a.center,target.center)-dist(b.center,target.center)||a.id.localeCompare(b.id));
+    const ghostIds=[];let ghostArea=0;
+    for(const p of eligible){
+      if(ghostArea+p.area>EXPERIMENT.ghostMaxArea+1e-8)continue;
+      ghostArea+=p.area;ghostIds.push(p.id);
+    }
+    if(!ghostIds.length)return fail('설치할 수 있는 표면이 없습니다.');
+    return {ok:true,message:'위치는 비공개이며 상대의 다음 도색에 한 번 반응합니다.',affected:[],path:[],scores:score(s).scores,buildSurfaces:[],covered:[],ghost:target.id,ghostIds,ghostArea};
   }
   if(c.weapon==='brush'){
     if(!source||owned(source)!==pid)return fail('붓의 시작점을 내 영토에서 선택하세요.');
@@ -174,8 +183,8 @@ function paintPreview(s,c,pid,idx,target){
     deposits=distribute(trace.affected.map(p=>({p,weight:p.area})),9,EXPERIMENT.patterns==='rays'?max:3);
     message='연결된 표면을 따라 도색합니다.';
   } else if(c.weapon==='gun'){
-    if(!source||owned(source)!==pid||source.density<RULES.gunThreshold)return fail('농도 2.5 이상인 내 표면을 발사점으로 선택하세요.');
-    const origin=add(source.center,mul(source.normal,.12));
+    if(!source||owned(source)!==pid||source.density<RULES.gunThreshold)return fail('농도 '+RULES.gunThreshold+' 이상인 내 표면을 발사점으로 선택하세요.');
+    const origin=add(source.center,mul(source.normal,EXPERIMENT.patterns==='rays'?EXPERIMENT.gunOriginOffset:.12));
     const range=gunRangeAt(source);
     if(dist(origin,target.center)>range+.05)return fail('잉크 건의 사거리 '+range.toFixed(1)+'유닛을 초과했습니다.');
     const end=add(target.center,mul(unit(sub(target.center,origin)),.03));
@@ -246,30 +255,61 @@ export function preview(s,c){
 export function apply(s,c,expectedVersion=s.version){
   check(expectedVersion===s.version,'게임 상태가 변경되었습니다.');
   const p=preview(s,c);check(p.ok,p.message);
-  const pid=active(s),next={...s,version:s.version+1,players:s.players.map(pl=>({...pl,builds:{...pl.builds}})),surfaces:s.surfaces.slice(),buildings:s.buildings.slice(),events:s.events.slice()};
-  let triggered=0;
+  const pid=active(s),next={...s,version:s.version+1,players:s.players.map(pl=>({...pl,builds:{...pl.builds}})),surfaces:s.surfaces.slice(),buildings:s.buildings.slice(),ghostRegions:(s.ghostRegions??[]).slice(),events:s.events.slice()};
+  let triggered=0,trapArea=0,trapInk=0,trapStoredInk=0,trapRegionsTriggered=0;
   if(c.kind==='build'){
     const covered=new Set(p.covered);
     next.surfaces=next.surfaces.filter(v=>!covered.has(v.id)).concat(p.buildSurfaces);
+    next.ghostRegions=next.ghostRegions.map(g=>({...g,ids:g.ids.filter(id=>!covered.has(id))})).filter(g=>g.ids.length);
     next.buildings.push(p.building);next.players[pid].builds[c.building]--;
     if(EXPERIMENT.constructionCredits){next.players[pid].constructionCredits--;next.players[pid].lastBuildTurn=s.turn;}
   } else if(c.kind==='paint'){
     if(c.weapon==='ghost'){
       next.players[pid].ghosts--;
       next.surfaces=next.surfaces.map(v=>p.ghostIds.includes(v.id)?{...v,traps:[...v.traps,pid]}:v);
+      if(EXPERIMENT.ghostBurstRegion)next.ghostRegions.push({id:'ghost-'+s.version,player:pid,ids:[...p.ghostIds]});
     } else {
       const changes=new Map(p.affected.map(v=>[v.id,v]));
-      next.surfaces=next.surfaces.map(v=>{
-        const d=changes.get(v.id);if(!d)return v;
-        const trap=v.traps.find(t=>t!==pid),owner=trap===undefined?pid:trap;
-        if(trap!==undefined)triggered++;
-        const {owner:o,density}=addInk(v,owner,d.amount);
-        return {...v,owner:o,density,traps:trap===undefined?v.traps:v.traps.filter(t=>t!==trap)};
-      });
+      if(EXPERIMENT.ghostBurstRegion){
+        const groups=s.ghostRegions??[],index=new Map(),fired=new Set(),redirect=new Map();
+        for(const g of groups)for(const id of g.ids)index.set(g.player+':'+id,g);
+        for(const v of s.surfaces){
+          const d=changes.get(v.id);if(!d)continue;
+          const trap=v.traps.find(t=>t!==pid);
+          if(trap===undefined)continue;
+          const g=index.get(trap+':'+v.id);
+          if(g){fired.add(g.id);redirect.set(v.id,trap);triggered++;trapArea+=v.area;trapInk+=d.amount*v.area;}
+        }
+        const released=new Map();
+        for(const g of groups)if(fired.has(g.id)){
+          trapRegionsTriggered++;
+          for(const id of g.ids){if(!released.has(id))released.set(id,[]);released.get(id).push(g.player);}
+        }
+        next.surfaces=next.surfaces.map(v=>{
+          const d=changes.get(v.id),owners=released.get(v.id)??[];
+          if(!d&&!owners.length)return v;
+          let q={...v};
+          if(d){const result=addInk(q,redirect.get(v.id)??pid,d.amount);q={...q,owner:result.owner,density:result.density};}
+          for(const player of owners){
+            const result=addInk(q,player,EXPERIMENT.ghostStoredDensity);q={...q,owner:result.owner,density:result.density,traps:q.traps.filter(t=>t!==player)};
+            trapStoredInk+=EXPERIMENT.ghostStoredDensity*q.area;
+          }
+          return q;
+        });
+        next.ghostRegions=groups.filter(g=>!fired.has(g.id));
+      }else{
+        next.surfaces=next.surfaces.map(v=>{
+          const d=changes.get(v.id);if(!d)return v;
+          const trap=v.traps.find(t=>t!==pid),owner=trap===undefined?pid:trap;
+          if(trap!==undefined){triggered++;trapArea+=v.area;trapInk+=d.amount*v.area;trapStoredInk+=EXPERIMENT.ghostStoredDensity*v.area;}
+          const {owner:o,density}=addInk(v,owner,d.amount+(trap===undefined?0:EXPERIMENT.ghostStoredDensity));
+          return {...v,owner:o,density,traps:trap===undefined?v.traps:v.traps.filter(t=>t!==trap)};
+        });
+      }
     }
   }
   const label=c.kind==='pass'?'턴 종료':c.kind==='build'?BUILDINGS[c.building].label+' 건설':WEAPONS[c.weapon].label;
-  next.events.push({id:next.version,player:pid,label,round:s.round+1,triggered});
+  next.events.push({id:next.version,player:pid,label,round:s.round+1,triggered,trapArea,trapInk,trapStoredInk,trapRegionsTriggered});
   next.ap=c.kind==='pass'?0:c.kind==='build'&&EXPERIMENT.constructionCredits?s.ap:s.ap-1;
   if(next.ap===0){
     next.turn++;next.slot++;

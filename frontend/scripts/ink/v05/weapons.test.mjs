@@ -1,0 +1,61 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { EXPERIMENT, RULES, makeGame, preview, apply, view, active } from './engine.mjs';
+import { fromPublicView } from './ai.mjs';
+
+const setup=()=>{
+  Object.assign(EXPERIMENT,{shapes:'new',patterns:'rays',constructionCredits:2,bombPattern:'disk',bombDownFraction:.65,bombGroundRadius:1.25,airLength:2.8,airWidth:1,airEmit:3.2,brushLength:3,gunOriginOffset:.65,gunEmit:10,gunFan:.34,gunPitch:.10,gunHeightBonus:1,ghostRadius:1.7,ghostOwn:true,ghostMaxArea:8,ghostStoredDensity:.8,ghostBurstRegion:true});
+  Object.assign(RULES,{gunRange:6.5,gunThreshold:1.2,ghostRange:3.5});
+  return makeGame({players:2,rounds:10,factor:5});
+};
+test('잉크 건은 농도 1.2 이상의 자기 표면에서만 발사하고 예산을 넘기지 않는다',()=>{
+  const s=setup(),source=s.surfaces.find(p=>p.owner===0);
+  source.density=1.2;
+  const target=s.surfaces.filter(p=>p.building===null&&p.owner===null).sort((a,b)=>Math.hypot(a.center[0]-source.center[0],a.center[2]-source.center[2]-3)-Math.hypot(b.center[0]-source.center[0],b.center[2]-source.center[2]-3))[0];
+  const cmd={kind:'paint',weapon:'gun',sourceId:source.id,targetId:target.id};
+  const p=preview(s,cmd);
+  assert.ok(p.ok);
+  const lookup=new Map(s.surfaces.map(p=>[p.id,p]));
+  assert.ok(p.affected.reduce((sum,d)=>sum+d.amount*lookup.get(d.id).area,0)<=10.001);
+  source.density=1.19;assert.equal(preview(s,cmd).ok,false);
+  source.density=3;source.owner=1;assert.equal(preview(s,cmd).ok,false);
+});
+test('영역 함정은 설치할 때 점수를 주지 않으며 상대에게 보이지 않는다',()=>{
+  const s=setup(),p=s.surfaces.find(p=>p.owner===0);
+  const cmd={kind:'paint',weapon:'ghost',targetId:p.id};
+  const pre=preview(s,cmd);
+  assert.ok(pre.ok);assert.ok(pre.ghostArea<=8+1e-8);assert.ok(pre.ghostIds.length>1);
+  const after=apply(s,cmd);
+  assert.equal(after.ap,1);assert.equal(after.players[0].ghosts,2);
+  assert.equal(after.surfaces.find(q=>q.id===p.id).density,p.density);
+  assert.equal(view(after,0).ownGhostRegions.length,1);
+  assert.equal(view(after,1).ownGhostRegions.length,0);
+  assert.equal(view(after,1).surfaces.some(q=>q.ownTrap),false);
+  assert.equal(fromPublicView(view(after,1)).ghostRegions.length,0);
+  assert.equal(preview(after,cmd).ok,false);
+});
+test('영역은 자기 공격에는 발동하지 않고 상대 공격에 한 번만 발동한다',()=>{
+  let s=setup();
+  const target=s.surfaces.find(p=>p.owner===0),id=target.id;
+  s=apply(s,{kind:'paint',weapon:'ghost',targetId:id});
+  const region=s.ghostRegions[0];
+  const area=s.surfaces.filter(q=>region.ids.includes(q.id)).reduce((a,q)=>a+q.area,0);
+  const air={kind:'paint',weapon:'air',targetId:id,rotation:0};
+  s=apply(s,air);
+  assert.equal(s.events.at(-1).trapRegionsTriggered,0);
+  assert.equal(s.ghostRegions.length,1);
+  assert.equal(active(s),1);
+  const before=preview(s,air);
+  const hidden=fromPublicView(view(s));
+  assert.equal(JSON.stringify(preview(hidden,air).affected),JSON.stringify(before.affected));
+  s=apply(s,air);
+  const event=s.events.at(-1);
+  assert.equal(event.trapRegionsTriggered,1);
+  assert.ok(event.trapInk>0);
+  assert.ok(Math.abs(event.trapStoredInk-area*.8)<1e-8);
+  assert.equal(s.ghostRegions.length,0);
+  assert.equal(s.surfaces.some(q=>q.traps.includes(0)),false);
+  s=apply(s,air);
+  assert.equal(s.events.at(-1).trapRegionsTriggered,0);
+  assert.equal(s.events.at(-1).trapStoredInk,0);
+});

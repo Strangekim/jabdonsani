@@ -1,0 +1,2251 @@
+{
+  "description": "v0.5 별도 건설권 유지. 기존 C안 3경기 기록, 새 무기 강화 후보 5경기. 최종 지역 발동 후보는 동일 AI 조합 3경기 비교. 결정론적 빠른 AI, 후보별 평가식과 규칙 함께 변경.",
+  "summary": {
+    "baseline": {
+      "games": 3,
+      "counts": {
+        "brush": 15,
+        "gun": 2,
+        "bomb": 78,
+        "air": 25,
+        "ghost": 0
+      },
+      "buildings": 12,
+      "traps": 0,
+      "trapArea": 0,
+      "trapInk": 0,
+      "storedInk": 0,
+      "highShots": 37,
+      "coverage": 0.30750293118888183,
+      "contact": 2.3333333333333335,
+      "meanMargin": 1.572143603334214,
+      "paintCount": 120
+    },
+    "final": {
+      "games": 3,
+      "counts": {
+        "brush": 16,
+        "gun": 31,
+        "bomb": 48,
+        "air": 10,
+        "ghost": 15
+      },
+      "buildings": 12,
+      "traps": 132,
+      "trapArea": 24.575072450531277,
+      "trapInk": 28.00263376555843,
+      "storedInk": 59.26862242878426,
+      "highShots": 17,
+      "coverage": 0.4272800339414551,
+      "contact": 2.3333333333333335,
+      "meanMargin": 4.594207109259751,
+      "paintCount": 105
+    }
+  },
+  "baseline": [
+    {
+      "variant": "C-separate-credits",
+      "setting": {
+        "rounds": 10,
+        "factor": 5,
+        "profiles": [
+          "balanced",
+          "balanced"
+        ]
+      },
+      "constructionCredits": 2,
+      "creditsRemaining": [
+        0,
+        0
+      ],
+      "diameter": 16,
+      "initialArea": 200.98119404510427,
+      "counts": [
+        {
+          "ramp": 1,
+          "air": 4,
+          "bomb": 15,
+          "canopy": 1,
+          "gun": 1
+        },
+        {
+          "tunnel": 1,
+          "bomb": 12,
+          "brush": 3,
+          "canopy": 1,
+          "air": 5
+        }
+      ],
+      "structures": [
+        {
+          "id": "structure-0",
+          "kind": "ramp",
+          "owner": 0,
+          "round": 1,
+          "turn": 0,
+          "forced": false,
+          "position": [
+            3.25,
+            -1.25
+          ],
+          "paintApBefore": 2,
+          "area": 11.781152949374526,
+          "ownerArea": 4.052014011457995,
+          "enemyArea": 0,
+          "shotsByPlayer": [
+            0,
+            0
+          ],
+          "shots": 0
+        },
+        {
+          "id": "structure-3",
+          "kind": "tunnel",
+          "owner": 1,
+          "round": 1,
+          "turn": 1,
+          "forced": false,
+          "position": [
+            0.25,
+            1.75
+          ],
+          "paintApBefore": 2,
+          "area": 36.82999999999994,
+          "ownerArea": 8.300833333333335,
+          "enemyArea": 3.3166666666666673,
+          "shotsByPlayer": [
+            0,
+            5
+          ],
+          "shots": 5
+        },
+        {
+          "id": "structure-6",
+          "kind": "canopy",
+          "owner": 1,
+          "round": 2,
+          "turn": 2,
+          "forced": false,
+          "position": [
+            -4.25,
+            0.25
+          ],
+          "paintApBefore": 2,
+          "area": 22.239999999999952,
+          "ownerArea": 5.322916666666668,
+          "enemyArea": 5.740416666666668,
+          "shotsByPlayer": [
+            1,
+            0
+          ],
+          "shots": 1
+        },
+        {
+          "id": "structure-9",
+          "kind": "canopy",
+          "owner": 0,
+          "round": 2,
+          "turn": 3,
+          "forced": false,
+          "position": [
+            -2.75,
+            -4.25
+          ],
+          "paintApBefore": 2,
+          "area": 22.239999999999952,
+          "ownerArea": 5.133333333333335,
+          "enemyArea": 4.138333333333333,
+          "shotsByPlayer": [
+            3,
+            0
+          ],
+          "shots": 3
+        }
+      ],
+      "highShots": 9,
+      "paintCount": 40,
+      "attackCount": 17,
+      "firstContact": 4,
+      "traps": 0,
+      "forced": 0,
+      "perWeapon": {
+        "air": {
+          "count": 9,
+          "areaGain": 31.447003568723908,
+          "enemyLoss": 1.3666666666666742,
+          "inkMass": 28.622228821803883,
+          "hits": 1127,
+          "rays": 1134,
+          "buildingInk": 5.257143136776173,
+          "buildingHits": 30
+        },
+        "bomb": {
+          "count": 27,
+          "areaGain": 105.78695405635526,
+          "enemyLoss": 23.116666666666845,
+          "inkMass": 155.13750101840947,
+          "hits": 4137,
+          "rays": 6480,
+          "buildingInk": 79.6875011241667,
+          "buildingHits": 432
+        },
+        "brush": {
+          "count": 3,
+          "areaGain": 11.22333333333338,
+          "enemyLoss": 0.21666666666666856,
+          "inkMass": 26.999995209166645,
+          "hits": 0,
+          "rays": 0,
+          "buildingInk": 21.124728209166648,
+          "buildingHits": 77
+        },
+        "gun": {
+          "count": 1,
+          "areaGain": 2.057083333333324,
+          "enemyLoss": 0.8904166666666669,
+          "inkMass": 7.000000212083333,
+          "hits": 105,
+          "rays": 105,
+          "buildingInk": 7.000000212083333,
+          "buildingHits": 15
+        }
+      },
+      "coverage": 0.45966883921371837,
+      "scores": [
+        66.16187429174569,
+        64.76208333333345
+      ],
+      "winners": [
+        0
+      ],
+      "turnHistory": [
+        {
+          "round": 1,
+          "scores": [
+            11.843680678124654,
+            11.325833333333334
+          ],
+          "coverage": 0.09620199396242046
+        },
+        {
+          "round": 2,
+          "scores": [
+            23.593680678124677,
+            20.672499999999964
+          ],
+          "coverage": 0.15541681032135612
+        },
+        {
+          "round": 3,
+          "scores": [
+            34.24368067812469,
+            31.080833333333295
+          ],
+          "coverage": 0.22935178612485774
+        },
+        {
+          "round": 4,
+          "scores": [
+            37.04368067812467,
+            36.86416666666667
+          ],
+          "coverage": 0.259487530120745
+        },
+        {
+          "round": 5,
+          "scores": [
+            42.305480302262474,
+            40.368333333333375
+          ],
+          "coverage": 0.29026449121001763
+        },
+        {
+          "round": 6,
+          "scores": [
+            50.53577537335838,
+            48.66916666666676
+          ],
+          "coverage": 0.3483046294887375
+        },
+        {
+          "round": 7,
+          "scores": [
+            51.73051313890896,
+            52.76208333333347
+          ],
+          "coverage": 0.3668693751556914
+        },
+        {
+          "round": 8,
+          "scores": [
+            58.29717980557565,
+            56.795416666666775
+          ],
+          "coverage": 0.4040855560904183
+        },
+        {
+          "round": 9,
+          "scores": [
+            60.28051313890897,
+            59.845416666666786
+          ],
+          "coverage": 0.4217573904336379
+        },
+        {
+          "round": 10,
+          "scores": [
+            66.16187429174569,
+            64.76208333333345
+          ],
+          "coverage": 0.45966883921371837
+        }
+      ],
+      "ms": 26639
+    },
+    {
+      "variant": "C-separate-credits",
+      "setting": {
+        "rounds": 10,
+        "factor": 5,
+        "profiles": [
+          "builder",
+          "attack"
+        ]
+      },
+      "constructionCredits": 2,
+      "creditsRemaining": [
+        0,
+        0
+      ],
+      "diameter": 16,
+      "initialArea": 200.98119404510427,
+      "counts": [
+        {
+          "ramp": 1,
+          "air": 6,
+          "bomb": 13,
+          "tunnel": 1,
+          "brush": 1
+        },
+        {
+          "tunnel": 1,
+          "bomb": 12,
+          "air": 5,
+          "brush": 3,
+          "canopy": 1
+        }
+      ],
+      "structures": [
+        {
+          "id": "structure-0",
+          "kind": "ramp",
+          "owner": 0,
+          "round": 1,
+          "turn": 0,
+          "forced": false,
+          "position": [
+            3.25,
+            -1.25
+          ],
+          "paintApBefore": 2,
+          "area": 11.781152949374526,
+          "ownerArea": 0,
+          "enemyArea": 0,
+          "shotsByPlayer": [
+            3,
+            0
+          ],
+          "shots": 3
+        },
+        {
+          "id": "structure-3",
+          "kind": "tunnel",
+          "owner": 1,
+          "round": 1,
+          "turn": 1,
+          "forced": false,
+          "position": [
+            0.25,
+            1.75
+          ],
+          "paintApBefore": 2,
+          "area": 36.82999999999994,
+          "ownerArea": 7.4091666666666685,
+          "enemyArea": 2.0000000000000004,
+          "shotsByPlayer": [
+            0,
+            5
+          ],
+          "shots": 5
+        },
+        {
+          "id": "structure-8",
+          "kind": "tunnel",
+          "owner": 0,
+          "round": 2,
+          "turn": 3,
+          "forced": false,
+          "position": [
+            -1.25,
+            -2.75
+          ],
+          "paintApBefore": 2,
+          "area": 36.82999999999994,
+          "ownerArea": 4.492500000000001,
+          "enemyArea": 7.068333333333334,
+          "shotsByPlayer": [
+            3,
+            2
+          ],
+          "shots": 5
+        },
+        {
+          "id": "structure-23",
+          "kind": "canopy",
+          "owner": 1,
+          "round": 6,
+          "turn": 10,
+          "forced": false,
+          "position": [
+            -4.25,
+            1.75
+          ],
+          "paintApBefore": 2,
+          "area": 22.239999999999952,
+          "ownerArea": 0,
+          "enemyArea": 0,
+          "shotsByPlayer": [
+            0,
+            2
+          ],
+          "shots": 2
+        }
+      ],
+      "highShots": 15,
+      "paintCount": 40,
+      "attackCount": 24,
+      "firstContact": 1,
+      "traps": 0,
+      "forced": 0,
+      "perWeapon": {
+        "air": {
+          "count": 11,
+          "areaGain": 20.201736723956596,
+          "enemyLoss": 18.61840339062326,
+          "inkMass": 35.20000400109505,
+          "hits": 1386,
+          "rays": 1386,
+          "buildingInk": 34.844448501095044,
+          "buildingHits": 228
+        },
+        "bomb": {
+          "count": 25,
+          "areaGain": 72.62499999999989,
+          "enemyLoss": 48.55833333333315,
+          "inkMass": 142.61250164833285,
+          "hits": 3803,
+          "rays": 6000,
+          "buildingInk": 106.01250164833316,
+          "buildingHits": 519
+        },
+        "brush": {
+          "count": 4,
+          "areaGain": 14.786666666666685,
+          "enemyLoss": 1.4666666666666686,
+          "inkMass": 36.000000509999985,
+          "hits": 0,
+          "rays": 0,
+          "buildingInk": 18.91931251000001,
+          "buildingHits": 48
+        }
+      },
+      "coverage": 0.1518423947418156,
+      "scores": [
+        20.9925,
+        23.9775
+      ],
+      "winners": [
+        1
+      ],
+      "turnHistory": [
+        {
+          "round": 1,
+          "scores": [
+            6.593680678124662,
+            7.766666666666669
+          ],
+          "coverage": 0.05962550823805268
+        },
+        {
+          "round": 2,
+          "scores": [
+            11.36034734479133,
+            11.325833333333334
+          ],
+          "coverage": 0.08274423342402037
+        },
+        {
+          "round": 3,
+          "scores": [
+            14.341666666666663,
+            12.625833333333334
+          ],
+          "coverage": 0.09835966426089326
+        },
+        {
+          "round": 4,
+          "scores": [
+            16.785347344791322,
+            16.50916666666667
+          ],
+          "coverage": 0.12143644089725236
+        },
+        {
+          "round": 5,
+          "scores": [
+            16.950833333333335,
+            18.025833333333335
+          ],
+          "coverage": 0.12757182498557806
+        },
+        {
+          "round": 6,
+          "scores": [
+            21.41118067812465,
+            23.442499999999995
+          ],
+          "coverage": 0.15144963947411905
+        },
+        {
+          "round": 7,
+          "scores": [
+            17.019514011457982,
+            21.4925
+          ],
+          "coverage": 0.13003683419680057
+        },
+        {
+          "round": 8,
+          "scores": [
+            18.842499999999987,
+            22.201666666666668
+          ],
+          "coverage": 0.13858671462861594
+        },
+        {
+          "round": 9,
+          "scores": [
+            16.802847344791317,
+            21.55166666666667
+          ],
+          "coverage": 0.1295050312799263
+        },
+        {
+          "round": 10,
+          "scores": [
+            20.9925,
+            23.9775
+          ],
+          "coverage": 0.1518423947418156
+        }
+      ],
+      "ms": 32113
+    },
+    {
+      "variant": "C-separate-credits",
+      "setting": {
+        "rounds": 10,
+        "factor": 5,
+        "profiles": [
+          "attack",
+          "builder"
+        ]
+      },
+      "constructionCredits": 2,
+      "creditsRemaining": [
+        0,
+        0
+      ],
+      "diameter": 16,
+      "initialArea": 200.98119404510427,
+      "counts": [
+        {
+          "ramp": 1,
+          "air": 3,
+          "bomb": 12,
+          "brush": 5,
+          "canopy": 1
+        },
+        {
+          "tunnel": 1,
+          "bomb": 14,
+          "brush": 3,
+          "canopy": 1,
+          "air": 2,
+          "gun": 1
+        }
+      ],
+      "structures": [
+        {
+          "id": "structure-0",
+          "kind": "ramp",
+          "owner": 0,
+          "round": 1,
+          "turn": 0,
+          "forced": false,
+          "position": [
+            3.25,
+            -1.25
+          ],
+          "paintApBefore": 2,
+          "area": 11.781152949374526,
+          "ownerArea": 3.5936806781246617,
+          "enemyArea": 0,
+          "shotsByPlayer": [
+            4,
+            0
+          ],
+          "shots": 4
+        },
+        {
+          "id": "structure-3",
+          "kind": "tunnel",
+          "owner": 1,
+          "round": 1,
+          "turn": 1,
+          "forced": false,
+          "position": [
+            0.25,
+            1.75
+          ],
+          "paintApBefore": 2,
+          "area": 36.82999999999994,
+          "ownerArea": 8.223333333333334,
+          "enemyArea": 8.127500000000005,
+          "shotsByPlayer": [
+            1,
+            3
+          ],
+          "shots": 4
+        },
+        {
+          "id": "structure-6",
+          "kind": "canopy",
+          "owner": 1,
+          "round": 2,
+          "turn": 2,
+          "forced": false,
+          "position": [
+            -4.25,
+            0.25
+          ],
+          "paintApBefore": 2,
+          "area": 22.239999999999952,
+          "ownerArea": 4.0375000000000005,
+          "enemyArea": 7.10916666666667,
+          "shotsByPlayer": [
+            0,
+            1
+          ],
+          "shots": 1
+        },
+        {
+          "id": "structure-25",
+          "kind": "canopy",
+          "owner": 0,
+          "round": 6,
+          "turn": 11,
+          "forced": false,
+          "position": [
+            -2.75,
+            -4.25
+          ],
+          "paintApBefore": 2,
+          "area": 22.239999999999952,
+          "ownerArea": 5.875000000000002,
+          "enemyArea": 0.9374999999999993,
+          "shotsByPlayer": [
+            4,
+            0
+          ],
+          "shots": 4
+        }
+      ],
+      "highShots": 13,
+      "paintCount": 40,
+      "attackCount": 23,
+      "firstContact": 2,
+      "traps": 0,
+      "forced": 0,
+      "perWeapon": {
+        "air": {
+          "count": 5,
+          "areaGain": 10.810347344791325,
+          "enemyLoss": 5.91666666666665,
+          "inkMass": 15.644445539441735,
+          "hits": 616,
+          "rays": 630,
+          "buildingInk": 9.422222236776172,
+          "buildingHits": 57
+        },
+        "bomb": {
+          "count": 26,
+          "areaGain": 86.70037415986764,
+          "enemyLoss": 30.966666666666658,
+          "inkMass": 153.41250292095478,
+          "hits": 4091,
+          "rays": 6240,
+          "buildingInk": 67.31250300041673,
+          "buildingHits": 367
+        },
+        "brush": {
+          "count": 8,
+          "areaGain": 28.510833333333355,
+          "enemyLoss": 6.12583333333334,
+          "inkMass": 71.9999909466666,
+          "hits": 0,
+          "rays": 0,
+          "buildingInk": 56.332493946666645,
+          "buildingHits": 174
+        },
+        "gun": {
+          "count": 1,
+          "areaGain": 0.86666666666666,
+          "enemyLoss": 1.29999999999999,
+          "inkMass": 4.199999916666667,
+          "hits": 63,
+          "rays": 105,
+          "buildingInk": 4.199999916666667,
+          "buildingHits": 9
+        }
+      },
+      "coverage": 0.31099755961111153,
+      "scores": [
+        44.45534734479138,
+        44.123707493200975
+      ],
+      "winners": [
+        0
+      ],
+      "turnHistory": [
+        {
+          "round": 1,
+          "scores": [
+            11.843680678124654,
+            11.325833333333334
+          ],
+          "coverage": 0.09620199396242046
+        },
+        {
+          "round": 2,
+          "scores": [
+            17.007014011457986,
+            16.751666666666654
+          ],
+          "coverage": 0.1284418796398512
+        },
+        {
+          "round": 3,
+          "scores": [
+            18.527847344791308,
+            19.099166666666637
+          ],
+          "coverage": 0.143159753514845
+        },
+        {
+          "round": 4,
+          "scores": [
+            23.821180678124612,
+            26.124166666666664
+          ],
+          "coverage": 0.19002739927532697
+        },
+        {
+          "round": 5,
+          "scores": [
+            28.330347344791274,
+            29.84833333333333
+          ],
+          "coverage": 0.22135281803554674
+        },
+        {
+          "round": 6,
+          "scores": [
+            36.76368067812467,
+            33.977500000000006
+          ],
+          "coverage": 0.24836948864653463
+        },
+        {
+          "round": 7,
+          "scores": [
+            38.28034734479134,
+            37.42750000000004
+          ],
+          "coverage": 0.2658072589587178
+        },
+        {
+          "round": 8,
+          "scores": [
+            37.28034734479134,
+            36.9028741598676
+          ],
+          "coverage": 0.26045435790927174
+        },
+        {
+          "round": 9,
+          "scores": [
+            42.180347344791365,
+            41.43620749320097
+          ],
+          "coverage": 0.29357441830086817
+        },
+        {
+          "round": 10,
+          "scores": [
+            44.45534734479138,
+            44.123707493200975
+          ],
+          "coverage": 0.31099755961111153
+        }
+      ],
+      "ms": 32626
+    }
+  ],
+  "trials": [
+    {
+      "variant": "G1-T1",
+      "setting": {
+        "rounds": 10,
+        "factor": 5,
+        "profiles": [
+          "balanced",
+          "balanced"
+        ]
+      },
+      "constructionCredits": 2,
+      "creditsRemaining": [
+        0,
+        0
+      ],
+      "diameter": 16,
+      "initialArea": 200.98119404510427,
+      "counts": [
+        {
+          "ramp": 1,
+          "gun": 5,
+          "bomb": 14,
+          "canopy": 1,
+          "brush": 1
+        },
+        {
+          "tower": 1,
+          "gun": 8,
+          "brush": 1,
+          "canopy": 1,
+          "bomb": 11
+        }
+      ],
+      "structures": [
+        {
+          "id": "structure-0",
+          "kind": "ramp",
+          "owner": 0,
+          "round": 1,
+          "turn": 0,
+          "forced": false,
+          "position": [
+            3.25,
+            -1.25
+          ],
+          "paintApBefore": 2,
+          "area": 11.781152949374526,
+          "ownerArea": 3.791657423749955,
+          "enemyArea": 4.354101966249685,
+          "shotsByPlayer": [
+            4,
+            0
+          ],
+          "shots": 4
+        },
+        {
+          "id": "structure-3",
+          "kind": "tower",
+          "owner": 1,
+          "round": 1,
+          "turn": 1,
+          "forced": false,
+          "position": [
+            3.25,
+            1.75
+          ],
+          "paintApBefore": 2,
+          "area": 11.387412760392332,
+          "ownerArea": 2.9440666380411735,
+          "enemyArea": 0.8411618965831924,
+          "shotsByPlayer": [
+            0,
+            0
+          ],
+          "shots": 0
+        },
+        {
+          "id": "structure-6",
+          "kind": "canopy",
+          "owner": 1,
+          "round": 2,
+          "turn": 2,
+          "forced": false,
+          "position": [
+            0.25,
+            1.75
+          ],
+          "paintApBefore": 2,
+          "area": 22.239999999999956,
+          "ownerArea": 7.70041666666667,
+          "enemyArea": 6.180833333333337,
+          "shotsByPlayer": [
+            5,
+            1
+          ],
+          "shots": 6
+        },
+        {
+          "id": "structure-9",
+          "kind": "canopy",
+          "owner": 0,
+          "round": 2,
+          "turn": 3,
+          "forced": false,
+          "position": [
+            -2.75,
+            -1.25
+          ],
+          "paintApBefore": 2,
+          "area": 22.239999999999952,
+          "ownerArea": 6.665416666666664,
+          "enemyArea": 6.270833333333336,
+          "shotsByPlayer": [
+            0,
+            1
+          ],
+          "shots": 1
+        }
+      ],
+      "highShots": 11,
+      "paintCount": 40,
+      "attackCount": 25,
+      "firstContact": 1,
+      "traps": 0,
+      "trapArea": 0,
+      "trapInk": 0,
+      "trapStoredInk": 0,
+      "ghostPlacements": [],
+      "forced": 0,
+      "perWeapon": {
+        "gun": {
+          "count": 13,
+          "areaGain": 58.47284400033576,
+          "enemyLoss": 13.823068722972,
+          "inkMass": 110.38095046897851,
+          "hits": 1159,
+          "rays": 1365,
+          "buildingInk": 71.61904753468136,
+          "buildingHits": 250
+        },
+        "bomb": {
+          "count": 25,
+          "areaGain": 105.30795051394529,
+          "enemyLoss": 15.695978214393545,
+          "inkMass": 146.2874995819957,
+          "hits": 3901,
+          "rays": 6000,
+          "buildingInk": 32.69999989907512,
+          "buildingHits": 193
+        },
+        "brush": {
+          "count": 2,
+          "areaGain": 6.499953785416439,
+          "enemyLoss": 2.927050983124838,
+          "inkMass": 18.000000587287683,
+          "hits": 0,
+          "rays": 0,
+          "buildingInk": 13.76745708728769,
+          "buildingHits": 40
+        }
+      },
+      "coverage": 0.5497641037241723,
+      "scores": [
+        71.67709170888313,
+        72.15755867032401
+      ],
+      "winners": [
+        1
+      ],
+      "turnHistory": [
+        {
+          "round": 1,
+          "scores": [
+            11.23955098312484,
+            12.006066189305146
+          ],
+          "coverage": 0.10680286161864083
+        },
+        {
+          "round": 2,
+          "scores": [
+            22.03621764979148,
+            20.856066189305114
+          ],
+          "coverage": 0.16394267945391172
+        },
+        {
+          "round": 3,
+          "scores": [
+            24.765375073541446,
+            26.333158765555137
+          ],
+          "coverage": 0.19530856844027444
+        },
+        {
+          "round": 4,
+          "scores": [
+            33.55300998736077,
+            35.314825432221845
+          ],
+          "coverage": 0.2632263068395094
+        },
+        {
+          "round": 5,
+          "scores": [
+            35.47175998736076,
+            41.11518336327735
+          ],
+          "coverage": 0.2927302437704138
+        },
+        {
+          "round": 6,
+          "scores": [
+            43.213459004235965,
+            48.78080956387798
+          ],
+          "coverage": 0.35162004755998055
+        },
+        {
+          "round": 7,
+          "scores": [
+            53.46345900423596,
+            57.70618372374554
+          ],
+          "coverage": 0.42491206975895957
+        },
+        {
+          "round": 8,
+          "scores": [
+            60.76592963643035,
+            63.59810277545395
+          ],
+          "coverage": 0.4753436020749504
+        },
+        {
+          "round": 9,
+          "scores": [
+            67.06835999390097,
+            68.15420593642592
+          ],
+          "coverage": 0.5168470362737828
+        },
+        {
+          "round": 10,
+          "scores": [
+            71.67709170888313,
+            72.15755867032401
+          ],
+          "coverage": 0.5497641037241723
+        }
+      ],
+      "ms": 30610
+    },
+    {
+      "variant": "G1-T2",
+      "setting": {
+        "rounds": 10,
+        "factor": 5,
+        "profiles": [
+          "balanced",
+          "balanced"
+        ]
+      },
+      "constructionCredits": 2,
+      "creditsRemaining": [
+        0,
+        0
+      ],
+      "diameter": 16,
+      "initialArea": 200.98119404510427,
+      "counts": [
+        {
+          "ramp": 1,
+          "gun": 7,
+          "bomb": 11,
+          "tower": 1,
+          "brush": 1,
+          "air": 1
+        },
+        {
+          "tower": 1,
+          "gun": 7,
+          "ghost": 1,
+          "canopy": 1,
+          "bomb": 10,
+          "air": 2
+        }
+      ],
+      "structures": [
+        {
+          "id": "structure-0",
+          "kind": "ramp",
+          "owner": 0,
+          "round": 1,
+          "turn": 0,
+          "forced": false,
+          "position": [
+            3.25,
+            -1.25
+          ],
+          "paintApBefore": 2,
+          "area": 11.781152949374526,
+          "ownerArea": 3.239560226041553,
+          "enemyArea": 4.135375073541464,
+          "shotsByPlayer": [
+            1,
+            0
+          ],
+          "shots": 1
+        },
+        {
+          "id": "structure-3",
+          "kind": "tower",
+          "owner": 1,
+          "round": 1,
+          "turn": 1,
+          "forced": false,
+          "position": [
+            3.25,
+            1.75
+          ],
+          "paintApBefore": 2,
+          "area": 11.387412760392332,
+          "ownerArea": 2.312687221007416,
+          "enemyArea": 1.5421301437358532,
+          "shotsByPlayer": [
+            0,
+            1
+          ],
+          "shots": 1
+        },
+        {
+          "id": "structure-6",
+          "kind": "canopy",
+          "owner": 1,
+          "round": 2,
+          "turn": 2,
+          "forced": false,
+          "position": [
+            0.25,
+            1.75
+          ],
+          "paintApBefore": 2,
+          "area": 22.239999999999956,
+          "ownerArea": 5.987500000000001,
+          "enemyArea": 7.877500000000006,
+          "shotsByPlayer": [
+            0,
+            1
+          ],
+          "shots": 1
+        },
+        {
+          "id": "structure-9",
+          "kind": "tower",
+          "owner": 0,
+          "round": 2,
+          "turn": 3,
+          "forced": false,
+          "position": [
+            -2.75,
+            0.25
+          ],
+          "paintApBefore": 2,
+          "area": 11.387412760392333,
+          "ownerArea": 1.8921062727158198,
+          "enemyArea": 1.121549195444257,
+          "shotsByPlayer": [
+            5,
+            0
+          ],
+          "shots": 5
+        }
+      ],
+      "highShots": 8,
+      "paintCount": 39,
+      "attackCount": 22,
+      "firstContact": 1,
+      "traps": 14,
+      "trapArea": 3.5,
+      "trapInk": 3.4844007500000003,
+      "trapStoredInk": 3.5,
+      "ghostPlacements": [
+        {
+          "player": 1,
+          "round": 1,
+          "area": 7.75,
+          "patches": 31,
+          "target": "g:0:-6"
+        }
+      ],
+      "forced": 0,
+      "perWeapon": {
+        "gun": {
+          "count": 14,
+          "areaGain": 50.03654334220587,
+          "enemyLoss": 17.912201400374798,
+          "inkMass": 128.57142685265842,
+          "hits": 1350,
+          "rays": 1470,
+          "buildingInk": 97.3333318554026,
+          "buildingHits": 288
+        },
+        "bomb": {
+          "count": 21,
+          "areaGain": 93.63473549134744,
+          "enemyLoss": 9.679166666666681,
+          "inkMass": 121.57499929656717,
+          "hits": 3242,
+          "rays": 5040,
+          "buildingInk": 14.362499481785473,
+          "buildingHits": 100
+        },
+        "brush": {
+          "count": 1,
+          "areaGain": 4.550000000000011,
+          "enemyLoss": 0,
+          "inkMass": 8.999998150000003,
+          "hits": 0,
+          "rays": 0,
+          "buildingInk": 1.5619831499999997,
+          "buildingHits": 8
+        },
+        "air": {
+          "count": 3,
+          "areaGain": 9.351888752265225,
+          "enemyLoss": 0.21666666666666856,
+          "inkMass": 9.295239424163842,
+          "hits": 366,
+          "rays": 378,
+          "buildingInk": 2.615872674163842,
+          "buildingHits": 33
+        }
+      },
+      "coverage": 0.5455467826780033,
+      "scores": [
+        70.43159366838076,
+        65.8335391837297
+      ],
+      "winners": [
+        0
+      ],
+      "turnHistory": [
+        {
+          "round": 1,
+          "scores": [
+            12.937444542499724,
+            8.235269827638655
+          ],
+          "coverage": 0.09727883179831753
+        },
+        {
+          "round": 2,
+          "scores": [
+            21.156638937916494,
+            18.683358841201976
+          ],
+          "coverage": 0.1595021569742695
+        },
+        {
+          "round": 3,
+          "scores": [
+            31.028188133360775,
+            28.40297154234091
+          ],
+          "coverage": 0.23793671406089056
+        },
+        {
+          "round": 4,
+          "scores": [
+            38.700399802706805,
+            41.32834570220849
+          ],
+          "coverage": 0.3204005582216497
+        },
+        {
+          "round": 5,
+          "scores": [
+            41.62609179379771,
+            43.8991790355418
+          ],
+          "coverage": 0.3424062734320268
+        },
+        {
+          "round": 6,
+          "scores": [
+            46.809425127131014,
+            48.299179035541805
+          ],
+          "coverage": 0.38077380412680084
+        },
+        {
+          "round": 7,
+          "scores": [
+            55.94275846046434,
+            53.23833927378533
+          ],
+          "coverage": 0.43711399498518155
+        },
+        {
+          "round": 8,
+          "scores": [
+            59.34444400624684,
+            54.112705850396345
+          ],
+          "coverage": 0.45423346222605776
+        },
+        {
+          "round": 9,
+          "scores": [
+            64.93611067291357,
+            58.0835391837297
+          ],
+          "coverage": 0.49251758524540856
+        },
+        {
+          "round": 10,
+          "scores": [
+            70.43159366838076,
+            65.8335391837297
+          ],
+          "coverage": 0.5455467826780033
+        }
+      ],
+      "ms": 30324
+    },
+    {
+      "variant": "G1-T3-region",
+      "setting": {
+        "rounds": 10,
+        "factor": 5,
+        "profiles": [
+          "balanced",
+          "balanced"
+        ]
+      },
+      "constructionCredits": 2,
+      "creditsRemaining": [
+        0,
+        0
+      ],
+      "diameter": 16,
+      "initialArea": 200.98119404510427,
+      "counts": [
+        {
+          "ramp": 1,
+          "gun": 4,
+          "ghost": 3,
+          "bomb": 10,
+          "canopy": 1,
+          "air": 3
+        },
+        {
+          "gun": 4,
+          "ghost": 2,
+          "ramp": 1,
+          "brush": 3,
+          "basin": 1,
+          "bomb": 10,
+          "air": 1
+        }
+      ],
+      "structures": [
+        {
+          "id": "structure-0",
+          "kind": "ramp",
+          "owner": 0,
+          "round": 1,
+          "turn": 0,
+          "forced": false,
+          "position": [
+            3.25,
+            -1.25
+          ],
+          "paintApBefore": 2,
+          "area": 11.781152949374526,
+          "ownerArea": 3.489550983124842,
+          "enemyArea": 2.2395509831248415,
+          "shotsByPlayer": [
+            0,
+            0
+          ],
+          "shots": 0
+        },
+        {
+          "id": "structure-5",
+          "kind": "ramp",
+          "owner": 1,
+          "round": 2,
+          "turn": 2,
+          "forced": false,
+          "position": [
+            -1.25,
+            -1.25
+          ],
+          "paintApBefore": 2,
+          "area": 11.781152949374526,
+          "ownerArea": 2.5728843164581754,
+          "enemyArea": 3.5103843164581745,
+          "shotsByPlayer": [
+            0,
+            0
+          ],
+          "shots": 0
+        },
+        {
+          "id": "structure-12",
+          "kind": "basin",
+          "owner": 1,
+          "round": 3,
+          "turn": 5,
+          "forced": false,
+          "position": [
+            4.75,
+            1.75
+          ],
+          "paintApBefore": 2,
+          "area": 20.87480147359872,
+          "ownerArea": 5.936152290115197,
+          "enemyArea": 6.181015315260593,
+          "shotsByPlayer": [
+            1,
+            0
+          ],
+          "shots": 1
+        },
+        {
+          "id": "structure-19",
+          "kind": "canopy",
+          "owner": 0,
+          "round": 5,
+          "turn": 8,
+          "forced": false,
+          "position": [
+            -4.25,
+            1.75
+          ],
+          "paintApBefore": 2,
+          "area": 22.239999999999952,
+          "ownerArea": 4.875416666666668,
+          "enemyArea": 10.973750000000006,
+          "shotsByPlayer": [
+            0,
+            4
+          ],
+          "shots": 4
+        }
+      ],
+      "highShots": 5,
+      "paintCount": 35,
+      "attackCount": 18,
+      "firstContact": 2,
+      "traps": 82,
+      "trapArea": 13.310970484281594,
+      "trapInk": 13.725595492261927,
+      "trapStoredInk": 28.99303340261796,
+      "ghostPlacements": [
+        {
+          "player": 0,
+          "round": 1,
+          "area": 8,
+          "patches": 32,
+          "target": "g:0:3"
+        },
+        {
+          "player": 1,
+          "round": 1,
+          "area": 8,
+          "patches": 32,
+          "target": "g:3:-6"
+        },
+        {
+          "player": 0,
+          "round": 2,
+          "area": 7.5,
+          "patches": 30,
+          "target": "g:-3:6"
+        },
+        {
+          "player": 0,
+          "round": 4,
+          "area": 5.591291753272439,
+          "patches": 95,
+          "target": "b:structure-12:120"
+        },
+        {
+          "player": 1,
+          "round": 5,
+          "area": 7.150000000000002,
+          "patches": 33,
+          "target": "b:structure-19:70"
+        }
+      ],
+      "forced": 0,
+      "perWeapon": {
+        "gun": {
+          "count": 8,
+          "areaGain": 34.61949333530663,
+          "enemyLoss": 3.9954074237499597,
+          "inkMass": 62.09523758010691,
+          "hits": 652,
+          "rays": 840,
+          "buildingInk": 37.71428478741509,
+          "buildingHits": 134
+        },
+        "brush": {
+          "count": 3,
+          "areaGain": 11.5666019662497,
+          "enemyLoss": 2.6770509831248415,
+          "inkMass": 26.999999504900615,
+          "hits": 0,
+          "rays": 0,
+          "buildingInk": 12.812751254900613,
+          "buildingHits": 45
+        },
+        "bomb": {
+          "count": 20,
+          "areaGain": 83.06417706248064,
+          "enemyLoss": 16.681386477683972,
+          "inkMass": 117.26249935990289,
+          "hits": 3127,
+          "rays": 4800,
+          "buildingInk": 11.587499819900556,
+          "buildingHits": 105
+        },
+        "air": {
+          "count": 4,
+          "areaGain": 13.929830973333367,
+          "enemyLoss": 1.0397701059558742,
+          "inkMass": 12.774603928837433,
+          "hits": 503,
+          "rays": 504,
+          "buildingInk": 7.669841428837442,
+          "buildingHits": 105
+        }
+      },
+      "coverage": 0.5741400081014533,
+      "scores": [
+        73.20292636182118,
+        70.71003284469127
+      ],
+      "winners": [
+        0
+      ],
+      "turnHistory": [
+        {
+          "round": 1,
+          "scores": [
+            16.16660196624968,
+            7.5
+          ],
+          "coverage": 0.1140491267581264
+        },
+        {
+          "round": 2,
+          "scores": [
+            16.61455098312484,
+            23.729101966249672
+          ],
+          "coverage": 0.18848342958303854
+        },
+        {
+          "round": 3,
+          "scores": [
+            27.109683940595907,
+            33.591209089750976
+          ],
+          "coverage": 0.26545390267946467
+        },
+        {
+          "round": 4,
+          "scores": [
+            37.53676265247087,
+            41.26658324961852
+          ],
+          "coverage": 0.3446185825215341
+        },
+        {
+          "round": 5,
+          "scores": [
+            45.07215159038737,
+            45.120759159201896
+          ],
+          "coverage": 0.35982415200117346
+        },
+        {
+          "round": 6,
+          "scores": [
+            51.34715159038738,
+            48.80200915920191
+          ],
+          "coverage": 0.3995445599976296
+        },
+        {
+          "round": 7,
+          "scores": [
+            56.185158349088915,
+            53.860984431787664
+          ],
+          "coverage": 0.43902851873875615
+        },
+        {
+          "round": 8,
+          "scores": [
+            64.86698256372075,
+            60.70663886024651
+          ],
+          "coverage": 0.5009753146568809
+        },
+        {
+          "round": 9,
+          "scores": [
+            72.23004835681606,
+            68.71003284469127
+          ],
+          "coverage": 0.5622797266418181
+        },
+        {
+          "round": 10,
+          "scores": [
+            73.20292636182118,
+            70.71003284469127
+          ],
+          "coverage": 0.5741400081014533
+        }
+      ],
+      "ms": 32727
+    },
+    {
+      "variant": "G1-T3-region",
+      "setting": {
+        "rounds": 10,
+        "factor": 5,
+        "profiles": [
+          "builder",
+          "attack"
+        ]
+      },
+      "constructionCredits": 2,
+      "creditsRemaining": [
+        0,
+        0
+      ],
+      "diameter": 16,
+      "initialArea": 200.98119404510427,
+      "counts": [
+        {
+          "ramp": 1,
+          "gun": 6,
+          "bomb": 11,
+          "tower": 1,
+          "ghost": 1,
+          "brush": 2
+        },
+        {
+          "ghost": 3,
+          "ramp": 1,
+          "air": 1,
+          "gun": 5,
+          "brush": 4,
+          "canopy": 1,
+          "bomb": 7
+        }
+      ],
+      "structures": [
+        {
+          "id": "structure-0",
+          "kind": "ramp",
+          "owner": 0,
+          "round": 1,
+          "turn": 0,
+          "forced": false,
+          "position": [
+            3.25,
+            -1.25
+          ],
+          "paintApBefore": 2,
+          "area": 11.781152949374526,
+          "ownerArea": 2.2499907570832884,
+          "enemyArea": 6.437426056666306,
+          "shotsByPlayer": [
+            2,
+            0
+          ],
+          "shots": 2
+        },
+        {
+          "id": "structure-5",
+          "kind": "ramp",
+          "owner": 1,
+          "round": 2,
+          "turn": 2,
+          "forced": false,
+          "position": [
+            0.25,
+            1.75
+          ],
+          "paintApBefore": 2,
+          "area": 11.781152949374526,
+          "ownerArea": 5.031152949374527,
+          "enemyArea": 1.5833333333333335,
+          "shotsByPlayer": [
+            0,
+            1
+          ],
+          "shots": 1
+        },
+        {
+          "id": "structure-8",
+          "kind": "tower",
+          "owner": 0,
+          "round": 2,
+          "turn": 3,
+          "forced": false,
+          "position": [
+            6.25,
+            -1.25
+          ],
+          "paintApBefore": 2,
+          "area": 11.387412760392335,
+          "ownerArea": 1.261742844874789,
+          "enemyArea": 1.2617428448747894,
+          "shotsByPlayer": [
+            0,
+            0
+          ],
+          "shots": 0
+        },
+        {
+          "id": "structure-15",
+          "kind": "canopy",
+          "owner": 1,
+          "round": 4,
+          "turn": 6,
+          "forced": false,
+          "position": [
+            -2.75,
+            -1.25
+          ],
+          "paintApBefore": 2,
+          "area": 22.239999999999952,
+          "ownerArea": 4.983333333333335,
+          "enemyArea": 6.3774999999999995,
+          "shotsByPlayer": [
+            0,
+            6
+          ],
+          "shots": 6
+        }
+      ],
+      "highShots": 9,
+      "paintCount": 36,
+      "attackCount": 25,
+      "firstContact": 2,
+      "traps": 15,
+      "trapArea": 3.6041019662496847,
+      "trapInk": 3.619047003296501,
+      "trapStoredInk": 8.424922359499625,
+      "ghostPlacements": [
+        {
+          "player": 1,
+          "round": 1,
+          "area": 8,
+          "patches": 32,
+          "target": "g:-3:3"
+        },
+        {
+          "player": 1,
+          "round": 1,
+          "area": 8,
+          "patches": 32,
+          "target": "g:3:3"
+        },
+        {
+          "player": 1,
+          "round": 2,
+          "area": 5.031152949374527,
+          "patches": 21,
+          "target": "b:structure-5:10"
+        },
+        {
+          "player": 0,
+          "round": 3,
+          "area": 8,
+          "patches": 32,
+          "target": "g:-3:6"
+        }
+      ],
+      "forced": 0,
+      "perWeapon": {
+        "gun": {
+          "count": 11,
+          "areaGain": 41.724483451845295,
+          "enemyLoss": 21.373982538679,
+          "inkMass": 92.57142967080951,
+          "hits": 972,
+          "rays": 1155,
+          "buildingInk": 53.14285721114152,
+          "buildingHits": 177
+        },
+        "bomb": {
+          "count": 18,
+          "areaGain": 63.01645663372089,
+          "enemyLoss": 28.073064255765097,
+          "inkMass": 103.91249910477053,
+          "hits": 2771,
+          "rays": 4320,
+          "buildingInk": 8.737499737002357,
+          "buildingHits": 59
+        },
+        "air": {
+          "count": 1,
+          "areaGain": 0.7187361356249324,
+          "enemyLoss": 2.874944542499726,
+          "inkMass": 3.200000386776173,
+          "hits": 126,
+          "rays": 126,
+          "buildingInk": 3.200000386776173,
+          "buildingHits": 21
+        },
+        "brush": {
+          "count": 6,
+          "areaGain": 16.520768632916365,
+          "enemyLoss": 11.045796361666495,
+          "inkMass": 53.999999786478824,
+          "hits": 0,
+          "rays": 0,
+          "buildingInk": 31.52960078647883,
+          "buildingHits": 95
+        }
+      },
+      "coverage": 0.2925140240299604,
+      "scores": [
+        32.722566935291404,
+        39.28587733895553
+      ],
+      "winners": [
+        1
+      ],
+      "turnHistory": [
+        {
+          "round": 1,
+          "scores": [
+            13.416601966249678,
+            3
+          ],
+          "coverage": 0.07911144663929981
+        },
+        {
+          "round": 2,
+          "scores": [
+            16.204827071277318,
+            8.270731661249506
+          ],
+          "coverage": 0.10917771025768086
+        },
+        {
+          "round": 3,
+          "scores": [
+            15.267354800027453,
+            15.14567620374922
+          ],
+          "coverage": 0.13566289224586803
+        },
+        {
+          "round": 4,
+          "scores": [
+            20.10735480002742,
+            23.87900953708252
+          ],
+          "coverage": 0.17868221657022532
+        },
+        {
+          "round": 5,
+          "scores": [
+            23.04876908165236,
+            26.523126711054697
+          ],
+          "coverage": 0.20137186497034987
+        },
+        {
+          "round": 6,
+          "scores": [
+            26.471681126860688,
+            29.221047999179714
+          ],
+          "coverage": 0.22623602648356256
+        },
+        {
+          "round": 7,
+          "scores": [
+            27.471681126860688,
+            32.029312313887544
+          ],
+          "coverage": 0.2417060276826204
+        },
+        {
+          "round": 8,
+          "scores": [
+            32.972566935291404,
+            35.52191949895678
+          ],
+          "coverage": 0.2782395599943962
+        },
+        {
+          "round": 9,
+          "scores": [
+            30.734856593334367,
+            37.771919498956784
+          ],
+          "coverage": 0.27828948326887226
+        },
+        {
+          "round": 10,
+          "scores": [
+            32.722566935291404,
+            39.28587733895553
+          ],
+          "coverage": 0.2925140240299604
+        }
+      ],
+      "ms": 25344
+    },
+    {
+      "variant": "G1-T3-region",
+      "setting": {
+        "rounds": 10,
+        "factor": 5,
+        "profiles": [
+          "attack",
+          "builder"
+        ]
+      },
+      "constructionCredits": 2,
+      "creditsRemaining": [
+        0,
+        0
+      ],
+      "diameter": 16,
+      "initialArea": 200.98119404510427,
+      "counts": [
+        {
+          "ramp": 1,
+          "gun": 9,
+          "ghost": 3,
+          "brush": 3,
+          "tunnel": 1,
+          "bomb": 3,
+          "air": 2
+        },
+        {
+          "ramp": 1,
+          "air": 3,
+          "ghost": 3,
+          "canopy": 1,
+          "bomb": 7,
+          "brush": 4,
+          "gun": 3
+        }
+      ],
+      "structures": [
+        {
+          "id": "structure-0",
+          "kind": "ramp",
+          "owner": 0,
+          "round": 1,
+          "turn": 0,
+          "forced": false,
+          "position": [
+            3.25,
+            -1.25
+          ],
+          "paintApBefore": 2,
+          "area": 11.781152949374526,
+          "ownerArea": 5.333305604583199,
+          "enemyArea": 2.2395509831248424,
+          "shotsByPlayer": [
+            0,
+            0
+          ],
+          "shots": 0
+        },
+        {
+          "id": "structure-3",
+          "kind": "ramp",
+          "owner": 1,
+          "round": 1,
+          "turn": 1,
+          "forced": false,
+          "position": [
+            -1.25,
+            0.25
+          ],
+          "paintApBefore": 2,
+          "area": 11.781152949374526,
+          "ownerArea": 5.239523254374707,
+          "enemyArea": 1.8229120452083107,
+          "shotsByPlayer": [
+            0,
+            2
+          ],
+          "shots": 2
+        },
+        {
+          "id": "structure-6",
+          "kind": "canopy",
+          "owner": 1,
+          "round": 2,
+          "turn": 2,
+          "forced": false,
+          "position": [
+            -1.25,
+            -4.25
+          ],
+          "paintApBefore": 2,
+          "area": 22.239999999999952,
+          "ownerArea": 8.185833333333335,
+          "enemyArea": 6.499166666666668,
+          "shotsByPlayer": [
+            0,
+            1
+          ],
+          "shots": 1
+        },
+        {
+          "id": "structure-27",
+          "kind": "tunnel",
+          "owner": 0,
+          "round": 7,
+          "turn": 12,
+          "forced": false,
+          "position": [
+            3.25,
+            3.25
+          ],
+          "paintApBefore": 2,
+          "area": 36.829999999999984,
+          "ownerArea": 10.914166666666672,
+          "enemyArea": 8.030000000000003,
+          "shotsByPlayer": [
+            0,
+            0
+          ],
+          "shots": 0
+        }
+      ],
+      "highShots": 3,
+      "paintCount": 34,
+      "attackCount": 21,
+      "firstContact": 3,
+      "traps": 35,
+      "trapArea": 7.66,
+      "trapInk": 10.657991270000002,
+      "trapStoredInk": 21.850666666666676,
+      "trapRegionsTriggered": 4,
+      "ghostPlacements": [
+        {
+          "player": 0,
+          "round": 1,
+          "area": 8,
+          "patches": 32,
+          "target": "g:0:3"
+        },
+        {
+          "player": 1,
+          "round": 1,
+          "area": 8,
+          "patches": 32,
+          "target": "g:3:-6"
+        },
+        {
+          "player": 0,
+          "round": 2,
+          "area": 8,
+          "patches": 32,
+          "target": "g:-3:-8"
+        },
+        {
+          "player": 0,
+          "round": 2,
+          "area": 4.563333333333334,
+          "patches": 27,
+          "target": "b:structure-6:114"
+        },
+        {
+          "player": 1,
+          "round": 5,
+          "area": 6.933333333333335,
+          "patches": 32,
+          "target": "b:structure-6:70"
+        },
+        {
+          "player": 1,
+          "round": 6,
+          "area": 8,
+          "patches": 32,
+          "target": "g:-6:9"
+        }
+      ],
+      "forced": 0,
+      "perWeapon": {
+        "gun": {
+          "count": 12,
+          "areaGain": 46.34139877001032,
+          "enemyLoss": 19.084083480416282,
+          "inkMass": 100.19047584755788,
+          "hits": 1052,
+          "rays": 1260,
+          "buildingInk": 59.99999979116913,
+          "buildingHits": 172
+        },
+        "air": {
+          "count": 5,
+          "areaGain": 11.343680678124656,
+          "enemyLoss": 7.75,
+          "inkMass": 16.00000438677617,
+          "hits": 630,
+          "rays": 630,
+          "buildingInk": 3.2000003867761735,
+          "buildingHits": 21
+        },
+        "bomb": {
+          "count": 10,
+          "areaGain": 42.91457871187504,
+          "enemyLoss": 6.25,
+          "inkMass": 58.65000075648772,
+          "hits": 1564,
+          "rays": 2400,
+          "buildingInk": 13.500000653592874,
+          "buildingHits": 82
+        },
+        "brush": {
+          "count": 7,
+          "areaGain": 24.214148180833206,
+          "enemyLoss": 5.6804166666666625,
+          "inkMass": 62.99999801186525,
+          "hits": 0,
+          "rays": 0,
+          "buildingInk": 45.792515011865206,
+          "buildingHits": 150
+        }
+      },
+      "coverage": 0.41518606969295146,
+      "scores": [
+        53.55477772672086,
+        58.28119513370607
+      ],
+      "winners": [
+        1
+      ],
+      "turnHistory": [
+        {
+          "round": 1,
+          "scores": [
+            8.166601966249685,
+            6.593680678124662
+          ],
+          "coverage": 0.06895926598212965
+        },
+        {
+          "round": 2,
+          "scores": [
+            8.166601966249685,
+            15.990347344791328
+          ],
+          "coverage": 0.1023454268855356
+        },
+        {
+          "round": 3,
+          "scores": [
+            17.93205560458318,
+            20.74718335094816
+          ],
+          "coverage": 0.16387181889321722
+        },
+        {
+          "round": 4,
+          "scores": [
+            23.469555604583185,
+            27.69508153178143
+          ],
+          "coverage": 0.21676853984089262
+        },
+        {
+          "round": 5,
+          "scores": [
+            31.978305604583163,
+            25.6142481984481
+          ],
+          "coverage": 0.2440016091645092
+        },
+        {
+          "round": 6,
+          "scores": [
+            35.96353234817922,
+            31.61424819844809
+          ],
+          "coverage": 0.2863058869300439
+        },
+        {
+          "round": 7,
+          "scores": [
+            44.85853234817921,
+            42.57786180037275
+          ],
+          "coverage": 0.32460372012828875
+        },
+        {
+          "round": 8,
+          "scores": [
+            50.6276990148459,
+            55.40619513370606
+          ],
+          "coverage": 0.3936461108155077
+        },
+        {
+          "round": 9,
+          "scores": [
+            53.55477772672086,
+            58.28119513370607
+          ],
+          "coverage": 0.41518606969295146
+        },
+        {
+          "round": 10,
+          "scores": [
+            53.55477772672086,
+            58.28119513370607
+          ],
+          "coverage": 0.41518606969295146
+        }
+      ],
+      "ms": 32262
+    }
+  ]
+}

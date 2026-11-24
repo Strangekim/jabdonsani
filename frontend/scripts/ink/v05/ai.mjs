@@ -1,4 +1,4 @@
-import { apply, preview, score, RULES, BUILDINGS, gunRangeAt, bombRangeAt, canLaunchBomb, isHighBombSurface, getBombControl, bombRadiusAt, EXPERIMENT, canBuildNow } from './engine.mjs';
+import { apply, preview, score, RULES, BUILDINGS, gunRangeAt, bombRangeAt, canLaunchBomb, isHighBombSurface, getBombControl, bombRadiusAt, EXPERIMENT, canBuildNow, ghostEligible } from './engine.mjs';
 
 export const PROFILES = {
   balanced: { label: '균형형', gain: 1, attack: .8, reach: .75, building: .75, trap: .7, reinforce: .25 },
@@ -20,7 +20,7 @@ export function fromPublicView(v) {
   return {
     version:v.version, rulesVersion:1, config:{...v.config}, players:v.players.map(p=>({...p,builds:{...p.builds}})),
     surfaces:v.surfaces.map(({ownTrap,controller,traps,...p})=>({...p,traps:ownTrap?[v.active]:[]})),
-    buildings:v.buildings.map(b=>({...b})), round:v.round, slot:v.slot, ap:v.ap, turn:v.turn, finished:v.finished,
+    buildings:v.buildings.map(b=>({...b})), ghostRegions:(v.ownGhostRegions??[]).map(g=>({...g,ids:[...g.ids]})), round:v.round, slot:v.slot, ap:v.ap, turn:v.turn, finished:v.finished,
     events:[]
   };
 }
@@ -57,7 +57,7 @@ function contextAt(idx,p,base,profile) {
     else if(o===idx.pid)mine+=q.area;
     else {enemy+=q.area;weak+=q.area/(1+q.density*.25);}
   }
-  const near=idx.nearby(p.center,5.05);
+  const near=idx.nearby(p.center,Math.max(5.05,RULES.gunRange+.05,RULES.ghostRange+1));
   let nearMine=Infinity,nearEnemy=Infinity,brush=null,gun=null,brushRank=-Infinity,gunRank=-Infinity;
   for(const q of near){
     const o=owner(q),d=Math.sqrt(d2(q.center,p.center));
@@ -68,7 +68,7 @@ function contextAt(idx,p,base,profile) {
         if(rank>brushRank){brush=q;brushRank=rank;}
       }
       if(d>.12&&d<=gunRangeAt(q)&&q.density>=RULES.gunThreshold){
-        const rank=q.center[1]*.55-d*.16;
+        const rank=EXPERIMENT.gunOriginOffset>.12?q.center[1]*.35-Math.abs(d-Math.min(3.8,gunRangeAt(q)*.7))*.28:q.center[1]*.55-d*.16;
         if(rank>gunRank){gun=q;gunRank=rank;}
       }
     }else if(o!==null)nearEnemy=Math.min(nearEnemy,d);
@@ -76,7 +76,7 @@ function contextAt(idx,p,base,profile) {
   for(const q of idx.elevatedGun){
     const d=Math.sqrt(d2(q.center,p.center));
     if(d>.12&&d<=gunRangeAt(q)){
-      const rank=q.center[1]*.55-d*.16;
+      const rank=EXPERIMENT.gunOriginOffset>.12?q.center[1]*.35-Math.abs(d-Math.min(3.8,gunRangeAt(q)*.7))*.28:q.center[1]*.55-d*.16;
       if(rank>gunRank){gun=q;gunRank=rank;}
     }
   }
@@ -146,8 +146,10 @@ function candidateRows(s,profile,small=false) {
     }
     if(c.brush)add('brush',{kind:'paint',weapon:'brush',sourceId:c.brush.id,targetId},c.value*.7+targetValue+c.access+(p.building?.55:0),p.center);
     if(c.gun)add('gun',{kind:'paint',weapon:'gun',sourceId:c.gun.id,targetId},targetValue+c.value*.45+(o!==null&&o!==pid?Math.min(3,p.density)*.45:0)+(p.center[1]>.4?.45:0),p.center);
-    if(player.ghosts>0&&p.owner===null&&!p.traps.includes(pid)&&c.nearMine<=RULES.ghostRange&&c.nearEnemy<=4&&late<.9){
-      add('ghost',{kind:'paint',weapon:'ghost',targetId},(4-c.nearEnemy)*.55+c.enemy*.2+p.area+(p.building?.6:0),p.center);
+    if(player.ghosts>0&&ghostEligible(p,pid)&&c.nearMine<=RULES.ghostRange&&c.nearEnemy<=(EXPERIMENT.ghostRadius>0?5:4)&&late<.9){
+      let area=0;
+      if(EXPERIMENT.ghostRadius>0)area=idx.nearby(p.center,EXPERIMENT.ghostRadius).filter(q=>q.building===p.building&&ghostEligible(q,pid)).reduce((sum,q)=>sum+q.area,0);
+      add('ghost',{kind:'paint',weapon:'ghost',targetId},(5-c.nearEnemy)*.55+c.enemy*.2+Math.min(EXPERIMENT.ghostMaxArea,area)*.5+p.area+(p.building?.6:0),p.center);
     }
     if(p.building===null&&o!==null&&o!==pid)continue;
     if(!buildAllowed||p.building!==null||late>=.85||c.nearMine>4.8||c.baseDistance<1.1)continue;
@@ -161,7 +163,7 @@ function candidateRows(s,profile,small=false) {
       for(const rotation of orientations)add(kind,{kind:'build',building:kind,targetId,rotation},baseRank,p.center);
     }
   }
-  const quotas=small?{brush:5,gun:5,bomb:5,highbomb:4,air:6,ghost:2}:{brush:10,gun:10,bomb:10,highbomb:7,air:12,ghost:4};
+  const quotas=small?{brush:5,gun:5,bomb:5,highbomb:4,air:6,ghost:EXPERIMENT.ghostRadius>0?5:2}:{brush:10,gun:10,bomb:10,highbomb:7,air:12,ghost:EXPERIMENT.ghostRadius>0?8:4};
   const selected=[];
   for(const [group,rows] of Object.entries(groups)){
     selected.push(...takeDiverse(rows,quotas[group]??(small?2:4),group==='ghost'?.7:group==='gun'?.85:1.2));
@@ -219,6 +221,29 @@ function assess(s,p,c,idx,profile,baseScores) {
     return value+horizon*(profile.building*(investment+shapeValue+Math.min(1.1,accessible*.07))+profile.reach*Math.min(.7,high*.12)-existing-mine*.03)-.45;
   }
   if(c.weapon==='ghost'){
+    if(EXPERIMENT.ghostRadius>0){
+      let benefit=0,area=0,neutralArea=0,maxProb=0;
+      for(const id of p.ghostIds){
+        const q=idx.byId.get(id);if(!q)continue;
+        let nearest=6;
+        for(const t of idx.nearby(q.center,5))if(owner(t)!==null&&owner(t)!==pid)nearest=Math.min(nearest,Math.sqrt(d2(q.center,t.center)));
+        const inBombRange=s.players.some(pl=>pl.id!==pid&&flat2(pl.base,q.center)<=RULES.bombRange**2);
+        const onContestedRoof=q.building!==null&&idx.controls.get(q.building)?.controller!==pid&&isHighBombSurface(q);
+        const prob=clamp(.1+Math.max(0,4-nearest)*.17+(inBombRange?.14:0)+(onContestedRoof?.12:0),.05,.9);
+        const swing=owner(q)===pid?(profile.attack+profile.gain*.35)*Math.min(1,2/Math.max(1,q.density)):(profile.gain+profile.attack);
+        const stored=EXPERIMENT.ghostStoredDensity;
+        const reserve=stored>0?Math.min(1,stored/RULES.threshold)*(owner(q)===pid?.35:profile.gain*.65):0;
+        benefit+=q.area*prob*(swing+reserve);
+        area+=q.area;if(owner(q)!==pid)neutralArea+=q.area;maxProb=Math.max(maxProb,prob);
+      }
+      if(EXPERIMENT.ghostBurstRegion){
+        const storedArea=neutralArea*Math.min(1,EXPERIMENT.ghostStoredDensity/RULES.threshold);
+        const activation=clamp(maxProb+Math.min(.2,area*.035),0,.95);
+        const defensive=(area-neutralArea)*.35;
+        benefit+=activation*(storedArea*profile.gain*.75+defensive)-neutralArea*.08;
+      }
+      return horizon*profile.trap*benefit-.15;
+    }
     const t=idx.byId.get(c.targetId);
     let enemy=0,nearest=5;
     for(const q of idx.nearby(t.center,4))if(owner(q)!==null&&owner(q)!==pid){enemy+=q.area;nearest=Math.min(nearest,Math.sqrt(d2(q.center,t.center)));}

@@ -14,7 +14,7 @@ function runGame(variant,setting){
   const players=setting.profiles.length;
   let s=makeGame({players,rounds:setting.rounds,factor:setting.factor??5});
   const counts=s.players.map(()=>({})),structures=[],perWeapon={},turnHistory=[],shotsByBuilding={},regions=[];
-  let attackCount=0,paintCount=0,firstContact=null,highShots=0,forced=0,traps=0;
+  let attackCount=0,paintCount=0,firstContact=null,highShots=0,forced=0,traps=0,trapArea=0,trapInk=0,trapStoredInk=0,trapRegionsTriggered=0,ghostPlacements=[];
   const started=Date.now(),initialArea=score(s).total;
   const act=(command,forcedAction=false)=>{
     const pid=active(s),p=preview(s,command);
@@ -40,10 +40,11 @@ function runGame(variant,setting){
       if(p.rayStats){v.hits+=p.rayStats.hitCount;v.rays+=p.rayStats.rays;}
       if(command.weapon==='bomb'&&command.sourceId){highShots++;const b=byId.get(command.sourceId)?.building;if(b)(shotsByBuilding[b]??=Array(players).fill(0))[pid]++;}
     }
+    if(command.kind==='paint'&&command.weapon==='ghost')ghostPlacements.push({player:pid,round:s.round+1,area:p.ghostArea??0,patches:p.ghostIds.length,target:command.targetId});
     if(forcedAction)forced++;
     const round=s.round+1;
     s=apply(s,command);
-    traps+=s.events.at(-1).triggered;
+    const event=s.events.at(-1);traps+=event.triggered;trapArea+=event.trapArea??0;trapInk+=event.trapInk??0;trapStoredInk+=event.trapStoredInk??0;trapRegionsTriggered+=event.trapRegionsTriggered??0;
     if(s.round+1!==round||s.finished){const t=score(s);turnHistory.push({round,scores:t.scores,coverage:1-t.neutral/t.total});}
   };
   if(setting.opening){
@@ -86,17 +87,24 @@ function runGame(variant,setting){
     b.shotsByPlayer=shotsByBuilding[b.id]??Array(players).fill(0);
     b.shots=b.shotsByPlayer.reduce((a,b)=>a+b,0);
   }
-  return {variant:variant.name,setting,constructionCredits:EXPERIMENT.constructionCredits,creditsRemaining:s.players.map(p=>p.constructionCredits),diameter:s.config.radius*2,initialArea,counts,structures,highShots,paintCount,attackCount,firstContact,traps,forced,perWeapon,coverage:1-t.neutral/t.total,scores:t.scores,winners:t.scores.map((v,i)=>Math.abs(v-max)<1e-7?i:-1).filter(i=>i>=0),turnHistory,ms:Date.now()-started};
+  return {variant:variant.name,setting,constructionCredits:EXPERIMENT.constructionCredits,creditsRemaining:s.players.map(p=>p.constructionCredits),diameter:s.config.radius*2,initialArea,counts,structures,highShots,paintCount,attackCount,firstContact,traps,trapArea,trapInk,trapStoredInk,trapRegionsTriggered,ghostPlacements,forced,perWeapon,coverage:1-t.neutral/t.total,scores:t.scores,winners:t.scores.map((v,i)=>Math.abs(v-max)<1e-7?i:-1).filter(i=>i>=0),turnHistory,ms:Date.now()-started};
 }
 function summarize(x){
-  return {variant:x.variant,profiles:x.setting.profiles,rounds:x.setting.rounds,factor:x.setting.factor,opening:x.setting.opening,diameter:x.diameter,counts:x.counts,builds:x.structures.map(b=>[b.owner,b.kind,b.shots]),high:x.highShots,scores:x.scores.map(n=>+n.toFixed(2)),coverage:+x.coverage.toFixed(3),contact:x.firstContact,attacks:x.attackCount,paints:x.paintCount,perWeapon:Object.fromEntries(Object.entries(x.perWeapon).map(([k,v])=>[k,{n:v.count,avgGain:+(v.areaGain/v.count).toFixed(2),avgInk:+(v.inkMass/v.count).toFixed(2)}])),ms:x.ms};
+  return {variant:x.variant,profiles:x.setting.profiles,rounds:x.setting.rounds,factor:x.setting.factor,opening:x.setting.opening,diameter:x.diameter,counts:x.counts,builds:x.structures.map(b=>[b.owner,b.kind,b.shots]),high:x.highShots,scores:x.scores.map(n=>+n.toFixed(2)),coverage:+x.coverage.toFixed(3),contact:x.firstContact,attacks:x.attackCount,paints:x.paintCount,traps:x.traps,trapArea:+x.trapArea.toFixed(2),trapInk:+x.trapInk.toFixed(2),ghosts:x.ghostPlacements.map(p=>[p.player,p.round,+p.area.toFixed(2)]),perWeapon:Object.fromEntries(Object.entries(x.perWeapon).map(([k,v])=>[k,{n:v.count,avgGain:+(v.areaGain/v.count).toFixed(2),avgInk:+(v.inkMass/v.count).toFixed(2)}])),ms:x.ms};
 }
 
 const selected={name:'disk-splash-65',experiment:{bombPattern:'disk',bombDownFraction:.65,bombGroundRadius:1.25,airLength:2.8,airWidth:1,airEmit:3.2,brushLength:3}};
 const quick={rounds:10,factor:5,profiles:['balanced','balanced']};
 const separate={name:'C-separate-credits',experiment:{...selected.experiment,constructionCredits:2}};
 const comparison=[['balanced','balanced'],['builder','attack'],['attack','builder'],['expand','balanced'],['balanced','expand']].flatMap(profiles=>[{...selected,name:'A-shared-AP'},separate].map(v=>[v,{...quick,profiles}]));
-const jobs=process.argv.includes('--credits')?comparison:process.argv.includes('--full')?[
+const gunBoost={gunOriginOffset:.65,gunEmit:10,gunFan:.34,gunPitch:.10,gunHeightBonus:1};
+const weaponVariants=[
+  {name:'G1-T1',experiment:{...separate.experiment,...gunBoost,ghostRadius:1.35,ghostOwn:true,ghostMaxArea:5},rules:{gunRange:6.5,gunThreshold:1.2,ghostRange:3}},
+  {name:'G1-T2',experiment:{...separate.experiment,...gunBoost,ghostRadius:1.7,ghostOwn:true,ghostMaxArea:8,ghostStoredDensity:1},rules:{gunRange:6.5,gunThreshold:1.2,ghostRange:3.5}},
+  {name:'G1-T3-region',experiment:{...separate.experiment,...gunBoost,ghostRadius:1.7,ghostOwn:true,ghostMaxArea:8,ghostStoredDensity:.8,ghostBurstRegion:true},rules:{gunRange:6.5,gunThreshold:1.2,ghostRange:3.5}}
+];
+const weaponJobs=[...weaponVariants.map(v=>[v,quick]),...[[ 'builder','attack'],['attack','builder']].map(profiles=>[weaponVariants[2],{...quick,profiles}])];
+const jobs=process.argv.includes('--weapons')?weaponJobs:process.argv.includes('--credits')?comparison:process.argv.includes('--full')?[
   ...[
     {name:'old-shapes-old-patterns',experiment:{shapes:'old',patterns:'legacy'}},
     {name:'new-shapes-old-patterns',experiment:{shapes:'new',patterns:'legacy'}},
