@@ -44,7 +44,7 @@ jobs:
         run: |
           npm ci --no-audit --no-fund
           npm run typecheck
-          node --test tests/ink/engine.test.mjs
+          node --test tests/ink/*.test.mjs
           npm run build
 
   deploy:

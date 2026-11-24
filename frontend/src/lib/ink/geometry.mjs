@@ -102,7 +102,14 @@ function triangleHit(origin,d,a,b,c){
 }
 export function geometryIndex(state){
   const grounds=state.surfaces.filter(p=>p.building===null), solids=state.surfaces.filter(p=>p.building!==null);
-  return {grounds,solids,byId:new Map(state.surfaces.map(p=>[p.id,p]))};
+  const groundBins=new Map();
+  grounds.forEach((p,order)=>{
+    const k=Math.floor(p.center[0]/STEP)+':'+Math.floor(p.center[2]/STEP);
+    if(!groundBins.has(k))groundBins.set(k,[]);
+    groundBins.get(k).push({p,order});
+  });
+  const solidBounds=solids.map(p=>({p,min:[0,1,2].map(i=>Math.min(...p.vertices.map(v=>v[i]))),max:[0,1,2].map(i=>Math.max(...p.vertices.map(v=>v[i])))}));
+  return {grounds,solids,groundBins,solidBounds,byId:new Map(state.surfaces.map(p=>[p.id,p]))};
 }
 export function raycast(idx,origin,end){
   const d=sub(end,origin);let best=1+EPS,found=null;
@@ -110,12 +117,18 @@ export function raycast(idx,origin,end){
     const t=-origin[1]/d[1];
     if(t>EPS&&t<=1+EPS){
       const point=add(origin,mul(d,t));
-      let p=null,delta=Infinity;
-      for(const g of idx.grounds){const k=dist(g.center,point);if(k<delta){delta=k;p=g;}}
+      let p=null,delta=Infinity,order=Infinity;
+      const x=Math.floor(point[0]/STEP),z=Math.floor(point[2]/STEP);
+      for(let i=x-1;i<=x+1;i++)for(let j=z-1;j<=z+1;j++)for(const g of idx.groundBins.get(i+':'+j)||[]){
+        const k=dist(g.p.center,point);
+        if(k<delta||(k===delta&&g.order<order)){delta=k;p=g.p;order=g.order;}
+      }
       if(p&&delta<=STEP*.78){best=t;found=p;}
     }
   }
-  for(const p of idx.solids){
+  const lo=origin.map((v,i)=>Math.min(v,end[i])-EPS),hi=origin.map((v,i)=>Math.max(v,end[i])+EPS);
+  for(const {p,min,max} of idx.solidBounds){
+    if(min[0]>hi[0]||max[0]<lo[0]||min[1]>hi[1]||max[1]<lo[1]||min[2]>hi[2]||max[2]<lo[2])continue;
     for(let i=1;i<p.vertices.length-1;i++){
       const t=triangleHit(origin,d,p.vertices[0],p.vertices[i],p.vertices[i+1]);
       if(t!==null&&t<best){best=t;found=p;}

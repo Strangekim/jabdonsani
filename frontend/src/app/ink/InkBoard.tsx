@@ -6,7 +6,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import type { GameView, Preview, Surface, Vec3 } from '@/lib/ink/engine.mjs';
 import styles from './Ink.module.css';
 
-type Props = { view: GameView; preview: Preview | null; source: string | null; target: string | null; hidden: boolean; onPick: (id: string) => void };
+type Props = { view: GameView; preview: Preview | null; source: string | null; target: string | null; hidden: boolean; showTraps: boolean; onPick: (id: string) => void };
 type SceneHandles = { scene: THREE.Scene; camera: THREE.PerspectiveCamera; renderer: THREE.WebGLRenderer; controls: OrbitControls; layer: THREE.Group; pickMesh: THREE.Mesh | null; faces: string[] };
 const WHITE = new THREE.Color('#f2eee4');
 const INK = new THREE.Color('#b5b3bb');
@@ -69,7 +69,7 @@ function outline(p: Surface, color: string) {
   return line(p.vertices.map(v => v.map((n,i) => n + p.normal[i] * .025) as Vec3), color, true);
 }
 
-export default function InkBoard({ view, preview, source, target, hidden, onPick }: Props) {
+export default function InkBoard({ view, preview, source, target, hidden, showTraps, onPick }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const handles = useRef<SceneHandles | null>(null);
   const callback = useRef(onPick);
@@ -159,8 +159,8 @@ export default function InkBoard({ view, preview, source, target, hidden, onPick
       h.layer.add(surfaceMesh(preview.buildSurfaces, () => new THREE.Color('#8ad9e5'), .005, true).mesh);
     }
     if (!hidden) {
-      for (const p of view.surfaces) if (p.ownTrap) h.layer.add(outline(p,'#bf76ff'));
-      if (preview?.ok && preview.ghost) {
+      for (const p of view.surfaces) if (showTraps && p.ownTrap) h.layer.add(outline(p,'#bf76ff'));
+      if (showTraps && preview?.ok && preview.ghost) {
         const p = surfaceById.get(preview.ghost);
         if (p) h.layer.add(outline(p,'#bf76ff'));
       }
@@ -172,7 +172,7 @@ export default function InkBoard({ view, preview, source, target, hidden, onPick
       const ring = new THREE.Mesh(new THREE.RingGeometry(.22,.33,32),new THREE.MeshBasicMaterial({color:p.color,side:THREE.DoubleSide,depthTest:false}));
       ring.rotation.x = -Math.PI/2;ring.position.set(p.base[0],.025,p.base[2]);ring.renderOrder=4;h.layer.add(ring);
     }
-  }, [view, preview, source, target, hidden, radius]);
+  }, [view, preview, source, target, hidden, showTraps, radius]);
 
   const resetCamera = () => {
     const h=handles.current;if(!h)return;
